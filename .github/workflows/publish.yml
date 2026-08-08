@@ -127,8 +127,12 @@ jobs:
         run: |
           test -f dist/index.html
           test -f dist/archive/index.html
+          test -f dist/curriculum/index.html
+          test -f dist/curriculum/consumer_psychology/index.html
           test -f dist/404.html
           test -f dist/content/latest.json
+          test -f dist/content/curriculum.json
+          test -f dist/content/progress.json
           test -f dist/assets/og.png
 
       - name: 上传 Pages 发布物

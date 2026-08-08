@@ -4,11 +4,18 @@
     "min": 30,
     "max": 45
   },
-  "contentMix": {
-    "fresh": 0.3,
-    "evergreen": 0.7
+  "editorialPolicy": {
+    "coreLessonMinutes": {
+      "min": 12,
+      "max": 18
+    },
+    "radarMinutes": {
+      "min": 3,
+      "max": 8
+    },
+    "description": "核心课程按知识树顺序推进；时效信息独立进入行业雷达，不替代课程单元。"
   },
-  "rotationStartDate": "2026-08-08",
+  "curriculumStartDate": "2026-08-08",
   "modules": [
     {
       "id": "advertising_frontier",
@@ -80,62 +87,33 @@
       "description": "内容平台、零售媒介、电商生态与渠道变化"
     }
   ],
-  "rotation": [
+  "dailySchedule": [
     [
-      "advertising_frontier",
-      "ai",
-      "brand_product_research",
-      "management_organization",
-      "finance_macro",
-      "cognitive_decision"
-    ],
-    [
-      "media_ecommerce",
       "consumer_psychology",
-      "ai",
-      "brand_product_research",
-      "communication",
-      "cognitive_decision"
+      "brand_product_research"
     ],
     [
       "advertising_frontier",
-      "aesthetics_creative",
-      "management_organization",
-      "finance_macro",
-      "communication",
-      "cognitive_decision"
+      "data_analysis"
     ],
     [
-      "marketing_case",
-      "consumer_psychology",
-      "data_analysis",
-      "brand_product_research",
-      "finance_macro",
-      "media_ecommerce"
-    ],
-    [
-      "advertising_frontier",
-      "aesthetics_creative",
       "management_organization",
-      "cognitive_decision",
-      "personal_growth",
       "communication"
     ],
     [
-      "marketing_case",
-      "consumer_psychology",
-      "brand_product_research",
       "finance_macro",
-      "ai",
-      "management_organization"
+      "cognitive_decision"
     ],
     [
-      "media_ecommerce",
-      "aesthetics_creative",
-      "cognitive_decision",
-      "personal_growth",
-      "management_organization",
-      "data_analysis"
+      "marketing_case",
+      "aesthetics_creative"
+    ],
+    [
+      "ai",
+      "media_ecommerce"
+    ],
+    [
+      "personal_growth"
     ]
   ]
 }

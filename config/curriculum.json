@@ -1,0 +1,1108 @@
+{
+  "schemaVersion": 1,
+  "startDate": "2026-08-08",
+  "tracks": [
+    {
+      "module": "advertising_frontier",
+      "goal": "理解广告系统、平台机制与测量方法，把投放操作提升为围绕商业目标的系统判断。",
+      "principles": [
+        "先理解商业目标，再讨论平台设置",
+        "区分平台回传指标、业务结果与增量效果",
+        "平台更新必须放回稳定的广告原理中判断"
+      ],
+      "newsEligible": true,
+      "stages": [
+        {
+          "id": "advertising_frontier_system",
+          "title": "广告系统基础",
+          "outcome": "能解释广告生态中的参与者、价值交换和目标层级。",
+          "units": [
+            { "id": "advertising_frontier_system_roles", "title": "广告生态中的品牌、平台、媒体与用户" },
+            { "id": "advertising_frontier_system_business_model", "title": "平台商业模式与注意力交易" },
+            { "id": "advertising_frontier_system_inventory", "title": "媒体库存、版位与流量质量" },
+            { "id": "advertising_frontier_system_objectives", "title": "业务目标、营销目标与平台目标" }
+          ]
+        },
+        {
+          "id": "advertising_frontier_delivery",
+          "title": "竞价与投放机制",
+          "outcome": "能判断一次广告展示如何被竞价、排序和预算系统共同决定。",
+          "units": [
+            { "id": "advertising_frontier_delivery_auction", "title": "竞价机制与广告排序" },
+            { "id": "advertising_frontier_delivery_quality", "title": "质量信号与预估行动率" },
+            { "id": "advertising_frontier_delivery_pacing", "title": "预算节奏与投放速度" },
+            { "id": "advertising_frontier_delivery_learning", "title": "学习期、波动与稳定性" }
+          ]
+        },
+        {
+          "id": "advertising_frontier_strategy",
+          "title": "策略与账户设计",
+          "outcome": "能把用户任务、受众信号、创意假设和预算组合成清晰策略。",
+          "units": [
+            { "id": "advertising_frontier_strategy_funnel", "title": "用户任务与营销漏斗" },
+            { "id": "advertising_frontier_strategy_audience", "title": "受众定义与信号质量" },
+            { "id": "advertising_frontier_strategy_creative", "title": "创意假设与素材组合" },
+            { "id": "advertising_frontier_strategy_budget", "title": "预算配置与边际回报" }
+          ]
+        },
+        {
+          "id": "advertising_frontier_measurement",
+          "title": "衡量与归因",
+          "outcome": "能选择与问题相匹配的归因、实验和增量测量方法。",
+          "units": [
+            { "id": "advertising_frontier_measurement_attribution", "title": "归因模型与归因窗口" },
+            { "id": "advertising_frontier_measurement_incrementality", "title": "增量效果与反事实" },
+            { "id": "advertising_frontier_measurement_experiment", "title": "广告实验与对照设计" },
+            { "id": "advertising_frontier_measurement_mmm", "title": "营销组合模型与多渠道判断" }
+          ]
+        },
+        {
+          "id": "advertising_frontier_automation",
+          "title": "自动化与数据",
+          "outcome": "能为自动投放系统提供高质量目标、数据和约束。",
+          "units": [
+            { "id": "advertising_frontier_automation_bidding", "title": "智能出价的目标与边界" },
+            { "id": "advertising_frontier_automation_first_party", "title": "第一方数据与信号治理" },
+            { "id": "advertising_frontier_automation_privacy", "title": "隐私约束与测量变化" },
+            { "id": "advertising_frontier_automation_ai", "title": "AI 执行与人的决策责任" }
+          ]
+        },
+        {
+          "id": "advertising_frontier_governance",
+          "title": "行业变化与治理",
+          "outcome": "能评估平台更新的影响，并用测试和预案管理变化。",
+          "units": [
+            { "id": "advertising_frontier_governance_update", "title": "平台更新的影响拆解" },
+            { "id": "advertising_frontier_governance_migration", "title": "功能迁移与小规模测试" },
+            { "id": "advertising_frontier_governance_risk", "title": "投放风险、异常与回退" },
+            { "id": "advertising_frontier_governance_playbook", "title": "建立可复用的广告操作规范" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "marketing_case",
+      "goal": "掌握结构化案例拆解方法，从商业问题、策略、执行和结果中提取可迁移规律。",
+      "principles": [
+        "先还原问题与约束，再评价创意",
+        "区分事实、案例方主张与自己的推断",
+        "每个案例最终都要说明适用条件和不可复制之处"
+      ],
+      "newsEligible": true,
+      "stages": [
+        {
+          "id": "marketing_case_reading",
+          "title": "案例阅读方法",
+          "outcome": "能建立包含背景、问题、约束与证据的案例档案。",
+          "units": [
+            { "id": "marketing_case_reading_context", "title": "还原商业背景与市场环境" },
+            { "id": "marketing_case_reading_problem", "title": "识别真正要解决的问题" },
+            { "id": "marketing_case_reading_constraints", "title": "预算、时间与渠道约束" },
+            { "id": "marketing_case_reading_evidence", "title": "案例证据的等级与可信度" }
+          ]
+        },
+        {
+          "id": "marketing_case_insight",
+          "title": "洞察与策略",
+          "outcome": "能判断洞察是否真实支撑了人群选择和策略命题。",
+          "units": [
+            { "id": "marketing_case_insight_tension", "title": "用户张力与未满足需求" },
+            { "id": "marketing_case_insight_competition", "title": "竞争格局与替代方案" },
+            { "id": "marketing_case_insight_audience", "title": "目标人群与优先级" },
+            { "id": "marketing_case_insight_proposition", "title": "从洞察形成策略命题" }
+          ]
+        },
+        {
+          "id": "marketing_case_message",
+          "title": "品牌与传播主张",
+          "outcome": "能拆解案例中的价值主张、信任依据和品牌记忆资产。",
+          "units": [
+            { "id": "marketing_case_message_value", "title": "价值主张与用户收益" },
+            { "id": "marketing_case_message_reason", "title": "可信理由与证据设计" },
+            { "id": "marketing_case_message_assets", "title": "品牌资产与一致性" },
+            { "id": "marketing_case_message_hierarchy", "title": "传播信息的层级与取舍" }
+          ]
+        },
+        {
+          "id": "marketing_case_architecture",
+          "title": "Campaign 架构",
+          "outcome": "能看清一场营销活动如何通过内容、渠道和参与机制逐步展开。",
+          "units": [
+            { "id": "marketing_case_architecture_event", "title": "把传播设计成事件" },
+            { "id": "marketing_case_architecture_sequence", "title": "内容序列与悬念推进" },
+            { "id": "marketing_case_architecture_channel", "title": "渠道角色与协同" },
+            { "id": "marketing_case_architecture_participation", "title": "用户参与与社交扩散" }
+          ]
+        },
+        {
+          "id": "marketing_case_execution",
+          "title": "执行与放大",
+          "outcome": "能解释创意形式、媒体节奏和文化时机如何共同影响传播。",
+          "units": [
+            { "id": "marketing_case_execution_creative", "title": "创意表达与核心钩子" },
+            { "id": "marketing_case_execution_media", "title": "媒介协同与触点节奏" },
+            { "id": "marketing_case_execution_earned", "title": "赢得媒体与话题放大" },
+            { "id": "marketing_case_execution_culture", "title": "文化语境与传播时机" }
+          ]
+        },
+        {
+          "id": "marketing_case_transfer",
+          "title": "效果与迁移",
+          "outcome": "能审查案例效果，并判断其中哪些原则可以迁移到自己的业务。",
+          "units": [
+            { "id": "marketing_case_transfer_business", "title": "业务结果与传播结果" },
+            { "id": "marketing_case_transfer_causality", "title": "效果归因与因果边界" },
+            { "id": "marketing_case_transfer_conditions", "title": "成功所需的前提条件" },
+            { "id": "marketing_case_transfer_rebuild", "title": "为新问题重构案例方法" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "aesthetics_creative",
+      "goal": "建立可描述、可分析、可运用的视觉判断和创意能力。",
+      "principles": [
+        "先观察具体视觉关系，再给出审美评价",
+        "形式判断必须联系内容、媒介与观看情境",
+        "练习从模仿规律走向有目的的选择"
+      ],
+      "newsEligible": false,
+      "stages": [
+        {
+          "id": "aesthetics_creative_language",
+          "title": "视觉语言基础",
+          "outcome": "能识别并描述构成画面的基本视觉元素。",
+          "units": [
+            { "id": "aesthetics_creative_language_point_line", "title": "点、线与视线运动" },
+            { "id": "aesthetics_creative_language_shape", "title": "形状、轮廓与识别" },
+            { "id": "aesthetics_creative_language_scale", "title": "尺度、比例与对比" },
+            { "id": "aesthetics_creative_language_weight", "title": "视觉重量与画面重心" }
+          ]
+        },
+        {
+          "id": "aesthetics_creative_composition",
+          "title": "构图与空间",
+          "outcome": "能分析视觉层级、空间关系和观看路径。",
+          "units": [
+            { "id": "aesthetics_creative_composition_hierarchy", "title": "视觉层级与第一落点" },
+            { "id": "aesthetics_creative_composition_balance", "title": "平衡、张力与稳定" },
+            { "id": "aesthetics_creative_composition_rhythm", "title": "重复、变化与节奏" },
+            { "id": "aesthetics_creative_composition_space", "title": "留白、景深与空间组织" }
+          ]
+        },
+        {
+          "id": "aesthetics_creative_color",
+          "title": "色彩与材质",
+          "outcome": "能解释色彩和材质如何塑造信息、情绪与质感。",
+          "units": [
+            { "id": "aesthetics_creative_color_value", "title": "明度与可读性" },
+            { "id": "aesthetics_creative_color_temperature", "title": "冷暖与情绪温度" },
+            { "id": "aesthetics_creative_color_saturation", "title": "饱和度与注意强度" },
+            { "id": "aesthetics_creative_color_material", "title": "材质、光线与触感" }
+          ]
+        },
+        {
+          "id": "aesthetics_creative_typography",
+          "title": "字体与信息设计",
+          "outcome": "能用字体、网格和层级组织复杂信息。",
+          "units": [
+            { "id": "aesthetics_creative_typography_personality", "title": "字体性格与语气" },
+            { "id": "aesthetics_creative_typography_grid", "title": "网格与版面秩序" },
+            { "id": "aesthetics_creative_typography_readability", "title": "可读性与阅读节奏" },
+            { "id": "aesthetics_creative_typography_information", "title": "信息层级与视觉导航" }
+          ]
+        },
+        {
+          "id": "aesthetics_creative_narrative",
+          "title": "叙事与符号",
+          "outcome": "能分析图像如何通过符号、镜头和隐喻生成意义。",
+          "units": [
+            { "id": "aesthetics_creative_narrative_metaphor", "title": "视觉隐喻与概念转译" },
+            { "id": "aesthetics_creative_narrative_semiotics", "title": "符号、指代与文化编码" },
+            { "id": "aesthetics_creative_narrative_frame", "title": "镜头、瞬间与前后文" },
+            { "id": "aesthetics_creative_narrative_emotion", "title": "情绪路径与观看体验" }
+          ]
+        },
+        {
+          "id": "aesthetics_creative_method",
+          "title": "创意方法与文化判断",
+          "outcome": "能有意识地产生、筛选和修正创意方案。",
+          "units": [
+            { "id": "aesthetics_creative_method_diverge", "title": "发散、联想与素材采集" },
+            { "id": "aesthetics_creative_method_combine", "title": "组合、类比与概念变形" },
+            { "id": "aesthetics_creative_method_select", "title": "创意筛选与约束判断" },
+            { "id": "aesthetics_creative_method_culture", "title": "文化语境、借鉴与原创边界" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "consumer_psychology",
+      "goal": "理解消费者从需求产生到购买后评价的心理机制，并将其转化为研究、产品、传播和实验设计。",
+      "principles": [
+        "从真实情境和行为证据出发，不把偏好陈述当作事实",
+        "先解释心理机制，再讨论营销应用",
+        "所有行为设计都要检查边界、长期效果与伦理代价"
+      ],
+      "newsEligible": false,
+      "stages": [
+        {
+          "id": "consumer_psychology_journey",
+          "title": "消费者决策旅程",
+          "outcome": "能把一次消费行为还原为连续的情境、任务、选择和反馈。",
+          "units": [
+            { "id": "consumer_psychology_journey_need", "title": "需求识别与触发情境" },
+            { "id": "consumer_psychology_journey_jobs", "title": "消费者想完成的任务" },
+            { "id": "consumer_psychology_journey_consideration", "title": "考虑集与替代方案" },
+            { "id": "consumer_psychology_journey_post_purchase", "title": "购买后评价、满意与忠诚" }
+          ]
+        },
+        {
+          "id": "consumer_psychology_attention",
+          "title": "注意与感知",
+          "outcome": "能判断信息如何进入注意、被感知并形成第一印象。",
+          "units": [
+            { "id": "consumer_psychology_attention_selective", "title": "选择性注意与目标过滤" },
+            { "id": "consumer_psychology_attention_salience", "title": "显著性与视觉竞争" },
+            { "id": "consumer_psychology_attention_fluency", "title": "知觉流畅性与理解成本" },
+            { "id": "consumer_psychology_attention_novelty", "title": "适应、新奇与注意衰减" }
+          ]
+        },
+        {
+          "id": "consumer_psychology_memory",
+          "title": "学习与记忆",
+          "outcome": "能设计更容易被学习、储存和提取的品牌与产品信息。",
+          "units": [
+            { "id": "consumer_psychology_memory_association", "title": "联结学习与品牌联系" },
+            { "id": "consumer_psychology_memory_encoding", "title": "编码、储存与提取" },
+            { "id": "consumer_psychology_memory_schema", "title": "图式、分类与预期" },
+            { "id": "consumer_psychology_memory_availability", "title": "心智可得性与熟悉效应" }
+          ]
+        },
+        {
+          "id": "consumer_psychology_motivation",
+          "title": "动机、情绪与身份",
+          "outcome": "能解释消费者为什么行动，以及情绪和身份如何改变价值判断。",
+          "units": [
+            { "id": "consumer_psychology_motivation_approach", "title": "趋近目标与回避目标" },
+            { "id": "consumer_psychology_motivation_intrinsic", "title": "内在动机与外在动机" },
+            { "id": "consumer_psychology_motivation_affect", "title": "情绪启发与感受即信息" },
+            { "id": "consumer_psychology_motivation_identity", "title": "身份表达与自我一致性" }
+          ]
+        },
+        {
+          "id": "consumer_psychology_attitude",
+          "title": "态度形成与说服",
+          "outcome": "能解释信念如何形成态度，以及不同涉入程度下什么信息更可能改变判断与行动。",
+          "units": [
+            { "id": "consumer_psychology_attitude_belief", "title": "信念、评价与态度形成" },
+            { "id": "consumer_psychology_attitude_elaboration", "title": "高涉入与低涉入的信息加工" },
+            { "id": "consumer_psychology_attitude_credibility", "title": "来源、论据与信息可信度" },
+            { "id": "consumer_psychology_attitude_behavior", "title": "态度—行为差距与心理抗拒" }
+          ]
+        },
+        {
+          "id": "consumer_psychology_choice",
+          "title": "判断与选择架构",
+          "outcome": "能识别选择环境如何改变比较、风险感受和最终行动。",
+          "units": [
+            { "id": "consumer_psychology_choice_reference", "title": "参照点与损失厌恶" },
+            { "id": "consumer_psychology_choice_framing", "title": "锚定、框架与价格判断" },
+            { "id": "consumer_psychology_choice_default", "title": "默认选项与现状偏好" },
+            { "id": "consumer_psychology_choice_overload", "title": "选择过载与决策摩擦" }
+          ]
+        },
+        {
+          "id": "consumer_psychology_social",
+          "title": "社会影响与文化",
+          "outcome": "能解释他人、群体和文化规范如何塑造消费判断。",
+          "units": [
+            { "id": "consumer_psychology_social_norms", "title": "社会认同与群体规范" },
+            { "id": "consumer_psychology_social_authority", "title": "权威、专业性与信任" },
+            { "id": "consumer_psychology_social_scarcity", "title": "稀缺、互惠与行动压力" },
+            { "id": "consumer_psychology_social_culture", "title": "群体身份与文化语境" }
+          ]
+        },
+        {
+          "id": "consumer_psychology_design",
+          "title": "行为设计、验证与伦理",
+          "outcome": "能把心理假设转化为可检验的行为设计，并控制伦理风险。",
+          "units": [
+            { "id": "consumer_psychology_design_comb", "title": "COM-B 行为模型" },
+            { "id": "consumer_psychology_design_prompt", "title": "提示、能力与动机设计" },
+            { "id": "consumer_psychology_design_experiment", "title": "行为实验与因果检验" },
+            { "id": "consumer_psychology_design_ethics", "title": "暗黑模式、消费者福祉与长期信任" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "brand_product_research",
+      "goal": "从市场和用户问题出发，用研究证据形成品牌定位、产品判断与优先级。",
+      "principles": [
+        "研究必须服务于一个明确决策",
+        "优先观察真实行为，再解释态度和偏好",
+        "洞察要能改变产品、品牌或资源配置"
+      ],
+      "newsEligible": false,
+      "stages": [
+        {
+          "id": "brand_product_research_problem",
+          "title": "市场与问题定义",
+          "outcome": "能划定市场边界，并把模糊需求转成可研究问题。",
+          "units": [
+            { "id": "brand_product_research_problem_market", "title": "市场边界与需求空间" },
+            { "id": "brand_product_research_problem_jobs", "title": "用户任务与进步" },
+            { "id": "brand_product_research_problem_alternatives", "title": "竞争对象与替代方案" },
+            { "id": "brand_product_research_problem_priority", "title": "问题价值与研究优先级" }
+          ]
+        },
+        {
+          "id": "brand_product_research_design",
+          "title": "研究设计",
+          "outcome": "能选择与决策风险相匹配的研究问题、样本和方法。",
+          "units": [
+            { "id": "brand_product_research_design_question", "title": "研究问题与决策问题" },
+            { "id": "brand_product_research_design_hypothesis", "title": "假设、未知与证伪标准" },
+            { "id": "brand_product_research_design_sample", "title": "样本选择与代表边界" },
+            { "id": "brand_product_research_design_triangulation", "title": "多方法证据三角验证" }
+          ]
+        },
+        {
+          "id": "brand_product_research_qualitative",
+          "title": "定性研究",
+          "outcome": "能通过访谈和观察获得具体、可编码的行为证据。",
+          "units": [
+            { "id": "brand_product_research_qualitative_interview", "title": "深度访谈与提问顺序" },
+            { "id": "brand_product_research_qualitative_context", "title": "情境观察与任务还原" },
+            { "id": "brand_product_research_qualitative_probe", "title": "从意见追问到真实行为" },
+            { "id": "brand_product_research_qualitative_coding", "title": "编码、模式与反例" }
+          ]
+        },
+        {
+          "id": "brand_product_research_quantitative",
+          "title": "定量与行为研究",
+          "outcome": "能使用问卷和行为数据检验模式、规模与差异。",
+          "units": [
+            { "id": "brand_product_research_quantitative_survey", "title": "问卷设计与测量误差" },
+            { "id": "brand_product_research_quantitative_behavior", "title": "行为数据与事件设计" },
+            { "id": "brand_product_research_quantitative_segment", "title": "用户细分与异质性" },
+            { "id": "brand_product_research_quantitative_bias", "title": "选择偏差与结果解释" }
+          ]
+        },
+        {
+          "id": "brand_product_research_product",
+          "title": "产品价值与验证",
+          "outcome": "能把洞察转化为价值主张，并通过原型和行为信号验证。",
+          "units": [
+            { "id": "brand_product_research_product_value", "title": "价值主张与关键收益" },
+            { "id": "brand_product_research_product_prototype", "title": "原型层级与学习目标" },
+            { "id": "brand_product_research_product_usability", "title": "可用性测试与任务成功" },
+            { "id": "brand_product_research_product_fit", "title": "产品市场匹配的证据" }
+          ]
+        },
+        {
+          "id": "brand_product_research_brand",
+          "title": "品牌定位与资产",
+          "outcome": "能建立清晰、可信且可被长期积累的品牌选择。",
+          "units": [
+            { "id": "brand_product_research_brand_positioning", "title": "定位对象、场景与承诺" },
+            { "id": "brand_product_research_brand_difference", "title": "差异化与竞争参照" },
+            { "id": "brand_product_research_brand_reason", "title": "可信理由与产品证明" },
+            { "id": "brand_product_research_brand_assets", "title": "品牌记忆资产与一致性" }
+          ]
+        },
+        {
+          "id": "brand_product_research_synthesis",
+          "title": "洞察到决策",
+          "outcome": "能把分散证据综合成机会、优先级和可追踪决策。",
+          "units": [
+            { "id": "brand_product_research_synthesis_insight", "title": "高质量洞察的判断标准" },
+            { "id": "brand_product_research_synthesis_opportunity", "title": "机会地图与需求排序" },
+            { "id": "brand_product_research_synthesis_roadmap", "title": "证据到产品路线图" },
+            { "id": "brand_product_research_synthesis_repository", "title": "研究知识库与持续学习" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "ai",
+      "goal": "理解模型能力与边界，设计可靠、可评价并具有业务价值的 AI 工作流和产品。",
+      "principles": [
+        "先定义任务和成功标准，再选择模型",
+        "将格式可靠性、事实可靠性和业务价值分别验证",
+        "自动化必须保留监控、回退和人的责任"
+      ],
+      "newsEligible": true,
+      "stages": [
+        {
+          "id": "ai_foundations",
+          "title": "模型基础与边界",
+          "outcome": "能用正确心智模型理解生成式 AI 的能力、成本与限制。",
+          "units": [
+            { "id": "ai_foundations_training", "title": "训练、推理与概率生成" },
+            { "id": "ai_foundations_context", "title": "上下文窗口与信息限制" },
+            { "id": "ai_foundations_capability", "title": "模型能力与任务匹配" },
+            { "id": "ai_foundations_limit", "title": "幻觉、偏差与能力边界" }
+          ]
+        },
+        {
+          "id": "ai_context_engineering",
+          "title": "提示与上下文工程",
+          "outcome": "能将复杂工作拆成模型可执行、可校验的输入输出。",
+          "units": [
+            { "id": "ai_context_engineering_decompose", "title": "任务拆解与指令层级" },
+            { "id": "ai_context_engineering_examples", "title": "示例、约束与边界条件" },
+            { "id": "ai_context_engineering_structure", "title": "结构化输出与数据契约" },
+            { "id": "ai_context_engineering_memory", "title": "上下文选择与记忆管理" }
+          ]
+        },
+        {
+          "id": "ai_workflow",
+          "title": "工具与工作流",
+          "outcome": "能把模型、数据和工具连接为可重复执行的工作流。",
+          "units": [
+            { "id": "ai_workflow_retrieval", "title": "检索增强与来源引用" },
+            { "id": "ai_workflow_tools", "title": "工具调用与权限边界" },
+            { "id": "ai_workflow_agents", "title": "代理流程与任务状态" },
+            { "id": "ai_workflow_human", "title": "人机分工与审核节点" }
+          ]
+        },
+        {
+          "id": "ai_evaluation",
+          "title": "可靠性与评估",
+          "outcome": "能建立覆盖质量、风险和失败回退的评估体系。",
+          "units": [
+            { "id": "ai_evaluation_grounding", "title": "事实核验与证据追踪" },
+            { "id": "ai_evaluation_dataset", "title": "评测集与成功标准" },
+            { "id": "ai_evaluation_failure", "title": "失败模式与红队测试" },
+            { "id": "ai_evaluation_monitoring", "title": "线上监控、降级与回退" }
+          ]
+        },
+        {
+          "id": "ai_product",
+          "title": "AI 产品与商业判断",
+          "outcome": "能判断 AI 应用是否真正改善用户任务并形成可持续价值。",
+          "units": [
+            { "id": "ai_product_problem", "title": "用户问题与 AI 适配性" },
+            { "id": "ai_product_experience", "title": "不确定输出的产品体验" },
+            { "id": "ai_product_economics", "title": "成本、延迟与规模经济" },
+            { "id": "ai_product_business", "title": "商业模式与竞争壁垒" }
+          ]
+        },
+        {
+          "id": "ai_governance",
+          "title": "治理与前沿",
+          "outcome": "能在隐私、版权、安全和快速迭代之间建立决策框架。",
+          "units": [
+            { "id": "ai_governance_privacy", "title": "隐私、数据与访问控制" },
+            { "id": "ai_governance_copyright", "title": "版权、来源与内容责任" },
+            { "id": "ai_governance_safety", "title": "安全治理与高风险使用" },
+            { "id": "ai_governance_frontier", "title": "模型更新与前沿趋势辨别" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "data_analysis",
+      "goal": "建立从业务问题、指标和数据到因果判断、预测与行动的完整分析链路。",
+      "principles": [
+        "先明确决策问题，再选择数据和方法",
+        "任何指标都必须写清口径、分母和时间范围",
+        "分析结论要同时表达不确定性与行动条件"
+      ],
+      "newsEligible": false,
+      "stages": [
+        {
+          "id": "data_analysis_question",
+          "title": "问题与指标",
+          "outcome": "能把业务目标转化为可测量的问题和指标体系。",
+          "units": [
+            { "id": "data_analysis_question_business", "title": "业务问题与分析问题" },
+            { "id": "data_analysis_question_metric_tree", "title": "指标树与驱动因素" },
+            { "id": "data_analysis_question_north_star", "title": "北极星指标与护栏指标" },
+            { "id": "data_analysis_question_proxy", "title": "代理指标与目标错位" }
+          ]
+        },
+        {
+          "id": "data_analysis_quality",
+          "title": "数据质量与描述",
+          "outcome": "能检查数据口径和质量，并正确描述分布与差异。",
+          "units": [
+            { "id": "data_analysis_quality_definition", "title": "数据口径与事件定义" },
+            { "id": "data_analysis_quality_missing", "title": "缺失、重复与异常值" },
+            { "id": "data_analysis_quality_distribution", "title": "分布、集中趋势与离散" },
+            { "id": "data_analysis_quality_segment", "title": "分群比较与总体陷阱" }
+          ]
+        },
+        {
+          "id": "data_analysis_statistics",
+          "title": "概率与统计基础",
+          "outcome": "能用抽样和不确定性解释数据结果。",
+          "units": [
+            { "id": "data_analysis_statistics_sampling", "title": "总体、样本与抽样误差" },
+            { "id": "data_analysis_statistics_variance", "title": "随机变异与信号识别" },
+            { "id": "data_analysis_statistics_interval", "title": "置信区间与估计精度" },
+            { "id": "data_analysis_statistics_significance", "title": "统计显著与业务显著" }
+          ]
+        },
+        {
+          "id": "data_analysis_causality",
+          "title": "因果推断与实验",
+          "outcome": "能区分相关与因果，并设计基本的对照实验。",
+          "units": [
+            { "id": "data_analysis_causality_counterfactual", "title": "反事实与因果问题" },
+            { "id": "data_analysis_causality_randomized", "title": "随机实验与对照组" },
+            { "id": "data_analysis_causality_confounding", "title": "混杂因素与选择偏差" },
+            { "id": "data_analysis_causality_quasi", "title": "无法随机时的准实验思路" }
+          ]
+        },
+        {
+          "id": "data_analysis_customer",
+          "title": "用户与营销分析",
+          "outcome": "能分析用户获取、转化、留存和价值。",
+          "units": [
+            { "id": "data_analysis_customer_funnel", "title": "漏斗与转化损失" },
+            { "id": "data_analysis_customer_retention", "title": "留存、流失与复购" },
+            { "id": "data_analysis_customer_cohort", "title": "队列分析与时期差异" },
+            { "id": "data_analysis_customer_ltv", "title": "客户终身价值与获客成本" }
+          ]
+        },
+        {
+          "id": "data_analysis_decision",
+          "title": "预测与决策",
+          "outcome": "能把预测结果转化为包含阈值和情景的决策。",
+          "units": [
+            { "id": "data_analysis_decision_forecast", "title": "预测目标与误差基线" },
+            { "id": "data_analysis_decision_scenario", "title": "情景分析与关键变量" },
+            { "id": "data_analysis_decision_threshold", "title": "行动阈值与成本收益" },
+            { "id": "data_analysis_decision_sensitivity", "title": "敏感性分析与稳健性" }
+          ]
+        },
+        {
+          "id": "data_analysis_communication",
+          "title": "数据表达与治理",
+          "outcome": "能清晰传达结论，并让数据过程可复查、可复现。",
+          "units": [
+            { "id": "data_analysis_communication_chart", "title": "图表选择与视觉误导" },
+            { "id": "data_analysis_communication_story", "title": "从证据到决策叙事" },
+            { "id": "data_analysis_communication_reproducible", "title": "可复现分析与版本记录" },
+            { "id": "data_analysis_communication_ethics", "title": "数据伦理、隐私与公平" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "management_organization",
+      "goal": "理解组织如何分配目标、权力、信息和激励，提高团队的决策与执行质量。",
+      "principles": [
+        "先明确目标和决策权，再增加沟通",
+        "管理机制要同时考虑行为激励和系统约束",
+        "用可观察结果和复盘改进组织，而非依赖人格判断"
+      ],
+      "newsEligible": false,
+      "stages": [
+        {
+          "id": "management_organization_role",
+          "title": "管理角色与目标",
+          "outcome": "能区分管理责任、团队目标和个人任务。",
+          "units": [
+            { "id": "management_organization_role_manager", "title": "管理者的核心职责" },
+            { "id": "management_organization_role_goal", "title": "使命、目标与具体任务" },
+            { "id": "management_organization_role_priority", "title": "优先级与资源取舍" },
+            { "id": "management_organization_role_accountability", "title": "结果责任与过程责任" }
+          ]
+        },
+        {
+          "id": "management_organization_decision",
+          "title": "决策权与协作",
+          "outcome": "能为跨团队事项划分输入、决定、执行和复盘责任。",
+          "units": [
+            { "id": "management_organization_decision_type", "title": "识别不同类型的组织决策" },
+            { "id": "management_organization_decision_rights", "title": "决策权与最终决定者" },
+            { "id": "management_organization_decision_input", "title": "专业输入与参与边界" },
+            { "id": "management_organization_decision_commitment", "title": "异议、承诺与决策记录" }
+          ]
+        },
+        {
+          "id": "management_organization_team",
+          "title": "团队运行",
+          "outcome": "能建立支持坦诚讨论和高效协作的团队机制。",
+          "units": [
+            { "id": "management_organization_team_safety", "title": "心理安全与发言质量" },
+            { "id": "management_organization_team_conflict", "title": "任务冲突与关系冲突" },
+            { "id": "management_organization_team_meeting", "title": "会议、异步与信息同步" },
+            { "id": "management_organization_team_cross_function", "title": "跨部门接口与共同成果" }
+          ]
+        },
+        {
+          "id": "management_organization_motivation",
+          "title": "激励与绩效",
+          "outcome": "能设计减少目标副作用并促进成长的绩效机制。",
+          "units": [
+            { "id": "management_organization_motivation_intrinsic", "title": "内在动机、外在激励与自主性" },
+            { "id": "management_organization_motivation_metric", "title": "绩效指标与行为副作用" },
+            { "id": "management_organization_motivation_feedback", "title": "持续反馈与辅导" },
+            { "id": "management_organization_motivation_calibration", "title": "绩效评价与组织校准" }
+          ]
+        },
+        {
+          "id": "management_organization_design",
+          "title": "组织设计",
+          "outcome": "能判断结构、流程和信息流是否匹配业务需要。",
+          "units": [
+            { "id": "management_organization_design_structure", "title": "职能制、事业部与矩阵" },
+            { "id": "management_organization_design_centralization", "title": "集权、分权与决策速度" },
+            { "id": "management_organization_design_process", "title": "流程、标准化与例外" },
+            { "id": "management_organization_design_information", "title": "信息流、接口与组织摩擦" }
+          ]
+        },
+        {
+          "id": "management_organization_leadership",
+          "title": "领导与变化",
+          "outcome": "能根据团队成熟度和变化阶段调整领导方式。",
+          "units": [
+            { "id": "management_organization_leadership_context", "title": "情境领导与团队成熟度" },
+            { "id": "management_organization_leadership_delegation", "title": "授权、控制与检查点" },
+            { "id": "management_organization_leadership_change", "title": "变革阻力与过渡管理" },
+            { "id": "management_organization_leadership_stakeholder", "title": "利益相关者与影响路径" }
+          ]
+        },
+        {
+          "id": "management_organization_talent",
+          "title": "人才与文化",
+          "outcome": "能将人才选择、成长和文化落实为具体机制。",
+          "units": [
+            { "id": "management_organization_talent_hiring", "title": "岗位定义与结构化招聘" },
+            { "id": "management_organization_talent_development", "title": "能力模型与人才培养" },
+            { "id": "management_organization_talent_succession", "title": "关键岗位与继任计划" },
+            { "id": "management_organization_talent_culture", "title": "文化价值与日常机制" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "finance_macro",
+      "goal": "读懂企业经济实质，理解资本回报、风险和宏观变量如何共同影响商业选择。",
+      "principles": [
+        "始终区分收入、利润和现金",
+        "比较回报时必须使用一致口径和时间周期",
+        "宏观判断最终要落回具体业务传导路径"
+      ],
+      "newsEligible": true,
+      "stages": [
+        {
+          "id": "finance_macro_business",
+          "title": "商业模型与单位经济",
+          "outcome": "能判断企业每完成一笔交易是否创造可持续经济价值。",
+          "units": [
+            { "id": "finance_macro_business_revenue", "title": "收入来源与商业模型" },
+            { "id": "finance_macro_business_margin", "title": "毛利、贡献利润与费用" },
+            { "id": "finance_macro_business_customer", "title": "客户价值与获客成本" },
+            { "id": "finance_macro_business_scale", "title": "规模、边际成本与经营杠杆" }
+          ]
+        },
+        {
+          "id": "finance_macro_statements",
+          "title": "三张财务报表",
+          "outcome": "能读懂利润、资产负债与现金流之间的联系。",
+          "units": [
+            { "id": "finance_macro_statements_income", "title": "利润表与盈利质量" },
+            { "id": "finance_macro_statements_balance", "title": "资产负债表与资本结构" },
+            { "id": "finance_macro_statements_cashflow", "title": "现金流量表与现金来源" },
+            { "id": "finance_macro_statements_link", "title": "三张报表的勾稽关系" }
+          ]
+        },
+        {
+          "id": "finance_macro_cash",
+          "title": "现金与运营效率",
+          "outcome": "能识别增长对库存、应收、应付和现金周期的影响。",
+          "units": [
+            { "id": "finance_macro_cash_working_capital", "title": "营运资本与增长需求" },
+            { "id": "finance_macro_cash_inventory", "title": "库存周转与减值风险" },
+            { "id": "finance_macro_cash_cycle", "title": "现金转换周期" },
+            { "id": "finance_macro_cash_liquidity", "title": "流动性、安全垫与融资压力" }
+          ]
+        },
+        {
+          "id": "finance_macro_valuation",
+          "title": "估值与资本配置",
+          "outcome": "能用现金流、资本成本和机会成本评价投资选择。",
+          "units": [
+            { "id": "finance_macro_valuation_dcf", "title": "现金流折现的基本逻辑" },
+            { "id": "finance_macro_valuation_cost", "title": "资本成本与风险补偿" },
+            { "id": "finance_macro_valuation_return", "title": "投资回报率与经济利润" },
+            { "id": "finance_macro_valuation_allocation", "title": "资本配置与机会成本" }
+          ]
+        },
+        {
+          "id": "finance_macro_investing",
+          "title": "投资与风险",
+          "outcome": "能形成基于概率、组合和安全边际的投资判断。",
+          "units": [
+            { "id": "finance_macro_investing_risk_return", "title": "风险、收益与不确定性" },
+            { "id": "finance_macro_investing_diversification", "title": "相关性与分散化" },
+            { "id": "finance_macro_investing_margin", "title": "安全边际与估值纪律" },
+            { "id": "finance_macro_investing_behavior", "title": "投资中的行为偏差" }
+          ]
+        },
+        {
+          "id": "finance_macro_economy",
+          "title": "宏观经济机制",
+          "outcome": "能解释增长、通胀、利率和汇率如何传导到企业。",
+          "units": [
+            { "id": "finance_macro_economy_growth", "title": "经济增长与需求结构" },
+            { "id": "finance_macro_economy_inflation", "title": "通胀、价格与成本传导" },
+            { "id": "finance_macro_economy_rates", "title": "利率、信用与资产价格" },
+            { "id": "finance_macro_economy_fx", "title": "汇率、贸易与跨境经营" }
+          ]
+        },
+        {
+          "id": "finance_macro_scenario",
+          "title": "情景与战略",
+          "outcome": "能把财务和宏观变量转化为企业行动方案。",
+          "units": [
+            { "id": "finance_macro_scenario_sensitivity", "title": "敏感性分析与关键假设" },
+            { "id": "finance_macro_scenario_stress", "title": "压力测试与生存底线" },
+            { "id": "finance_macro_scenario_cycle", "title": "周期位置与行业差异" },
+            { "id": "finance_macro_scenario_strategy", "title": "情景下的资源配置" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "cognitive_decision",
+      "goal": "提升概率判断、预测、学习和复杂决策的质量，并形成可复盘的思考过程。",
+      "principles": [
+        "把直觉判断转换为可检查的假设和概率",
+        "主动寻找反例、基础率和替代解释",
+        "评价决策质量时区分过程与结果"
+      ],
+      "newsEligible": false,
+      "stages": [
+        {
+          "id": "cognitive_decision_foundations",
+          "title": "认知系统基础",
+          "outcome": "能理解注意、记忆和认知负荷对判断的限制。",
+          "units": [
+            { "id": "cognitive_decision_foundations_attention", "title": "注意资源与选择性加工" },
+            { "id": "cognitive_decision_foundations_memory", "title": "工作记忆与容量限制" },
+            { "id": "cognitive_decision_foundations_dual", "title": "快速直觉与慢速分析" },
+            { "id": "cognitive_decision_foundations_load", "title": "认知负荷与决策环境" }
+          ]
+        },
+        {
+          "id": "cognitive_decision_probability",
+          "title": "概率与基础率",
+          "outcome": "能用基础率和新证据逐步更新判断。",
+          "units": [
+            { "id": "cognitive_decision_probability_conditional", "title": "条件概率与分母" },
+            { "id": "cognitive_decision_probability_base_rate", "title": "基础率与外部视角" },
+            { "id": "cognitive_decision_probability_bayes", "title": "贝叶斯更新的直觉方法" },
+            { "id": "cognitive_decision_probability_sample", "title": "样本大小与选择偏差" }
+          ]
+        },
+        {
+          "id": "cognitive_decision_bias",
+          "title": "偏差与噪声",
+          "outcome": "能识别系统性偏差和随机判断差异，并采取纠偏措施。",
+          "units": [
+            { "id": "cognitive_decision_bias_confirmation", "title": "确认偏差与反证搜索" },
+            { "id": "cognitive_decision_bias_availability", "title": "可得性与鲜明案例" },
+            { "id": "cognitive_decision_bias_overconfidence", "title": "过度自信与未知未知" },
+            { "id": "cognitive_decision_bias_noise", "title": "判断噪声与一致性" }
+          ]
+        },
+        {
+          "id": "cognitive_decision_forecasting",
+          "title": "预测与校准",
+          "outcome": "能做出可评分、可更新的概率预测。",
+          "units": [
+            { "id": "cognitive_decision_forecasting_question", "title": "可验证的预测问题" },
+            { "id": "cognitive_decision_forecasting_range", "title": "区间预测与不确定性" },
+            { "id": "cognitive_decision_forecasting_calibration", "title": "概率校准与评分" },
+            { "id": "cognitive_decision_forecasting_update", "title": "新证据与持续更新" }
+          ]
+        },
+        {
+          "id": "cognitive_decision_process",
+          "title": "决策流程",
+          "outcome": "能用明确标准生成选项、比较取舍并预防失败。",
+          "units": [
+            { "id": "cognitive_decision_process_options", "title": "选项生成与避免假二选一" },
+            { "id": "cognitive_decision_process_criteria", "title": "决策标准与权重" },
+            { "id": "cognitive_decision_process_premortem", "title": "事前验尸与失败路径" },
+            { "id": "cognitive_decision_process_reversibility", "title": "可逆性、试验与承诺" }
+          ]
+        },
+        {
+          "id": "cognitive_decision_learning",
+          "title": "学习与元认知",
+          "outcome": "能使用符合记忆规律的方法学习并检验理解。",
+          "units": [
+            { "id": "cognitive_decision_learning_retrieval", "title": "提取练习与生成效应" },
+            { "id": "cognitive_decision_learning_spacing", "title": "间隔、交错与遗忘" },
+            { "id": "cognitive_decision_learning_feedback", "title": "反馈质量与刻意练习" },
+            { "id": "cognitive_decision_learning_transfer", "title": "知识迁移与情境变化" }
+          ]
+        },
+        {
+          "id": "cognitive_decision_group",
+          "title": "群体决策",
+          "outcome": "能保护独立信息，减少群体讨论中的趋同和权力偏差。",
+          "units": [
+            { "id": "cognitive_decision_group_groupthink", "title": "群体迷思与过早共识" },
+            { "id": "cognitive_decision_group_independence", "title": "独立判断与信息汇总" },
+            { "id": "cognitive_decision_group_redteam", "title": "红队、反方与异议机制" },
+            { "id": "cognitive_decision_group_record", "title": "决策记录与结果复盘" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "communication",
+      "goal": "把复杂信息组织成清晰、可信且能够推动理解与行动的表达。",
+      "principles": [
+        "先明确受众、目的和期望行动",
+        "结论必须由可检查的论证和证据支撑",
+        "表达完成的标准是对方理解并能继续行动"
+      ],
+      "newsEligible": false,
+      "stages": [
+        {
+          "id": "communication_audience",
+          "title": "受众与沟通目标",
+          "outcome": "能根据受众认知和任务定义沟通目标。",
+          "units": [
+            { "id": "communication_audience_model", "title": "受众知识、立场与关切" },
+            { "id": "communication_audience_purpose", "title": "告知、讨论与决策" },
+            { "id": "communication_audience_question", "title": "核心问题与信息边界" },
+            { "id": "communication_audience_action", "title": "期望行动与成功标准" }
+          ]
+        },
+        {
+          "id": "communication_structure",
+          "title": "结构化思考",
+          "outcome": "能把零散信息组织成清楚的结论和论证链。",
+          "units": [
+            { "id": "communication_structure_answer", "title": "结论先行与问题对应" },
+            { "id": "communication_structure_group", "title": "分类、归纳与不重不漏" },
+            { "id": "communication_structure_argument", "title": "主张、理由与证据" },
+            { "id": "communication_structure_hierarchy", "title": "信息层级与阅读路径" }
+          ]
+        },
+        {
+          "id": "communication_writing",
+          "title": "写作与编辑",
+          "outcome": "能写出具体、简洁且逻辑连贯的商业文本。",
+          "units": [
+            { "id": "communication_writing_paragraph", "title": "段落中心与句间逻辑" },
+            { "id": "communication_writing_concrete", "title": "具体语言与抽象概念" },
+            { "id": "communication_writing_edit", "title": "删减、重写与节奏" },
+            { "id": "communication_writing_summary", "title": "标题、摘要与行动项" }
+          ]
+        },
+        {
+          "id": "communication_presentation",
+          "title": "演示与叙事",
+          "outcome": "能将事实组织为适合口头和视觉呈现的故事。",
+          "units": [
+            { "id": "communication_presentation_story", "title": "背景、冲突与解决路径" },
+            { "id": "communication_presentation_slide", "title": "单页结论与幻灯片逻辑" },
+            { "id": "communication_presentation_delivery", "title": "口头节奏、停顿与强调" },
+            { "id": "communication_presentation_visual", "title": "视觉辅助与信息减负" }
+          ]
+        },
+        {
+          "id": "communication_persuasion",
+          "title": "说服与影响",
+          "outcome": "能使用可信度、利益和证据推动对方重新判断。",
+          "units": [
+            { "id": "communication_persuasion_credibility", "title": "可信度与共同基础" },
+            { "id": "communication_persuasion_interest", "title": "利益框架与价值交换" },
+            { "id": "communication_persuasion_evidence", "title": "证据选择与不确定性" },
+            { "id": "communication_persuasion_objection", "title": "异议识别与回应" }
+          ]
+        },
+        {
+          "id": "communication_feedback",
+          "title": "反馈与困难对话",
+          "outcome": "能在分歧和情绪中保持事实清晰并修复合作。",
+          "units": [
+            { "id": "communication_feedback_fact", "title": "区分事实、解释与感受" },
+            { "id": "communication_feedback_behavior", "title": "行为、影响与具体请求" },
+            { "id": "communication_feedback_listening", "title": "倾听、复述与澄清" },
+            { "id": "communication_feedback_conflict", "title": "冲突降温与关系修复" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "personal_growth",
+      "goal": "建立可持续的方向、学习、精力、执行与职业发展系统。",
+      "principles": [
+        "用环境和系统减少对意志力的依赖",
+        "以长期方向约束短期选择",
+        "通过可观察行为和周期复盘持续迭代"
+      ],
+      "newsEligible": false,
+      "stages": [
+        {
+          "id": "personal_growth_direction",
+          "title": "方向与价值",
+          "outcome": "能用价值、角色和机会成本选择长期方向。",
+          "units": [
+            { "id": "personal_growth_direction_values", "title": "价值排序与重要之事" },
+            { "id": "personal_growth_direction_goal", "title": "长期目标与阶段目标" },
+            { "id": "personal_growth_direction_roles", "title": "角色组合与生活边界" },
+            { "id": "personal_growth_direction_opportunity", "title": "机会成本与主动放弃" }
+          ]
+        },
+        {
+          "id": "personal_growth_learning",
+          "title": "学习系统",
+          "outcome": "能设计以理解、记忆和迁移为目标的学习流程。",
+          "units": [
+            { "id": "personal_growth_learning_recall", "title": "主动回忆与自我测试" },
+            { "id": "personal_growth_learning_spacing", "title": "间隔复习与长期记忆" },
+            { "id": "personal_growth_learning_practice", "title": "刻意练习与即时反馈" },
+            { "id": "personal_growth_learning_output", "title": "输出、教学与知识连接" }
+          ]
+        },
+        {
+          "id": "personal_growth_habit",
+          "title": "习惯与环境",
+          "outcome": "能通过线索、摩擦和环境塑造稳定行为。",
+          "units": [
+            { "id": "personal_growth_habit_loop", "title": "行为线索、行动与反馈" },
+            { "id": "personal_growth_habit_friction", "title": "增加好行为、减少坏行为的摩擦" },
+            { "id": "personal_growth_habit_identity", "title": "身份叙事与行为一致性" },
+            { "id": "personal_growth_habit_environment", "title": "物理与社交环境设计" }
+          ]
+        },
+        {
+          "id": "personal_growth_energy",
+          "title": "精力与专注",
+          "outcome": "能围绕生理节律和注意规律安排重要工作。",
+          "units": [
+            { "id": "personal_growth_energy_recovery", "title": "睡眠、休息与恢复" },
+            { "id": "personal_growth_energy_attention", "title": "注意残留与任务切换" },
+            { "id": "personal_growth_energy_deep_work", "title": "深度工作与专注区块" },
+            { "id": "personal_growth_energy_stress", "title": "压力识别与情绪调节" }
+          ]
+        },
+        {
+          "id": "personal_growth_execution",
+          "title": "执行与复盘",
+          "outcome": "能将目标转成行动，并通过反馈改进个人系统。",
+          "units": [
+            { "id": "personal_growth_execution_plan", "title": "年度、季度与每周计划" },
+            { "id": "personal_growth_execution_trigger", "title": "下一步行动与执行触发" },
+            { "id": "personal_growth_execution_review", "title": "日复盘与周复盘" },
+            { "id": "personal_growth_execution_system", "title": "从结果复盘到系统改进" }
+          ]
+        },
+        {
+          "id": "personal_growth_career",
+          "title": "职业与长期主义",
+          "outcome": "能持续积累可迁移能力、作品和高质量关系。",
+          "units": [
+            { "id": "personal_growth_career_capital", "title": "稀缺能力与职业资本" },
+            { "id": "personal_growth_career_portfolio", "title": "作品、成果与可信证明" },
+            { "id": "personal_growth_career_network", "title": "关系网络与互惠贡献" },
+            { "id": "personal_growth_career_resilience", "title": "韧性、复利与长期选择" }
+          ]
+        }
+      ]
+    },
+    {
+      "module": "media_ecommerce",
+      "goal": "理解内容平台、媒介渠道、零售系统和交易机制如何共同塑造电商增长。",
+      "principles": [
+        "从消费者任务和渠道角色理解平台变化",
+        "区分平台指标、渠道利润与整体增量",
+        "行业新闻必须解释其商业模式和传导路径"
+      ],
+      "newsEligible": true,
+      "stages": [
+        {
+          "id": "media_ecommerce_ecosystem",
+          "title": "媒介与电商生态",
+          "outcome": "能解释平台、商家、创作者、广告主和消费者之间的价值分配。",
+          "units": [
+            { "id": "media_ecommerce_ecosystem_roles", "title": "生态角色与多边市场" },
+            { "id": "media_ecommerce_ecosystem_business", "title": "广告、佣金与订阅模式" },
+            { "id": "media_ecommerce_ecosystem_network", "title": "网络效应与平台规模" },
+            { "id": "media_ecommerce_ecosystem_value", "title": "价值创造、获取与渠道权力" }
+          ]
+        },
+        {
+          "id": "media_ecommerce_journey",
+          "title": "消费旅程与渠道",
+          "outcome": "能为发现、考虑、购买和服务分配合适的渠道角色。",
+          "units": [
+            { "id": "media_ecommerce_journey_discovery", "title": "需求发现与内容触达" },
+            { "id": "media_ecommerce_journey_consideration", "title": "搜索、比较与信任建立" },
+            { "id": "media_ecommerce_journey_conversion", "title": "交易转化与购买阻力" },
+            { "id": "media_ecommerce_journey_omnichannel", "title": "多渠道协同与归因边界" }
+          ]
+        },
+        {
+          "id": "media_ecommerce_content",
+          "title": "内容与分发机制",
+          "outcome": "能理解推荐系统、内容供给和创作者激励如何影响流量。",
+          "units": [
+            { "id": "media_ecommerce_content_recommendation", "title": "推荐系统与内容匹配" },
+            { "id": "media_ecommerce_content_supply", "title": "内容供给与质量竞争" },
+            { "id": "media_ecommerce_content_creator", "title": "创作者生态与激励" },
+            { "id": "media_ecommerce_content_attention", "title": "注意力竞争与内容生命周期" }
+          ]
+        },
+        {
+          "id": "media_ecommerce_operations",
+          "title": "电商运营与转化",
+          "outcome": "能从商品、页面、价格和履约诊断转化问题。",
+          "units": [
+            { "id": "media_ecommerce_operations_product", "title": "商品力、组合与差异化" },
+            { "id": "media_ecommerce_operations_page", "title": "详情页信息与信任设计" },
+            { "id": "media_ecommerce_operations_price", "title": "价格、促销与参考体系" },
+            { "id": "media_ecommerce_operations_fulfillment", "title": "库存、履约与售后体验" }
+          ]
+        },
+        {
+          "id": "media_ecommerce_retail_media",
+          "title": "零售媒介与广告",
+          "outcome": "能评估零售媒介的数据优势、测量边界和渠道冲突。",
+          "units": [
+            { "id": "media_ecommerce_retail_media_inventory", "title": "站内广告与零售媒体库存" },
+            { "id": "media_ecommerce_retail_media_closed_loop", "title": "闭环数据与购买信号" },
+            { "id": "media_ecommerce_retail_media_incrementality", "title": "广告归因与增量衡量" },
+            { "id": "media_ecommerce_retail_media_conflict", "title": "品牌、平台与渠道冲突" }
+          ]
+        },
+        {
+          "id": "media_ecommerce_retention",
+          "title": "留存与客户经营",
+          "outcome": "能围绕长期客户价值设计复购、会员和触达体系。",
+          "units": [
+            { "id": "media_ecommerce_retention_crm", "title": "客户数据与 CRM 分层" },
+            { "id": "media_ecommerce_retention_repeat", "title": "复购周期与流失信号" },
+            { "id": "media_ecommerce_retention_membership", "title": "会员权益与行为激励" },
+            { "id": "media_ecommerce_retention_ltv", "title": "客户终身价值与资源配置" }
+          ]
+        },
+        {
+          "id": "media_ecommerce_frontier",
+          "title": "行业前沿与治理",
+          "outcome": "能分析新市场、新渠道和规则变化的机会与风险。",
+          "units": [
+            { "id": "media_ecommerce_frontier_crossborder", "title": "跨境市场与本地化约束" },
+            { "id": "media_ecommerce_frontier_rules", "title": "平台规则与商家依赖" },
+            { "id": "media_ecommerce_frontier_privacy", "title": "隐私、数据与合规变化" },
+            { "id": "media_ecommerce_frontier_channel", "title": "新渠道评估与小规模验证" }
+          ]
+        }
+      ]
+    }
+  ]
+}
