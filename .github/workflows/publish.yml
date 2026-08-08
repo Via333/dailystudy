@@ -132,7 +132,7 @@ jobs:
           test -f dist/assets/og.png
 
       - name: 上传 Pages 发布物
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
