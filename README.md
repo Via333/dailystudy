@@ -1,69 +1,89 @@
 # 每日学习
 
-一个为 GitHub Pages 设计的低维护中文学习网站：每天自动生成一期内容，把当天内容作为日期文件提交回 Git，随后构建首页、历史归档和独立日期页面并发布。
+一个由 GitHub Pages 托管、GitHub Actions 每日更新的结构化中文学习网站。
 
-示例内容完整覆盖原有学习体系，并把以下四项保留为正式核心模块，而不是偶尔穿插的小知识：
+它不是每天随机推送几条知识点，而是维护 **13 条独立课程路径、344 个有顺序的课程单元**。程序先决定每个主题今天应学习的下一课，模型只负责把这节课讲清楚；行业变化单独进入“前沿雷达”，不会挤掉长期课程。
 
+线上网站：<https://via333.github.io/dailystudy/>
+
+## 学习体系
+
+全部主题都有独立目标、学习原则、阶段、单元与进度页：
+
+- 广告与平台前沿
+- 营销案例
+- 审美与创意
+- 消费者心理
 - 品牌 / 产品 / 用户研究
+- AI
+- 数据分析
 - 管理与组织认知
 - 财务 / 投资 / 宏观经济
 - 认知科学与决策能力
+- 沟通与表达
+- 个人成长
+- 媒介与电商行业
 
-同时轮换广告与平台前沿、营销案例、审美与创意、消费者心理、AI、数据分析、沟通表达、个人成长、媒介与电商行业。目标配比为约 **30% 最新变化 + 70% 长期知识**，每天约 **30–45 分钟**。
+消费者心理包含 8 个连续阶段：消费者决策旅程、注意与感知、学习与记忆、动机/情绪/身份、态度形成与说服、判断与选择架构、社会影响与文化、行为设计/验证/伦理。每个阶段 4 课，共 32 课。
 
-## 已实现
+每周安排让 13 个主题各推进一次：
 
-- 首页自动展示上海时区下最新一期有效内容
-- `/archive/` 历史列表，可按标题或主题搜索
-- `/YYYY-MM-DD/` 每一期的独立静态地址
-- 每天 08:07（Asia/Shanghai）自动生成、校验、归档和发布
-- 默认不覆盖已有日期；历史修订可以从 Git 记录追踪
-- 时效性模块必须包含可点击来源，页面会清晰展示
-- 自动生成 RSS、sitemap、404、社交预览图和公开 JSON 数据
+| 周期日 | 深度课程 |
+| --- | --- |
+| 1 | 消费者心理；品牌 / 产品 / 用户研究 |
+| 2 | 广告与平台前沿；数据分析 |
+| 3 | 管理与组织认知；沟通与表达 |
+| 4 | 财务 / 投资 / 宏观经济；认知科学与决策能力 |
+| 5 | 营销案例；审美与创意 |
+| 6 | AI；媒介与电商行业 |
+| 7 | 个人成长与一周综合练习 |
+
+## 网站功能
+
+- 首页展示当天深度课程、知识树位置和全局进度
+- `/curriculum/` 展示 13 条完整学习路径
+- `/curriculum/{module}/` 展示单个主题的全部阶段、单元和已学状态
+- `/archive/` 按日期浏览、搜索往期内容
+- `/YYYY-MM-DD/` 每一期拥有可直接访问的静态地址
+- 每天 08:07（Asia/Shanghai）自动选择下一课程、生成、校验、归档和发布
+- 自动生成 RSS、sitemap、404、社交预览图与公开 JSON 数据
 - 纯静态 HTML/CSS/JavaScript，无数据库、无运行时服务器、无前端依赖
-- 响应式、深色模式、键盘焦点、打印样式与减少动画支持
+- 支持手机、深色模式、键盘操作、无 JavaScript 阅读和打印
 
-## 一次性部署
-
-1. 在 GitHub 新建一个仓库，例如 `daily-learning`，把本项目推送到 `main` 分支。
-2. 打开仓库 **Settings → Pages**，将 **Source** 设为 **GitHub Actions**。
-3. 打开 **Settings → Secrets and variables → Actions → Secrets**，新增 `OPENAI_API_KEY`。
-4. 打开 **Actions → 每日生成并发布 → Run workflow**，先手动运行一次。
-
-Pages 部署完成后，GitHub 会在 workflow 的 `deploy` 任务里显示网址。若暂时不设置密钥，示例内容仍会正常构建并发布，只会跳过当天的新稿生成。
-
-如果当前目录还没有连接远程仓库，可在 GitHub 创建空仓库后执行：
-
-```bash
-git add .
-git commit -m "Build daily learning site"
-git remote add origin https://github.com/YOUR-NAME/daily-learning.git
-git push -u origin main
-```
-
-GitHub 官方的 Pages 自定义 workflow 说明：[Using custom workflows with GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
-
-## 自动更新怎样工作
+## 内容怎样保持连续
 
 ```text
-08:07 定时启动
-  → 联网检索并生成结构化内容
-  → 校验日期、主题、时长、30/70 配比与来源网址
+读取 13 条课程知识树
+  → 根据日期选择当天的 1–2 个主题
+  → 读取往期归档，找到每个主题的下一单元
+  → 锁定阶段、单元、课程序号和学习目标
+  → 生成深度课程与独立前沿雷达
+  → 校验顺序、覆盖、时长与来源
   → 写入 content/daily/YYYY-MM-DD.json
-  → 提交到 main，永久保留归档
-  → 构建全部静态页面
-  → 发布到 GitHub Pages
+  → 构建全部静态页面并发布
 ```
 
-生成器使用 OpenAI Responses API 的 web search 与 Structured Outputs。模型默认是成本相对可控的 `gpt-5.6-luna`；可以在仓库 **Actions Variables** 中新增 `OPENAI_MODEL` 来替换。密钥只通过 GitHub encrypted secret 进入生成任务，不会进入网页、归档或构建产物。
+模型不能自行选择当天知识点。`curriculum` 元数据由程序在生成后再次写入，并由全局校验按日期逐课检查；重复、跳课、漏主题或把新闻当核心课都会使发布失败。
+
+## 一次性部署设置
+
+本仓库已经连接 `Via333/dailystudy`。新环境只需确认：
+
+1. 仓库 **Settings → Pages → Build and deployment → Source** 为 **GitHub Actions**。
+2. 仓库 **Settings → Secrets and variables → Actions → Secrets** 中存在 `OPENAI_API_KEY`。
+3. 在 **Actions → 每日生成并发布 → Run workflow** 手动运行一次。
+
+暂时没有密钥时，已有内容仍会正常构建和发布，但不会生成下一期。
+
+生成器使用 OpenAI Responses API 的 Web Search 与 Structured Outputs；默认模型为 `gpt-5.6-luna`，可通过 Actions variable `OPENAI_MODEL` 修改。密钥只进入 GitHub Actions 的生成任务，不会进入网页或归档。
 
 相关官方文档：[Web search](https://developers.openai.com/api/docs/guides/tools-web-search)、[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)。
 
-> 生成 API 和联网搜索会产生实际费用。建议在 OpenAI 项目中设置月度预算与用量提醒。自动内容仍可能出错；重要判断应回到页面列出的原始来源核验。
+> 生成 API 与联网搜索会产生费用。建议在 OpenAI 项目中设置预算和用量提醒；涉及重要判断时仍应打开页面列出的一手来源复核。
 
 ## 本地使用
 
-需要 Node.js 22 或更高版本，不需要安装额外前端框架。
+需要 Node.js 22 或更高版本，不需要额外前端框架。
 
 ```bash
 npm ci
@@ -71,46 +91,47 @@ npm test
 npm run dev
 ```
 
-本地预览会显示在 `http://127.0.0.1:4173`。
+本地预览地址为 <http://127.0.0.1:4173>。
 
-手动生成当天内容：
+生成当天内容：
 
 ```bash
 export OPENAI_API_KEY="你的密钥"
 npm run generate
 ```
 
-补某一天的内容：
+补生成尚未存在、且晚于当前最新归档的日期：
 
 ```bash
 npm run generate -- --date 2026-08-09
 ```
 
-已有日期默认保持不变。只有在明确修订时使用 `--force`。
+已有日期默认保持不变。只有明确修订时使用 `--force`；为保护课程顺序，不能直接在现有归档之前插入一篇新内容。
 
 ## 项目结构
 
 ```text
-content/daily/               每天一份 JSON，唯一内容源
-config/topics.json           主题目录、核心模块和七日轮换
-scripts/generate-daily.mjs   联网生成并写入日期归档
-scripts/validate-content.mjs 内容质量门槛
-scripts/build-site.mjs       派生全部静态页面与索引
-site/                        页面样式、轻量交互和分享图
-tests/                       发布物完整性测试
-.github/workflows/publish.yml 定时生成与 Pages 发布
-dist/                        本地构建产物，不提交
+config/topics.json            13 个主题与每周课程安排
+config/curriculum.json        13 条知识树、阶段和 344 个单元
+content/daily/                每日深度课程与雷达归档
+scripts/generate-daily.mjs    选择下一课、联网生成并写入归档
+scripts/validate-content.mjs  检查课程完整性与逐日推进顺序
+scripts/build-site.mjs        构建首页、课程地图、日期页与索引
+site/                         样式、轻量交互和分享图
+tests/                        发布物与课程规则测试
+.github/workflows/publish.yml 定时生成与 GitHub Pages 发布
+dist/                         本地派生的静态发布物，不提交
 ```
 
-数据字段说明见 [`content/README.md`](content/README.md)。调整主题与轮换只需编辑 [`config/topics.json`](config/topics.json)。
+每日数据字段见 [`content/README.md`](content/README.md)。课程路径在 [`config/curriculum.json`](config/curriculum.json)，主题安排在 [`config/topics.json`](config/topics.json)。
 
-## 发布与安全说明
+## 发布与安全
 
-- workflow 只在定时或手动运行时获得 `contents: write`，用于提交新日期文件。
-- 构建与部署使用独立任务和最小权限；网页发布物仅上传 `dist/`。
-- Pull Request 中的代码不会在带写权限或 API 密钥的生成任务里执行。
+- 只有定时或手动生成任务获得 `contents: write`，用于提交新日期文件。
+- 构建和部署使用独立任务与最小权限；Pages 只上传 `dist/`。
+- Pull Request 代码不会在带写权限或 API 密钥的生成任务中执行。
+- 时效来源必须命中本次真实搜索记录，否则不写入归档。
 - `GITHUB_TOKEN` 创建的提交不会触发第二个 workflow，因此生成、提交、构建和部署在同一次运行中完成。
-- 如果默认分支启用了禁止 Actions 直接提交的 ruleset，需要允许 GitHub Actions bypass，或改为自动 Pull Request 流程。
 
 ## License
 

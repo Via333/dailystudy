@@ -22,13 +22,65 @@ export function shanghaiDate(now = new Date()) {
   return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
-export function rotationForDate(date, topics) {
-  if (!isDateString(date) || !isDateString(topics.rotationStartDate)) {
-    throw new Error("轮换起始日期与内容日期必须是有效的 YYYY-MM-DD");
+function dayOffset(date, startDate) {
+  if (!isDateString(date) || !isDateString(startDate)) {
+    throw new Error("课程起始日期与内容日期必须是有效的 YYYY-MM-DD");
   }
-  const day = 86_400_000;
-  const offset = Math.floor((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${topics.rotationStartDate}T00:00:00Z`)) / day);
-  return topics.rotation[((offset % topics.rotation.length) + topics.rotation.length) % topics.rotation.length];
+  return Math.floor((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${startDate}T00:00:00Z`)) / 86_400_000);
+}
+
+export function scheduleForDate(date, topics) {
+  const offset = dayOffset(date, topics.curriculumStartDate);
+  const index = ((offset % topics.dailySchedule.length) + topics.dailySchedule.length) % topics.dailySchedule.length;
+  return topics.dailySchedule[index];
+}
+
+// Kept as a small compatibility alias for callers that used the first version.
+export const rotationForDate = scheduleForDate;
+
+export function flattenTrack(track) {
+  const units = [];
+  for (const stage of track?.stages ?? []) {
+    const stageUnits = stage?.units ?? [];
+    for (const unit of stageUnits) {
+      const excluded = stageUnits.filter((item) => item.id !== unit.id).map((item) => `「${item.title}」`);
+      units.push({
+        ...unit,
+        stageId: stage.id,
+        stageTitle: stage.title,
+        stageOutcome: stage.outcome,
+        objective: unit.objective ?? `掌握「${unit.title}」的核心概念、判断方法与适用边界，并能用于一个具体案例。`,
+        scope: unit.scope ?? `本课只展开「${unit.title}」；${excluded.join("、")}仅可作为背景提及，不得展开其框架、方法或练习。`
+      });
+    }
+  }
+  return units.map((unit, index) => ({
+    ...unit,
+    sequence: index + 1,
+    totalUnits: units.length
+  }));
+}
+
+export function curriculumPlanForDate(date, topics, curriculum, entries = []) {
+  const trackMap = new Map(curriculum.tracks.map((track) => [track.module, track]));
+  return scheduleForDate(date, topics).map((module) => {
+    const track = trackMap.get(module);
+    if (!track) throw new Error(`课程目录缺少主题：${module}`);
+    const units = flattenTrack(track);
+    if (!units.length) throw new Error(`课程主题没有单元：${module}`);
+    const previousCount = entries
+      .filter((entry) => entry.date < date)
+      .flatMap((entry) => entry.lessons ?? [])
+      .filter((lesson) => lesson.module === module)
+      .length;
+    const unit = units[previousCount % units.length];
+    return {
+      module,
+      track,
+      unit,
+      cycle: Math.floor(previousCount / units.length) + 1
+    };
+  });
 }
 
 export function parseArguments(argv) {
@@ -52,6 +104,10 @@ export async function readJson(filePath) {
 
 export async function readTopics() {
   return readJson(path.join(ROOT, "config", "topics.json"));
+}
+
+export async function readCurriculum() {
+  return readJson(path.join(ROOT, "config", "curriculum.json"));
 }
 
 export async function readDailyEntries() {
@@ -78,110 +134,194 @@ function isHttpUrl(value) {
   }
 }
 
-export function validateEntry(entry, topics, expectedDate) {
+function validText(value, minimum = 2) {
+  return typeof value === "string" && value.trim().length >= minimum;
+}
+
+function validateSource(source, label, errors) {
+  if (!validText(source?.title) || !validText(source?.publisher) || !isHttpUrl(source?.url)) {
+    errors.push(`${label} 缺少标题、发布方或有效网址`);
+  }
+  if (typeof source?.publishedAt !== "string") errors.push(`${label}.publishedAt 必须是文本`);
+}
+
+export function validateCurriculum(curriculum, topics) {
   const errors = [];
-  const strings = ["title", "subtitle", "theme", "closing"];
-  if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
-    return ["内容必须是一个 JSON 对象"];
-  }
-  if (entry.schemaVersion !== 1) errors.push("schemaVersion 必须为 1");
-  if (!isDateString(entry.date)) errors.push("date 必须是有效的 YYYY-MM-DD");
-  if (expectedDate && entry.date !== expectedDate) {
-    errors.push(`文件日期 ${expectedDate} 与内容日期 ${entry.date} 不一致`);
-  }
-  for (const key of strings) {
-    if (typeof entry[key] !== "string" || entry[key].trim().length < 2) {
-      errors.push(`${key} 必须是非空文本`);
+  if (!curriculum || typeof curriculum !== "object" || Array.isArray(curriculum)) return ["课程目录必须是 JSON 对象"];
+  if (curriculum.schemaVersion !== 1) errors.push("课程目录 schemaVersion 必须为 1");
+  if (!isDateString(curriculum.startDate)) errors.push("课程目录 startDate 必须是有效日期");
+  if (!Array.isArray(curriculum.tracks)) return [...errors, "课程目录 tracks 必须是数组"];
+
+  const topicIds = new Set(topics.modules.map((module) => module.id));
+  const seenTracks = new Set();
+  const seenStages = new Set();
+  const seenUnits = new Set();
+  for (const [trackIndex, track] of curriculum.tracks.entries()) {
+    const label = `tracks[${trackIndex}]`;
+    if (!topicIds.has(track?.module)) errors.push(`${label}.module 未在主题配置中：${track?.module}`);
+    if (seenTracks.has(track?.module)) errors.push(`${label}.module 重复：${track?.module}`);
+    seenTracks.add(track?.module);
+    if (!validText(track?.goal, 12)) errors.push(`${label}.goal 需要清晰的学习目标`);
+    if (!Array.isArray(track?.principles) || track.principles.length < 3 || track.principles.some((item) => !validText(item, 4))) {
+      errors.push(`${label}.principles 至少需要 3 条有效原则`);
     }
+    if (typeof track?.newsEligible !== "boolean") errors.push(`${label}.newsEligible 必须是布尔值`);
+    if (!Array.isArray(track?.stages) || track.stages.length < 5) {
+      errors.push(`${label}.stages 至少需要 5 个阶段`);
+      continue;
+    }
+    let unitCount = 0;
+    for (const [stageIndex, stage] of track.stages.entries()) {
+      const stageLabel = `${label}.stages[${stageIndex}]`;
+      if (!/^[a-z0-9_-]+$/.test(stage?.id ?? "")) errors.push(`${stageLabel}.id 格式无效`);
+      if (seenStages.has(`${track.module}:${stage?.id}`)) errors.push(`${stageLabel}.id 在主题内重复`);
+      seenStages.add(`${track.module}:${stage?.id}`);
+      if (!validText(stage?.title) || !validText(stage?.outcome, 8)) errors.push(`${stageLabel} 缺少标题或学习结果`);
+      if (!Array.isArray(stage?.units) || stage.units.length < 4) {
+        errors.push(`${stageLabel}.units 至少需要 4 个单元`);
+        continue;
+      }
+      for (const [unitIndex, unit] of stage.units.entries()) {
+        const unitLabel = `${stageLabel}.units[${unitIndex}]`;
+        unitCount += 1;
+        if (!/^[a-z0-9_-]+$/.test(unit?.id ?? "")) errors.push(`${unitLabel}.id 格式无效`);
+        if (!String(unit?.id ?? "").startsWith(`${track.module}_`)) errors.push(`${unitLabel}.id 必须以 ${track.module}_ 开头`);
+        if (seenUnits.has(unit?.id)) errors.push(`${unitLabel}.id 全局重复：${unit?.id}`);
+        seenUnits.add(unit?.id);
+        if (!validText(unit?.title, 4)) errors.push(`${unitLabel}.title 必须是有效标题`);
+      }
+    }
+    if (unitCount < 24) errors.push(`${label} 至少需要 24 个课程单元，当前为 ${unitCount}`);
+  }
+  const missingTracks = [...topicIds].filter((id) => !seenTracks.has(id));
+  const extraTracks = [...seenTracks].filter((id) => !topicIds.has(id));
+  if (missingTracks.length) errors.push(`课程目录缺少主题：${missingTracks.join(", ")}`);
+  if (extraTracks.length) errors.push(`课程目录包含未知主题：${extraTracks.join(", ")}`);
+  if (curriculum.tracks.length !== topics.modules.length) errors.push("课程主题数量必须与主题配置完全一致");
+  return errors;
+}
+
+export function validateEntry(entry, topics, expectedDate, curriculum, priorEntries = []) {
+  const errors = [];
+  if (!entry || typeof entry !== "object" || Array.isArray(entry)) return ["内容必须是一个 JSON 对象"];
+  if (entry.schemaVersion !== 2) errors.push("schemaVersion 必须为 2");
+  if (!isDateString(entry.date)) errors.push("date 必须是有效的 YYYY-MM-DD");
+  if (expectedDate && entry.date !== expectedDate) errors.push(`文件日期 ${expectedDate} 与内容日期 ${entry.date} 不一致`);
+  for (const key of ["title", "subtitle", "theme", "closing"]) {
+    if (!validText(entry[key])) errors.push(`${key} 必须是非空文本`);
   }
   if (!Number.isInteger(entry.estimatedMinutes) || entry.estimatedMinutes < 30 || entry.estimatedMinutes > 45) {
     errors.push("estimatedMinutes 必须为 30–45 的整数");
   }
-  if (typeof entry.freshRatio !== "number" || entry.freshRatio < 0.2 || entry.freshRatio > 0.4) {
-    errors.push("freshRatio 必须介于 0.2 和 0.4");
+  if (!Array.isArray(entry.introduction) || entry.introduction.length < 1 || entry.introduction.some((item) => !validText(item, 10))) {
+    errors.push("introduction 至少需要一段有效正文");
   }
-  if (!Array.isArray(entry.introduction) || entry.introduction.length < 1) {
-    errors.push("introduction 至少需要一段");
-  }
-  if (!Array.isArray(entry.sections) || entry.sections.length !== 6) {
-    errors.push("sections 必须包含恰好 6 个模块");
+
+  const knownModules = new Set(topics.modules.map((module) => module.id));
+  let plan = [];
+  if (curriculum && isDateString(entry.date)) {
+    try {
+      plan = curriculumPlanForDate(entry.date, topics, curriculum, priorEntries);
+    } catch (error) {
+      errors.push(error.message);
+    }
   } else {
-    const knownModules = new Set(topics.modules.map((module) => module.id));
+    errors.push("校验每日内容时必须提供课程目录");
+  }
+
+  if (!Array.isArray(entry.lessons) || entry.lessons.length < 1 || entry.lessons.length > 2) {
+    errors.push("lessons 必须包含 1–2 节深度课程");
+  } else {
+    const lessonModules = entry.lessons.map((lesson) => lesson?.module);
+    const expectedModules = plan.map((item) => item.module);
+    if (lessonModules.join("|") !== expectedModules.join("|")) {
+      errors.push(`课程必须按当天学习计划推进：应为 ${expectedModules.join(", ")}，当前为 ${lessonModules.join(", ")}`);
+    }
     const ids = new Set();
-    const includedModules = new Set();
-    let latestCount = 0;
-    entry.sections.forEach((section, index) => {
-      const label = `sections[${index}]`;
-      if (!section || typeof section !== "object") {
+    entry.lessons.forEach((lesson, index) => {
+      const label = `lessons[${index}]`;
+      if (!lesson || typeof lesson !== "object") {
         errors.push(`${label} 必须是对象`);
         return;
       }
-      if (!/^[a-z0-9-]+$/.test(section.id ?? "")) errors.push(`${label}.id 格式无效`);
-      for (const key of ["eyebrow", "title", "summary", "takeaway", "reflection"]) {
-        if (typeof section[key] !== "string" || section[key].trim().length < 2) {
-          errors.push(`${label}.${key} 必须是非空文本`);
+      if (!/^[a-z0-9-]+$/.test(lesson.id ?? "")) errors.push(`${label}.id 格式无效`);
+      if (ids.has(lesson.id)) errors.push(`${label}.id 重复：${lesson.id}`);
+      ids.add(lesson.id);
+      if (!knownModules.has(lesson.module)) errors.push(`${label}.module 未在主题配置中`);
+      const expected = plan[index];
+      const meta = lesson.curriculum;
+      if (!meta || typeof meta !== "object") errors.push(`${label}.curriculum 必须是对象`);
+      else if (expected) {
+        const expectedMeta = {
+          stageId: expected.unit.stageId,
+          stageTitle: expected.unit.stageTitle,
+          unitId: expected.unit.id,
+          unitTitle: expected.unit.title,
+          objective: expected.unit.objective,
+          scope: expected.unit.scope,
+          sequence: expected.unit.sequence,
+          totalUnits: expected.unit.totalUnits,
+          cycle: expected.cycle
+        };
+        for (const [key, value] of Object.entries(expectedMeta)) {
+          if (meta[key] !== value) errors.push(`${label}.curriculum.${key} 必须为 ${value}`);
         }
       }
-      if (ids.has(section.id)) errors.push(`${label}.id 重复：${section.id}`);
-      ids.add(section.id);
-      if (!knownModules.has(section.module)) errors.push(`${label}.module 未在主题配置中：${section.module}`);
-      if (includedModules.has(section.module)) errors.push(`${label}.module 重复：${section.module}`);
-      includedModules.add(section.module);
-      if (!Number.isInteger(section.estimatedMinutes) || section.estimatedMinutes < 3 || section.estimatedMinutes > 10) {
-        errors.push(`${label}.estimatedMinutes 必须为 3–10 的整数`);
+      for (const key of ["eyebrow", "title", "summary", "application", "boundary", "takeaway", "reflection"]) {
+        if (!validText(lesson[key], key === "eyebrow" ? 2 : 8)) errors.push(`${label}.${key} 必须是有效文本`);
       }
-      if (!Array.isArray(section.body) || section.body.length < 2 || section.body.some((item) => typeof item !== "string" || item.trim().length < 10)) {
-        errors.push(`${label}.body 至少需要两段有效正文`);
+      if (!Number.isInteger(lesson.estimatedMinutes) || lesson.estimatedMinutes < 12 || lesson.estimatedMinutes > 18) {
+        errors.push(`${label}.estimatedMinutes 必须为 12–18 的整数`);
       }
-      if (!Array.isArray(section.keyPoints) || section.keyPoints.length < 2 || section.keyPoints.some((item) => typeof item !== "string" || item.trim().length < 4)) {
-        errors.push(`${label}.keyPoints 至少需要两条有效要点`);
+      if (!Array.isArray(lesson.learningObjectives) || lesson.learningObjectives.length < 2 || lesson.learningObjectives.some((item) => !validText(item, 6))) {
+        errors.push(`${label}.learningObjectives 至少需要两项目标`);
       }
-      if (!["latest", "evergreen"].includes(section.freshness)) errors.push(`${label}.freshness 无效`);
-      if (section.freshness === "latest") latestCount += 1;
-      if (!Array.isArray(section.sources)) errors.push(`${label}.sources 必须是数组`);
-      else {
-        if (section.freshness === "latest" && section.sources.length === 0) {
-          errors.push(`${label} 是最新变化，至少需要一个可点击来源`);
-        }
-        section.sources.forEach((source, sourceIndex) => {
-          if (!source?.title || !source?.publisher || !isHttpUrl(source?.url)) {
-            errors.push(`${label}.sources[${sourceIndex}] 缺少标题、发布方或有效网址`);
-          }
-        });
+      if (expected && lesson.learningObjectives?.[0] !== expected.unit.objective) {
+        errors.push(`${label}.learningObjectives[0] 必须与课程目录的固定目标一致`);
       }
+      if (!Array.isArray(lesson.body) || lesson.body.length < 4 || lesson.body.some((item) => !validText(item, 20))) {
+        errors.push(`${label}.body 至少需要四段有效正文`);
+      }
+      if (!Array.isArray(lesson.keyPoints) || lesson.keyPoints.length < 3 || lesson.keyPoints.some((item) => !validText(item, 6))) {
+        errors.push(`${label}.keyPoints 至少需要三条有效要点`);
+      }
+      if (!Array.isArray(lesson.sources)) errors.push(`${label}.sources 必须是数组`);
+      else lesson.sources.forEach((source, sourceIndex) => validateSource(source, `${label}.sources[${sourceIndex}]`, errors));
     });
-    if (latestCount !== 2) {
-      errors.push(`latest 模块必须恰好 2 个，当前为 ${latestCount} 个`);
-    }
-    const ratio = latestCount / entry.sections.length;
-    if (ratio < 0.2 || ratio > 0.4) {
-      errors.push(`最新模块占比为 ${ratio.toFixed(2)}，应保持在 20%–40%`);
-    }
-    if (Math.abs(ratio - entry.freshRatio) > 0.08) {
-      errors.push(`freshRatio ${entry.freshRatio} 与实际最新模块占比 ${ratio.toFixed(2)} 不一致`);
-    }
-    const coreModules = new Set(topics.modules.filter((module) => module.core).map((module) => module.id));
-    const includedCore = entry.sections.filter((section) => coreModules.has(section.module)).length;
-    if (includedCore < 2) errors.push("每天至少需要覆盖两个正式核心模块");
-    if (isDateString(entry.date)) {
-      const expectedModules = rotationForDate(entry.date, topics);
-      const missing = expectedModules.filter((id) => !includedModules.has(id));
-      const unexpected = [...includedModules].filter((id) => !expectedModules.includes(id));
-      if (missing.length || unexpected.length) {
-        errors.push(`模块必须匹配当天轮换；缺少 ${missing.join(", ") || "无"}；多出 ${unexpected.join(", ") || "无"}`);
-      }
-    }
   }
-  if (!entry.practice || typeof entry.practice.title !== "string" || typeof entry.practice.prompt !== "string" || !Array.isArray(entry.practice.steps) || entry.practice.steps.length < 2) {
+
+  if (!Array.isArray(entry.radar) || entry.radar.length !== 1) {
+    errors.push("radar 必须包含恰好 1 条独立前沿更新");
+  } else {
+    entry.radar.forEach((item, index) => {
+      const label = `radar[${index}]`;
+      if (!/^[a-z0-9-]+$/.test(item?.id ?? "")) errors.push(`${label}.id 格式无效`);
+      for (const key of ["title", "summary"]) if (!validText(item?.[key], 8)) errors.push(`${label}.${key} 必须是有效文本`);
+      if (!Number.isInteger(item?.estimatedMinutes) || item.estimatedMinutes < 3 || item.estimatedMinutes > 8) {
+        errors.push(`${label}.estimatedMinutes 必须为 3–8 的整数`);
+      }
+      if (!Array.isArray(item?.body) || item.body.length < 1 || item.body.some((paragraph) => !validText(paragraph, 20))) {
+        errors.push(`${label}.body 至少需要一段有效正文`);
+      }
+      if (!Array.isArray(item?.relatedModules) || item.relatedModules.length < 1 || item.relatedModules.some((id) => !knownModules.has(id))) {
+        errors.push(`${label}.relatedModules 至少需要一个已知主题`);
+      }
+      if (!Array.isArray(item?.sources) || item.sources.length < 1) errors.push(`${label}.sources 至少需要一个可核验来源`);
+      else item.sources.forEach((source, sourceIndex) => validateSource(source, `${label}.sources[${sourceIndex}]`, errors));
+    });
+  }
+
+  if (!entry.practice || !validText(entry.practice.title, 4) || !validText(entry.practice.prompt, 12) || !Array.isArray(entry.practice.steps) || entry.practice.steps.length < 2) {
     errors.push("practice 需要题目、提示和至少两个步骤");
   }
-  if (!Number.isInteger(entry.practice?.estimatedMinutes) || entry.practice.estimatedMinutes < 3 || entry.practice.estimatedMinutes > 10) {
-    errors.push("practice.estimatedMinutes 必须为 3–10 的整数");
+  if (!Number.isInteger(entry.practice?.estimatedMinutes) || entry.practice.estimatedMinutes < 5 || entry.practice.estimatedMinutes > 10) {
+    errors.push("practice.estimatedMinutes 必须为 5–10 的整数");
   }
-  if (Array.isArray(entry.sections) && entry.practice && Number.isInteger(entry.practice.estimatedMinutes)) {
-    const calculatedMinutes = entry.sections.reduce((total, section) => total + (Number.isInteger(section.estimatedMinutes) ? section.estimatedMinutes : 0), 0) + entry.practice.estimatedMinutes;
-    if (Math.abs(calculatedMinutes - entry.estimatedMinutes) > 5) {
-      errors.push(`estimatedMinutes ${entry.estimatedMinutes} 与各模块合计 ${calculatedMinutes} 相差超过 5 分钟`);
+  if (Array.isArray(entry.lessons) && Array.isArray(entry.radar) && Number.isInteger(entry.practice?.estimatedMinutes)) {
+    const calculatedMinutes = [...entry.lessons, ...entry.radar]
+      .reduce((total, item) => total + (Number.isInteger(item?.estimatedMinutes) ? item.estimatedMinutes : 0), entry.practice.estimatedMinutes);
+    if (calculatedMinutes !== entry.estimatedMinutes) {
+      errors.push(`estimatedMinutes ${entry.estimatedMinutes} 必须等于课程、雷达与练习合计 ${calculatedMinutes}`);
     }
   }
   return errors;
@@ -226,7 +366,7 @@ export function collectGroundedSourceUrls(response) {
   return urls;
 }
 
-export function assertValidEntry(entry, topics, expectedDate) {
-  const errors = validateEntry(entry, topics, expectedDate);
+export function assertValidEntry(entry, topics, expectedDate, curriculum, priorEntries = []) {
+  const errors = validateEntry(entry, topics, expectedDate, curriculum, priorEntries);
   if (errors.length) throw new Error(errors.map((error) => `- ${error}`).join("\n"));
 }
