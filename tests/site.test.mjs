@@ -49,19 +49,21 @@ test("首页展示深度课程、课程位置与独立行业雷达", async () =>
   assert.doesNotMatch(html, /30% 最新变化|6 个正文模块|codex-preview|Starter Project/i);
 });
 
-test("默认采用白底高对比学习主题并保留手动深色切换", async () => {
+test("默认采用柔和纸张底与白色卡片，并保留手动深色切换", async () => {
   const [html, css, app] = await Promise.all([
     text("index.html"),
     readFile(new URL("site/styles.css", rootUrl), "utf8"),
     readFile(new URL("site/app.js", rootUrl), "utf8")
   ]);
-  assert.match(html, /<meta name="theme-color" content="#ffffff">/);
-  assert.match(css, /--paper: #ffffff/);
+  assert.match(html, /<meta name="theme-color" content="#f5f6f8">/);
+  assert.match(css, /--paper: #f5f6f8/);
+  assert.match(css, /--card: #ffffff/);
   assert.match(css, /--accent: #1d4ed8/);
-  assert.match(css, /--highlight: #fff7d6/);
+  assert.match(css, /--highlight: #fff7d9/);
   assert.match(css, /\.practice-card[\s\S]*background: var\(--highlight\)/);
   assert.match(app, /daily-learning-theme-v2/);
   assert.match(app, /setTheme\(savedTheme \|\| "light"\)/);
+  assert.match(app, /theme === "dark" \? "#0f172a" : "#f5f6f8"/);
   assert.doesNotMatch(app, /prefers-color-scheme/);
 });
 

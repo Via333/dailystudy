@@ -1,6 +1,7 @@
 (() => {
   const root = document.documentElement;
   const themeButton = document.querySelector(".theme-toggle");
+  const themeColor = document.querySelector('meta[name="theme-color"]');
   const themeKey = "daily-learning-theme-v2";
   let savedTheme = null;
   try {
@@ -11,6 +12,7 @@
 
   function setTheme(theme) {
     root.dataset.theme = theme;
+    themeColor?.setAttribute("content", theme === "dark" ? "#0f172a" : "#f5f6f8");
     if (themeButton) {
       themeButton.setAttribute("aria-label", theme === "dark" ? "切换浅色模式" : "切换深色模式");
       themeButton.title = theme === "dark" ? "切换浅色模式" : "切换深色模式";
