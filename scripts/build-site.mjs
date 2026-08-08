@@ -161,9 +161,10 @@ function curriculumProgress(cutoff = latest?.date) {
     }
 
     lessonHistory.sort((a, b) => a.date.localeCompare(b.date));
-    const nextUnit = units.find((unit) => !learnedUnitIds.has(unit.id)) ?? units[0] ?? null;
     const completedUnits = learnedUnitIds.size;
     const totalUnits = units.length;
+    const nextUnit = units.find((unit) => !learnedUnitIds.has(unit.id))
+      ?? (totalUnits ? units[lessonHistory.length % totalUnits] : null);
     const currentCycle = totalUnits ? Math.floor(lessonHistory.length / totalUnits) + 1 : 1;
     result.set(track.module, {
       module: track.module,
