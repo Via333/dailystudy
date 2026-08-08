@@ -49,6 +49,22 @@ test("首页展示深度课程、课程位置与独立行业雷达", async () =>
   assert.doesNotMatch(html, /30% 最新变化|6 个正文模块|codex-preview|Starter Project/i);
 });
 
+test("默认采用白底高对比学习主题并保留手动深色切换", async () => {
+  const [html, css, app] = await Promise.all([
+    text("index.html"),
+    readFile(new URL("site/styles.css", rootUrl), "utf8"),
+    readFile(new URL("site/app.js", rootUrl), "utf8")
+  ]);
+  assert.match(html, /<meta name="theme-color" content="#ffffff">/);
+  assert.match(css, /--paper: #ffffff/);
+  assert.match(css, /--accent: #1d4ed8/);
+  assert.match(css, /--highlight: #fff7d6/);
+  assert.match(css, /\.practice-card[\s\S]*background: var\(--highlight\)/);
+  assert.match(app, /daily-learning-theme-v2/);
+  assert.match(app, /setTheme\(savedTheme \|\| "light"\)/);
+  assert.doesNotMatch(app, /prefers-color-scheme/);
+});
+
 test("学习地图为全部 13 个主题生成独立知识树页面", async () => {
   const [topics, curriculum, overview] = await Promise.all([
     sourceJson("config/topics.json"),
