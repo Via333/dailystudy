@@ -1,0 +1,152 @@
+name: 每日生成并发布
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 避开整点拥堵；GitHub Actions 的定时任务可能有数分钟延迟。
+    - cron: "7 8 * * *"
+      timezone: "Asia/Shanghai"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "可选：补档日期（YYYY-MM-DD），留空为上海当天"
+        required: false
+        type: string
+      force:
+        description: "覆盖已存在日期（只用于明确修订）"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: 生成并归档当天内容
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.6-luna' }}
+      REQUESTED_DATE: ${{ inputs.date }}
+      FORCE_REGENERATE: ${{ inputs.force }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - name: 读取默认分支
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: 准备 Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装项目
+        run: npm ci
+
+      - name: 生成当天内容
+        shell: bash
+        run: |
+          if [[ -z "$OPENAI_API_KEY" ]]; then
+            echo "::warning::未配置 OPENAI_API_KEY，本次保留现有归档并继续发布。"
+            exit 0
+          fi
+
+          args=()
+          if [[ -n "$REQUESTED_DATE" ]]; then
+            args+=(--date "$REQUESTED_DATE")
+          fi
+          if [[ "$FORCE_REGENERATE" == "true" ]]; then
+            args+=(--force)
+          fi
+          npm run generate -- "${args[@]}"
+
+      - name: 校验归档
+        run: npm run validate
+
+      - name: 保存新一期到 Git 历史
+        shell: bash
+        run: |
+          git add content/daily
+          if git diff --cached --quiet; then
+            echo "没有新的内容需要提交。"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "content: add daily learning issue"
+          git push origin "HEAD:${DEFAULT_BRANCH}"
+
+  build:
+    name: 构建静态网站
+    if: always() && (github.event_name == 'push' || needs.generate.result == 'success')
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: 读取待发布版本
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'push' && github.sha || github.event.repository.default_branch }}
+
+      - name: 准备 Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装项目
+        run: npm ci
+
+      - name: 配置 GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: 校验并构建
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+        run: npm test
+
+      - name: 检查发布物
+        shell: bash
+        run: |
+          test -f dist/index.html
+          test -f dist/archive/index.html
+          test -f dist/404.html
+          test -f dist/content/latest.json
+          test -f dist/assets/og.png
+
+      - name: 上传 Pages 发布物
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    name: 发布到 GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 发布
+        id: deployment
+        uses: actions/deploy-pages@v4

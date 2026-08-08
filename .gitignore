@@ -1,0 +1,20 @@
+# Generated site
+/dist/
+
+# Local runtime files
+/node_modules/
+/.cache/
+.DS_Store
+
+# Secrets and local overrides
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Codex working folders
+/outputs/
+/work/

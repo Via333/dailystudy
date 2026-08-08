@@ -1,0 +1,141 @@
+{
+  "timezone": "Asia/Shanghai",
+  "targetMinutes": {
+    "min": 30,
+    "max": 45
+  },
+  "contentMix": {
+    "fresh": 0.3,
+    "evergreen": 0.7
+  },
+  "rotationStartDate": "2026-08-08",
+  "modules": [
+    {
+      "id": "advertising_frontier",
+      "title": "广告与平台前沿",
+      "description": "广告平台、投放机制、测量方法与行业变化"
+    },
+    {
+      "id": "marketing_case",
+      "title": "营销案例",
+      "description": "拆解品牌如何把策略变成可传播、可衡量的行动"
+    },
+    {
+      "id": "aesthetics_creative",
+      "title": "审美与创意",
+      "description": "视觉判断、创意方法、叙事与文化观察"
+    },
+    {
+      "id": "consumer_psychology",
+      "title": "消费者心理",
+      "description": "动机、注意、记忆、选择与行为设计"
+    },
+    {
+      "id": "brand_product_research",
+      "title": "品牌 / 产品 / 用户研究",
+      "description": "定位、产品判断、用户洞察与研究方法",
+      "core": true
+    },
+    {
+      "id": "ai",
+      "title": "AI",
+      "description": "AI 产品、工作流、模型能力与应用判断"
+    },
+    {
+      "id": "data_analysis",
+      "title": "数据分析",
+      "description": "数据思维、实验设计、指标与测量"
+    },
+    {
+      "id": "management_organization",
+      "title": "管理与组织认知",
+      "description": "决策权、协作、激励、组织设计与领导力",
+      "core": true
+    },
+    {
+      "id": "finance_macro",
+      "title": "财务 / 投资 / 宏观经济",
+      "description": "商业模型、财务报表、资本配置与宏观变量",
+      "core": true
+    },
+    {
+      "id": "cognitive_decision",
+      "title": "认知科学与决策能力",
+      "description": "偏差、概率、判断、学习与高质量决策",
+      "core": true
+    },
+    {
+      "id": "communication",
+      "title": "沟通与表达",
+      "description": "结构化表达、写作、反馈与说服"
+    },
+    {
+      "id": "personal_growth",
+      "title": "个人成长",
+      "description": "精力、习惯、复盘、职业与长期主义"
+    },
+    {
+      "id": "media_ecommerce",
+      "title": "媒介与电商行业",
+      "description": "内容平台、零售媒介、电商生态与渠道变化"
+    }
+  ],
+  "rotation": [
+    [
+      "advertising_frontier",
+      "ai",
+      "brand_product_research",
+      "management_organization",
+      "finance_macro",
+      "cognitive_decision"
+    ],
+    [
+      "media_ecommerce",
+      "consumer_psychology",
+      "ai",
+      "brand_product_research",
+      "communication",
+      "cognitive_decision"
+    ],
+    [
+      "advertising_frontier",
+      "aesthetics_creative",
+      "management_organization",
+      "finance_macro",
+      "communication",
+      "cognitive_decision"
+    ],
+    [
+      "marketing_case",
+      "consumer_psychology",
+      "data_analysis",
+      "brand_product_research",
+      "finance_macro",
+      "media_ecommerce"
+    ],
+    [
+      "advertising_frontier",
+      "aesthetics_creative",
+      "management_organization",
+      "cognitive_decision",
+      "personal_growth",
+      "communication"
+    ],
+    [
+      "marketing_case",
+      "consumer_psychology",
+      "brand_product_research",
+      "finance_macro",
+      "ai",
+      "management_organization"
+    ],
+    [
+      "media_ecommerce",
+      "aesthetics_creative",
+      "cognitive_decision",
+      "personal_growth",
+      "management_organization",
+      "data_analysis"
+    ]
+  ]
+}
