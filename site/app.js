@@ -1,13 +1,13 @@
 (() => {
   const root = document.documentElement;
   const themeButton = document.querySelector(".theme-toggle");
+  const themeKey = "daily-learning-theme-v2";
   let savedTheme = null;
   try {
-    savedTheme = localStorage.getItem("daily-learning-theme");
+    savedTheme = localStorage.getItem(themeKey);
   } catch {
     // Storage can be disabled; all interactions should still work.
   }
-  const preferredDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
   function setTheme(theme) {
     root.dataset.theme = theme;
@@ -17,11 +17,11 @@
     }
   }
 
-  setTheme(savedTheme || (preferredDark ? "dark" : "light"));
+  setTheme(savedTheme || "light");
   themeButton?.addEventListener("click", () => {
     const next = root.dataset.theme === "dark" ? "light" : "dark";
     try {
-      localStorage.setItem("daily-learning-theme", next);
+      localStorage.setItem(themeKey, next);
     } catch {
       // Keep the in-memory theme even when storage is unavailable.
     }

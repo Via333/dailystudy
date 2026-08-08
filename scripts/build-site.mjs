@@ -228,7 +228,7 @@ function pageShell({ title, description, body, depth = 0, page = "article", cano
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#f2eee4">
+    <meta name="theme-color" content="#ffffff">
     <meta name="description" content="${escapeHtml(description)}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="zh_CN">
