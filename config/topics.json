@@ -16,6 +16,49 @@
     "description": "核心课程按知识树顺序推进；时效信息独立进入行业雷达，不替代课程单元。"
   },
   "curriculumStartDate": "2026-08-08",
+  "learningDomains": [
+    {
+      "id": "market_growth",
+      "title": "市场与增长",
+      "description": "理解平台、传播、渠道与增长如何协同。",
+      "modules": [
+        "advertising_frontier",
+        "marketing_case",
+        "media_ecommerce"
+      ]
+    },
+    {
+      "id": "user_brand_creative",
+      "title": "用户、品牌与创意",
+      "description": "从人的行为出发，连接研究、品牌与表达。",
+      "modules": [
+        "consumer_psychology",
+        "brand_product_research",
+        "aesthetics_creative"
+      ]
+    },
+    {
+      "id": "business_organization",
+      "title": "数据、商业与组织",
+      "description": "用数据、财务与管理理解企业怎样运转。",
+      "modules": [
+        "data_analysis",
+        "management_organization",
+        "finance_macro"
+      ]
+    },
+    {
+      "id": "thinking_growth",
+      "title": "技术、认知与成长",
+      "description": "提升工具能力、判断质量、表达与长期成长。",
+      "modules": [
+        "ai",
+        "cognitive_decision",
+        "communication",
+        "personal_growth"
+      ]
+    }
+  ],
   "modules": [
     {
       "id": "advertising_frontier",

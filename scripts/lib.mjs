@@ -138,7 +138,71 @@ function validText(value, minimum = 2) {
   return typeof value === "string" && value.trim().length >= minimum;
 }
 
+function characterCount(value) {
+  return typeof value === "string" ? [...value.trim()].length : 0;
+}
+
+function validateBoundedText(value, label, minimum, maximum, errors) {
+  if (typeof value !== "string") {
+    errors.push(`${label} 必须是文本`);
+    return;
+  }
+  const length = characterCount(value);
+  if (length < minimum || length > maximum) {
+    errors.push(`${label} 必须为 ${minimum}–${maximum} 个字符，当前为 ${length}`);
+  }
+}
+
+function validateAllowedKeys(value, label, allowedKeys, errors) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return;
+  const allowed = new Set(allowedKeys);
+  const unexpected = Object.keys(value).filter((key) => !allowed.has(key));
+  if (unexpected.length) errors.push(`${label} 包含 v3 不允许的字段：${unexpected.join(", ")}`);
+}
+
+function lessonVisibleCharacters(lesson) {
+  const texts = [
+    lesson?.coreQuestion,
+    lesson?.framework?.name,
+    lesson?.framework?.definition,
+    ...(lesson?.framework?.steps ?? []).flatMap((step) => [step?.title, step?.text]),
+    lesson?.framework?.boundary,
+    ...(lesson?.keyPoints ?? []).flatMap((point) => [point?.title, point?.text]),
+    lesson?.caseStudy?.title,
+    lesson?.caseStudy?.context,
+    lesson?.caseStudy?.analysis,
+    lesson?.caseStudy?.lesson,
+    lesson?.exercise?.prompt,
+    ...(lesson?.exercise?.steps ?? []),
+    lesson?.exercise?.deliverable,
+    lesson?.conclusion
+  ];
+  return texts.reduce((total, text) => total + characterCount(text), 0);
+}
+
+function radarVisibleCharacters(item) {
+  return [item?.title, item?.whatChanged, item?.whyItMatters, item?.courseConnection]
+    .reduce((total, text) => total + characterCount(text), 0);
+}
+
+function normalizedForDuplicateCheck(value) {
+  return typeof value === "string"
+    ? value.toLowerCase().replace(/[\s，。；：！？、,.!?:;“”‘’"'（）()《》]/gu, "")
+    : "";
+}
+
+function validateLabeledPoint(point, label, errors) {
+  if (!point || typeof point !== "object" || Array.isArray(point)) {
+    errors.push(`${label} 必须是对象`);
+    return;
+  }
+  validateAllowedKeys(point, label, ["title", "text"], errors);
+  validateBoundedText(point.title, `${label}.title`, 2, 12, errors);
+  validateBoundedText(point.text, `${label}.text`, 16, 50, errors);
+}
+
 function validateSource(source, label, errors) {
+  validateAllowedKeys(source, label, ["title", "url", "publisher", "publishedAt"], errors);
   if (!validText(source?.title) || !validText(source?.publisher) || !isHttpUrl(source?.url)) {
     errors.push(`${label} 缺少标题、发布方或有效网址`);
   }
@@ -204,17 +268,24 @@ export function validateCurriculum(curriculum, topics) {
 export function validateEntry(entry, topics, expectedDate, curriculum, priorEntries = []) {
   const errors = [];
   if (!entry || typeof entry !== "object" || Array.isArray(entry)) return ["内容必须是一个 JSON 对象"];
-  if (entry.schemaVersion !== 2) errors.push("schemaVersion 必须为 2");
+  validateAllowedKeys(entry, "entry", [
+    "schemaVersion", "date", "title", "subtitle", "theme", "estimatedMinutes",
+    "introduction", "lessons", "radar", "practice", "closing"
+  ], errors);
+  if (entry.schemaVersion !== 3) errors.push("schemaVersion 必须为 3");
   if (!isDateString(entry.date)) errors.push("date 必须是有效的 YYYY-MM-DD");
   if (expectedDate && entry.date !== expectedDate) errors.push(`文件日期 ${expectedDate} 与内容日期 ${entry.date} 不一致`);
-  for (const key of ["title", "subtitle", "theme", "closing"]) {
-    if (!validText(entry[key])) errors.push(`${key} 必须是非空文本`);
-  }
+  validateBoundedText(entry.title, "title", 4, 40, errors);
+  validateBoundedText(entry.subtitle, "subtitle", 8, 100, errors);
+  validateBoundedText(entry.theme, "theme", 2, 24, errors);
+  validateBoundedText(entry.closing, "closing", 8, 100, errors);
   if (!Number.isInteger(entry.estimatedMinutes) || entry.estimatedMinutes < 30 || entry.estimatedMinutes > 45) {
     errors.push("estimatedMinutes 必须为 30–45 的整数");
   }
-  if (!Array.isArray(entry.introduction) || entry.introduction.length < 1 || entry.introduction.some((item) => !validText(item, 10))) {
-    errors.push("introduction 至少需要一段有效正文");
+  if (!Array.isArray(entry.introduction) || entry.introduction.length !== 1) {
+    errors.push("introduction 必须包含恰好一段导语");
+  } else {
+    validateBoundedText(entry.introduction[0], "introduction[0]", 20, 160, errors);
   }
 
   const knownModules = new Set(topics.modules.map((module) => module.id));
@@ -229,10 +300,11 @@ export function validateEntry(entry, topics, expectedDate, curriculum, priorEntr
     errors.push("校验每日内容时必须提供课程目录");
   }
 
+  let lessonModules = [];
   if (!Array.isArray(entry.lessons) || entry.lessons.length < 1 || entry.lessons.length > 2) {
     errors.push("lessons 必须包含 1–2 节深度课程");
   } else {
-    const lessonModules = entry.lessons.map((lesson) => lesson?.module);
+    lessonModules = entry.lessons.map((lesson) => lesson?.module);
     const expectedModules = plan.map((item) => item.module);
     if (lessonModules.join("|") !== expectedModules.join("|")) {
       errors.push(`课程必须按当天学习计划推进：应为 ${expectedModules.join(", ")}，当前为 ${lessonModules.join(", ")}`);
@@ -240,18 +312,27 @@ export function validateEntry(entry, topics, expectedDate, curriculum, priorEntr
     const ids = new Set();
     entry.lessons.forEach((lesson, index) => {
       const label = `lessons[${index}]`;
-      if (!lesson || typeof lesson !== "object") {
+      if (!lesson || typeof lesson !== "object" || Array.isArray(lesson)) {
         errors.push(`${label} 必须是对象`);
         return;
       }
+      validateAllowedKeys(lesson, label, [
+        "id", "module", "curriculum", "estimatedMinutes", "coreQuestion", "framework",
+        "keyPoints", "caseStudy", "exercise", "conclusion", "sources"
+      ], errors);
       if (!/^[a-z0-9-]+$/.test(lesson.id ?? "")) errors.push(`${label}.id 格式无效`);
       if (ids.has(lesson.id)) errors.push(`${label}.id 重复：${lesson.id}`);
       ids.add(lesson.id);
       if (!knownModules.has(lesson.module)) errors.push(`${label}.module 未在主题配置中`);
+
       const expected = plan[index];
       const meta = lesson.curriculum;
-      if (!meta || typeof meta !== "object") errors.push(`${label}.curriculum 必须是对象`);
+      if (!meta || typeof meta !== "object" || Array.isArray(meta)) errors.push(`${label}.curriculum 必须是对象`);
       else if (expected) {
+        validateAllowedKeys(meta, `${label}.curriculum`, [
+          "stageId", "stageTitle", "unitId", "unitTitle", "objective", "scope",
+          "sequence", "totalUnits", "cycle"
+        ], errors);
         const expectedMeta = {
           stageId: expected.unit.stageId,
           stageTitle: expected.unit.stageTitle,
@@ -267,24 +348,83 @@ export function validateEntry(entry, topics, expectedDate, curriculum, priorEntr
           if (meta[key] !== value) errors.push(`${label}.curriculum.${key} 必须为 ${value}`);
         }
       }
-      for (const key of ["eyebrow", "title", "summary", "application", "boundary", "takeaway", "reflection"]) {
-        if (!validText(lesson[key], key === "eyebrow" ? 2 : 8)) errors.push(`${label}.${key} 必须是有效文本`);
-      }
+
       if (!Number.isInteger(lesson.estimatedMinutes) || lesson.estimatedMinutes < 12 || lesson.estimatedMinutes > 18) {
         errors.push(`${label}.estimatedMinutes 必须为 12–18 的整数`);
       }
-      if (!Array.isArray(lesson.learningObjectives) || lesson.learningObjectives.length < 2 || lesson.learningObjectives.some((item) => !validText(item, 6))) {
-        errors.push(`${label}.learningObjectives 至少需要两项目标`);
+      validateBoundedText(lesson.coreQuestion, `${label}.coreQuestion`, 12, 48, errors);
+      if (typeof lesson.coreQuestion === "string" && !/[？?]$/u.test(lesson.coreQuestion.trim())) {
+        errors.push(`${label}.coreQuestion 必须以问号结尾`);
       }
-      if (expected && lesson.learningObjectives?.[0] !== expected.unit.objective) {
-        errors.push(`${label}.learningObjectives[0] 必须与课程目录的固定目标一致`);
+
+      const framework = lesson.framework;
+      if (!framework || typeof framework !== "object" || Array.isArray(framework)) {
+        errors.push(`${label}.framework 必须是对象`);
+      } else {
+        validateAllowedKeys(framework, `${label}.framework`, ["name", "definition", "steps", "boundary"], errors);
+        validateBoundedText(framework.name, `${label}.framework.name`, 2, 18, errors);
+        validateBoundedText(framework.definition, `${label}.framework.definition`, 20, 70, errors);
+        validateBoundedText(framework.boundary, `${label}.framework.boundary`, 16, 56, errors);
+        if (!Array.isArray(framework.steps) || framework.steps.length < 2 || framework.steps.length > 3) {
+          errors.push(`${label}.framework.steps 必须包含 2–3 步`);
+        } else {
+          framework.steps.forEach((step, stepIndex) => validateLabeledPoint(step, `${label}.framework.steps[${stepIndex}]`, errors));
+        }
       }
-      if (!Array.isArray(lesson.body) || lesson.body.length < 4 || lesson.body.some((item) => !validText(item, 20))) {
-        errors.push(`${label}.body 至少需要四段有效正文`);
+
+      if (!Array.isArray(lesson.keyPoints) || lesson.keyPoints.length !== 3) {
+        errors.push(`${label}.keyPoints 必须包含恰好 3 个重点`);
+      } else {
+        lesson.keyPoints.forEach((point, pointIndex) => validateLabeledPoint(point, `${label}.keyPoints[${pointIndex}]`, errors));
+        const pointTitles = lesson.keyPoints.map((point) => normalizedForDuplicateCheck(point?.title)).filter(Boolean);
+        if (new Set(pointTitles).size !== pointTitles.length) errors.push(`${label}.keyPoints 的标题不能重复`);
       }
-      if (!Array.isArray(lesson.keyPoints) || lesson.keyPoints.length < 3 || lesson.keyPoints.some((item) => !validText(item, 6))) {
-        errors.push(`${label}.keyPoints 至少需要三条有效要点`);
+
+      const caseStudy = lesson.caseStudy;
+      if (!caseStudy || typeof caseStudy !== "object" || Array.isArray(caseStudy)) {
+        errors.push(`${label}.caseStudy 必须是对象`);
+      } else {
+        validateAllowedKeys(caseStudy, `${label}.caseStudy`, ["title", "context", "analysis", "lesson"], errors);
+        validateBoundedText(caseStudy.title, `${label}.caseStudy.title`, 4, 28, errors);
+        validateBoundedText(caseStudy.context, `${label}.caseStudy.context`, 20, 70, errors);
+        validateBoundedText(caseStudy.analysis, `${label}.caseStudy.analysis`, 30, 100, errors);
+        validateBoundedText(caseStudy.lesson, `${label}.caseStudy.lesson`, 12, 48, errors);
       }
+
+      const exercise = lesson.exercise;
+      if (!exercise || typeof exercise !== "object" || Array.isArray(exercise)) {
+        errors.push(`${label}.exercise 必须是对象`);
+      } else {
+        validateAllowedKeys(exercise, `${label}.exercise`, ["prompt", "steps", "deliverable"], errors);
+        validateBoundedText(exercise.prompt, `${label}.exercise.prompt`, 16, 60, errors);
+        validateBoundedText(exercise.deliverable, `${label}.exercise.deliverable`, 8, 36, errors);
+        if (!Array.isArray(exercise.steps) || exercise.steps.length < 2 || exercise.steps.length > 3) {
+          errors.push(`${label}.exercise.steps 必须包含 2–3 步`);
+        } else {
+          exercise.steps.forEach((step, stepIndex) => validateBoundedText(step, `${label}.exercise.steps[${stepIndex}]`, 8, 40, errors));
+        }
+      }
+
+      validateBoundedText(lesson.conclusion, `${label}.conclusion`, 10, 48, errors);
+      if (typeof lesson.conclusion === "string" && (lesson.conclusion.match(/[。！？!?]/gu) ?? []).length > 1) {
+        errors.push(`${label}.conclusion 只能包含一句话`);
+      }
+
+      const repeatedCandidates = [
+        framework?.definition,
+        ...(lesson.keyPoints ?? []).map((point) => point?.text),
+        caseStudy?.lesson,
+        lesson.conclusion
+      ].map(normalizedForDuplicateCheck).filter((text) => text.length >= 8);
+      if (new Set(repeatedCandidates).size !== repeatedCandidates.length) {
+        errors.push(`${label} 的框架、重点、案例结论与一句话结论不能逐字重复`);
+      }
+
+      const visibleCharacters = lessonVisibleCharacters(lesson);
+      if (visibleCharacters < 350 || visibleCharacters > 750) {
+        errors.push(`${label} 的可见文字必须为 350–750 个字符，当前为 ${visibleCharacters}`);
+      }
+
       if (!Array.isArray(lesson.sources)) errors.push(`${label}.sources 必须是数组`);
       else lesson.sources.forEach((source, sourceIndex) => validateSource(source, `${label}.sources[${sourceIndex}]`, errors));
     });
@@ -295,28 +435,46 @@ export function validateEntry(entry, topics, expectedDate, curriculum, priorEntr
   } else {
     entry.radar.forEach((item, index) => {
       const label = `radar[${index}]`;
+      validateAllowedKeys(item, label, [
+        "id", "title", "estimatedMinutes", "whatChanged", "whyItMatters",
+        "courseConnection", "relatedModules", "sources"
+      ], errors);
       if (!/^[a-z0-9-]+$/.test(item?.id ?? "")) errors.push(`${label}.id 格式无效`);
-      for (const key of ["title", "summary"]) if (!validText(item?.[key], 8)) errors.push(`${label}.${key} 必须是有效文本`);
-      if (!Number.isInteger(item?.estimatedMinutes) || item.estimatedMinutes < 3 || item.estimatedMinutes > 8) {
-        errors.push(`${label}.estimatedMinutes 必须为 3–8 的整数`);
+      validateBoundedText(item?.title, `${label}.title`, 8, 48, errors);
+      validateBoundedText(item?.whatChanged, `${label}.whatChanged`, 30, 140, errors);
+      validateBoundedText(item?.whyItMatters, `${label}.whyItMatters`, 20, 80, errors);
+      validateBoundedText(item?.courseConnection, `${label}.courseConnection`, 20, 70, errors);
+      if (!Number.isInteger(item?.estimatedMinutes) || item.estimatedMinutes < 3 || item.estimatedMinutes > 5) {
+        errors.push(`${label}.estimatedMinutes 必须为 3–5 的整数`);
       }
-      if (!Array.isArray(item?.body) || item.body.length < 1 || item.body.some((paragraph) => !validText(paragraph, 20))) {
-        errors.push(`${label}.body 至少需要一段有效正文`);
+      if (!Array.isArray(item?.relatedModules) || item.relatedModules.length < 1 || item.relatedModules.length > 4 || item.relatedModules.some((id) => !knownModules.has(id))) {
+        errors.push(`${label}.relatedModules 必须包含 1–4 个已知主题`);
+      } else if (!item.relatedModules.some((id) => lessonModules.includes(id))) {
+        errors.push(`${label}.relatedModules 至少需要关联今天的一门课程`);
       }
-      if (!Array.isArray(item?.relatedModules) || item.relatedModules.length < 1 || item.relatedModules.some((id) => !knownModules.has(id))) {
-        errors.push(`${label}.relatedModules 至少需要一个已知主题`);
-      }
+      const radarCharacters = radarVisibleCharacters(item);
+      if (radarCharacters > 280) errors.push(`${label} 的可见文字不能超过 280 个字符，当前为 ${radarCharacters}`);
       if (!Array.isArray(item?.sources) || item.sources.length < 1) errors.push(`${label}.sources 至少需要一个可核验来源`);
       else item.sources.forEach((source, sourceIndex) => validateSource(source, `${label}.sources[${sourceIndex}]`, errors));
     });
   }
 
-  if (!entry.practice || !validText(entry.practice.title, 4) || !validText(entry.practice.prompt, 12) || !Array.isArray(entry.practice.steps) || entry.practice.steps.length < 2) {
-    errors.push("practice 需要题目、提示和至少两个步骤");
+  if (!entry.practice || typeof entry.practice !== "object" || Array.isArray(entry.practice)) {
+    errors.push("practice 必须是对象");
+  } else {
+    validateAllowedKeys(entry.practice, "practice", ["title", "prompt", "steps", "estimatedMinutes"], errors);
+    validateBoundedText(entry.practice.title, "practice.title", 4, 40, errors);
+    validateBoundedText(entry.practice.prompt, "practice.prompt", 12, 140, errors);
+    if (!Array.isArray(entry.practice.steps) || entry.practice.steps.length < 2 || entry.practice.steps.length > 3) {
+      errors.push("practice.steps 必须包含 2–3 个步骤");
+    } else {
+      entry.practice.steps.forEach((step, index) => validateBoundedText(step, `practice.steps[${index}]`, 8, 80, errors));
+    }
+    if (!Number.isInteger(entry.practice.estimatedMinutes) || entry.practice.estimatedMinutes < 5 || entry.practice.estimatedMinutes > 10) {
+      errors.push("practice.estimatedMinutes 必须为 5–10 的整数");
+    }
   }
-  if (!Number.isInteger(entry.practice?.estimatedMinutes) || entry.practice.estimatedMinutes < 5 || entry.practice.estimatedMinutes > 10) {
-    errors.push("practice.estimatedMinutes 必须为 5–10 的整数");
-  }
+
   if (Array.isArray(entry.lessons) && Array.isArray(entry.radar) && Number.isInteger(entry.practice?.estimatedMinutes)) {
     const calculatedMinutes = [...entry.lessons, ...entry.radar]
       .reduce((total, item) => total + (Number.isInteger(item?.estimatedMinutes) ? item.estimatedMinutes : 0), entry.practice.estimatedMinutes);

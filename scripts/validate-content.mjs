@@ -19,6 +19,27 @@ const scheduledModules = [];
 const configFailures = [];
 if (moduleIds.size !== topics.modules.length) configFailures.push("主题 ID 不能重复");
 if (topics.curriculumStartDate !== curriculum.startDate) configFailures.push("主题安排与课程目录的起始日期必须一致");
+if (!Array.isArray(topics.learningDomains) || topics.learningDomains.length < 2) {
+  configFailures.push("learningDomains 必须包含至少 2 个能力域");
+} else {
+  const domainIds = new Set();
+  const groupedModules = [];
+  for (const [index, domain] of topics.learningDomains.entries()) {
+    const label = `learningDomains[${index}]`;
+    if (!domain?.id || !domain?.title || !domain?.description) configFailures.push(`${label} 缺少 id、title 或 description`);
+    if (domainIds.has(domain?.id)) configFailures.push(`${label}.id 重复：${domain?.id}`);
+    domainIds.add(domain?.id);
+    if (!Array.isArray(domain?.modules) || domain.modules.length < 1) configFailures.push(`${label}.modules 至少需要一个主题`);
+    else groupedModules.push(...domain.modules);
+  }
+  const groupedCounts = new Map([...moduleIds].map((id) => [id, groupedModules.filter((item) => item === id).length]));
+  const missingFromDomains = [...groupedCounts].filter(([, count]) => count === 0).map(([id]) => id);
+  const repeatedInDomains = [...groupedCounts].filter(([, count]) => count > 1).map(([id]) => id);
+  const unknownInDomains = groupedModules.filter((id) => !moduleIds.has(id));
+  if (missingFromDomains.length) configFailures.push(`以下主题没有进入能力域：${missingFromDomains.join(", ")}`);
+  if (repeatedInDomains.length) configFailures.push(`以下主题在能力域中重复：${repeatedInDomains.join(", ")}`);
+  if (unknownInDomains.length) configFailures.push(`能力域包含未知主题：${[...new Set(unknownInDomains)].join(", ")}`);
+}
 if (!Array.isArray(topics.dailySchedule) || topics.dailySchedule.length !== 7) {
   configFailures.push("dailySchedule 必须包含 7 天");
 } else {
