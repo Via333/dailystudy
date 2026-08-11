@@ -47,7 +47,9 @@
 - `/curriculum/{module}/` 展示单个主题的全部阶段、单元和已学状态；当前阶段默认展开
 - `/archive/` 按日期浏览、搜索往期内容
 - `/YYYY-MM-DD/` 每一期拥有可直接访问的静态地址
-- 每天 08:07（Asia/Shanghai）自动选择下一课程、生成、校验、归档和发布
+- 每天 08:00（Asia/Shanghai）自动选择下一课程、生成、校验、归档和发布
+
+GitHub Actions 会在北京时间 08:00 触发任务；内容生成与页面发布需要几分钟，平台高峰时也可能稍有延迟。
 - 自动生成 RSS、sitemap、404、社交预览图与公开 JSON 数据
 - 纯静态 HTML/CSS/JavaScript，无数据库、无运行时服务器、无前端依赖
 - 支持手机、深色模式、键盘操作、无 JavaScript 阅读和打印
@@ -75,7 +77,7 @@
 2. 仓库 **Settings → Secrets and variables → Actions → Secrets** 中存在 `OPENAI_API_KEY`。
 3. 在 **Actions → 每日生成并发布 → Run workflow** 手动运行一次。
 
-暂时没有密钥时，已有内容仍会正常构建和发布，但不会生成下一期。
+没有密钥时，定时生成任务会明确失败，避免“显示成功但仍在发布旧内容”。添加密钥后，在 **Actions → 每日生成并发布 → Run workflow** 手动运行一次即可立即验证。
 
 生成器使用 OpenAI Responses API 的 Web Search 与 Structured Outputs；默认模型为 `gpt-5.6-luna`，可通过 Actions variable `OPENAI_MODEL` 修改。密钥只进入 GitHub Actions 的生成任务，不会进入网页或归档。
 

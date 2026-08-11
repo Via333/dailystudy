@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
   schedule:
-    # 避开整点拥堵；GitHub Actions 的定时任务可能有数分钟延迟。
-    - cron: "7 8 * * *"
+    # 北京时间每天 08:00 触发；GitHub Actions 高峰时可能稍有延迟。
+    - cron: "0 8 * * *"
       timezone: "Asia/Shanghai"
   workflow_dispatch:
     inputs:
@@ -59,8 +59,8 @@ jobs:
         shell: bash
         run: |
           if [[ -z "$OPENAI_API_KEY" ]]; then
-            echo "::warning::未配置 OPENAI_API_KEY，本次保留现有归档并继续发布。"
-            exit 0
+            echo "::error::未配置 OPENAI_API_KEY，无法生成当天内容。请在仓库 Actions secrets 中添加后重试。"
+            exit 1
           fi
 
           args=()

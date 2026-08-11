@@ -111,6 +111,18 @@ test("默认采用柔和纸张底与白色卡片，并保留手动深色切换",
   assert.doesNotMatch(app, /prefers-color-scheme/);
 });
 
+test("每日更新固定在北京时间 08:00", async () => {
+  const [workflow, readme] = await Promise.all([
+    readFile(new URL(".github/workflows/publish.yml", rootUrl), "utf8"),
+    readFile(new URL("README.md", rootUrl), "utf8")
+  ]);
+  assert.match(workflow, /cron:\s*["']0 8 \* \* \*["'][\s\S]*timezone:\s*["']Asia\/Shanghai["']/);
+  assert.match(workflow, /未配置 OPENAI_API_KEY[^\n]*\n\s*exit 1/);
+  assert.match(readme, /每天 08:00（Asia\/Shanghai）/);
+  assert.doesNotMatch(workflow, /cron:\s*["']7 8 \* \* \*["']/);
+  assert.doesNotMatch(workflow, /未配置 OPENAI_API_KEY[^\n]*\n\s*exit 0/);
+});
+
 test("学习地图为全部 13 个主题生成独立知识树页面", async () => {
   const [topics, curriculum, overview] = await Promise.all([
     sourceJson("config/topics.json"),
