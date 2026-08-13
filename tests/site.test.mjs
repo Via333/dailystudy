@@ -6,10 +6,13 @@ import { fileURLToPath } from "node:url";
 import {
   collectGroundedSourceUrls,
   curriculumPlanForDate,
+  flattenTrack,
+  lessonVisibleCharacters,
   normalizeSourceUrl,
   scheduleForDate,
   validateCurriculum,
-  validateEntry
+  validateEntry,
+  validateStandaloneLesson
 } from "../scripts/lib.mjs";
 
 const rootUrl = new URL("../", import.meta.url);
@@ -59,16 +62,25 @@ async function filesUnder(directory) {
   return result;
 }
 
-test("首页先展示完整 13 条主线，再进入结构化今日课程", async () => {
-  const [html, topics] = await Promise.all([text("index.html"), sourceJson("config/topics.json")]);
+test("首页先展示 13 门可直接阅读的独立课程，再进入今日更新", async () => {
+  const [html, topics, starters] = await Promise.all([
+    text("index.html"),
+    sourceJson("config/topics.json"),
+    sourceJson("content/starter-lessons.json")
+  ]);
   assert.match(html, /<html lang="zh-CN">/);
-  assert.match(html, /每日学习｜需求何时启动，市场边界如何划定/);
+  assert.match(html, /每日学习｜今日课程｜消费者心理 · 品牌与用户研究/);
   assert.match(html, /<b>13<\/b> 条完整主线/);
   assert.match(html, /<b>2<\/b> 条今日推进/);
-  assert.match(html, /全部 13 条主线，一个都没有少/);
-  assert.match(html, /13<\/b> 条主线.*344<\/b> 个单元.*7<\/b> 天一轮/s);
+  assert.match(html, /13 个独立主题，现在都能开始学/);
+  assert.match(html, /<b>13<\/b> 条独立主线.*<b>13<\/b> 节起步课.*<b>344<\/b> 个规划单元/s);
+  assert.equal((html.match(/class="system-topic(?: is-today)?"/g) ?? []).length, 13);
   for (const module of topics.modules) {
     assert.match(html, new RegExp(module.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    const starter = starters.lessons.find((lesson) => lesson.module === module.id);
+    assert.ok(starter, `${module.id} 缺少起步课`);
+    assert.match(html, new RegExp(starter.coreQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(html, new RegExp(starter.conclusion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
   assert.equal((html.match(/class="system-topic is-today"/g) ?? []).length, 2);
   assert.match(html, /今天深入 2 条主线/);
@@ -89,8 +101,8 @@ test("首页先展示完整 13 条主线，再进入结构化今日课程", asyn
     assert.ok(firstLesson.indexOf(lessonBlocks[index - 1]) < firstLesson.indexOf(lessonBlocks[index]), `课程区块顺序错误：${lessonBlocks[index - 1]} → ${lessonBlocks[index]}`);
   }
   assert.match(html, /<details class="radar-section"/);
-  assert.ok(html.indexOf('id="practice"') < html.indexOf('class="radar-section"'));
-  assert.doesNotMatch(html, /学完你会|值得带走|想一想|30% 最新变化|codex-preview|Starter Project/i);
+  assert.match(html, /独立观察，不与课程强行关联/);
+  assert.doesNotMatch(html, /id="practice"|practice-card|学完你会|值得带走|想一想|30% 最新变化|codex-preview|Starter Project/i);
 });
 
 test("默认采用柔和纸张底与白色卡片，并保留手动深色切换", async () => {
@@ -104,7 +116,7 @@ test("默认采用柔和纸张底与白色卡片，并保留手动深色切换",
   assert.match(css, /--card: #ffffff/);
   assert.match(css, /--accent: #1d4ed8/);
   assert.match(css, /--highlight: #fff7d9/);
-  assert.match(css, /\.practice-card[\s\S]*background: var\(--highlight\)/);
+  assert.match(css, /\.lesson-exercise[\s\S]*background: var\(--sage-soft\)/);
   assert.match(app, /daily-learning-theme-v2/);
   assert.match(app, /setTheme\(savedTheme \|\| "light"\)/);
   assert.match(app, /theme === "dark" \? "#0f172a" : "#f5f6f8"/);
@@ -123,13 +135,15 @@ test("每日更新固定在北京时间 08:00", async () => {
   assert.doesNotMatch(workflow, /未配置 OPENAI_API_KEY[^\n]*\n\s*exit 0/);
 });
 
-test("学习地图为全部 13 个主题生成独立知识树页面", async () => {
-  const [topics, curriculum, overview] = await Promise.all([
+test("学习地图为全部 13 个主题生成独立知识树与完整起步课", async () => {
+  const [topics, curriculum, starters, overview] = await Promise.all([
     sourceJson("config/topics.json"),
     sourceJson("config/curriculum.json"),
+    sourceJson("content/starter-lessons.json"),
     text("curriculum/index.html")
   ]);
   assert.equal(curriculum.tracks.length, 13);
+  assert.equal(starters.lessons.length, 13);
   assert.match(overview, /4 DOMAINS · 13 TRACKS/);
   assert.match(overview, /344/);
   for (const domain of topics.learningDomains) assert.match(overview, new RegExp(domain.title));
@@ -137,6 +151,13 @@ test("学习地图为全部 13 个主题生成独立知识树页面", async () =
     assert.match(overview, new RegExp(module.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     const page = await text(`curriculum/${module.id}/index.html`);
     const track = curriculum.tracks.find((item) => item.module === module.id);
+    const starter = starters.lessons.find((item) => item.module === module.id);
+    assert.match(page, /START HERE · 完整起步课/);
+    assert.match(page, new RegExp(starter.coreQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(starter.framework.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(starter.caseStudy.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(starter.exercise.prompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(starter.conclusion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     assert.match(page, /完整分阶段知识树/);
     assert.match(page, /<details class="stage-block/);
     assert.match(page, /下一课/);
@@ -150,7 +171,7 @@ test("学习地图为全部 13 个主题生成独立知识树页面", async () =
   }
 });
 
-test("消费者心理完整知识树与首节精简课程结构均可访问", async () => {
+test("消费者心理完整知识树、独立起步课与 schema v4 日期课均可访问", async () => {
   const [curriculum, page, issue, entry] = await Promise.all([
     sourceJson("config/curriculum.json"),
     text("curriculum/consumer_psychology/index.html"),
@@ -166,18 +187,24 @@ test("消费者心理完整知识树与首节精简课程结构均可访问", as
       assert.match(page, new RegExp(unit.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     }
   }
-  assert.match(page, /已学 1 \/ 32 个单元/);
+  assert.match(page, /日期归档已发布 1 \/ 32 个单元/);
+  assert.match(page, /START HERE · 完整起步课/);
   assert.match(page, /<details class="stage-block" open>/);
   assert.match(issue, /为什么长期存在的需要，只有在特定情境下才会启动行动？/);
   assert.match(issue, /情境—差距—行动链/);
   assert.match(issue, /3 KEY POINTS · 三个重点/);
   assert.match(issue, /适用边界/);
-  assert.equal(entry.schemaVersion, 3);
+  assert.equal(entry.schemaVersion, 4);
+  for (const removed of ["theme", "practice", "closing"]) assert.equal(removed in entry, false);
   assert.equal(entry.lessons[0].keyPoints.length, 3);
   assert.ok(entry.lessons[0].framework.steps.length >= 2);
   for (const removed of ["body", "learningObjectives", "takeaway", "reflection", "application"]) {
     assert.equal(removed in entry.lessons[0], false);
   }
+  assert.equal(entry.radar[0].module, "advertising_frontier");
+  assert.ok(entry.radar[0].watchNext);
+  assert.equal("courseConnection" in entry.radar[0], false);
+  assert.equal("relatedModules" in entry.radar[0], false);
 });
 
 test("历史列表、日期直达页面和公开 JSON 都可独立访问", async () => {
@@ -191,18 +218,19 @@ test("历史列表、日期直达页面和公开 JSON 都可独立访问", async
   assert.match(archive, /全部往期/);
   assert.match(archive, /\.\.\/2026-08-08\//);
   assert.match(archive, /data-archive-search/);
-  assert.match(issue, /2026-08-08｜需求何时启动，市场边界如何划定｜每日学习/);
+  assert.match(issue, /2026-08-08｜今日课程｜消费者心理 · 品牌与用户研究｜每日学习/);
   assert.match(issue, /href="\.\.\/assets\/styles\.css"/);
-  assert.equal(latest.schemaVersion, 3);
+  assert.equal(latest.schemaVersion, 4);
   assert.equal(latest.lessons.length, 2);
   assert.equal(progress.tracks.length, 13);
   assert.equal(publicCurriculum.tracks.length, 13);
 });
 
-test("课程目录、每周覆盖和每日推进顺序均由程序强制", async () => {
-  const [topics, curriculum, entry] = await Promise.all([
+test("课程目录、13 节起步课、每周覆盖和每日推进顺序均由程序强制", async () => {
+  const [topics, curriculum, starters, entry] = await Promise.all([
     sourceJson("config/topics.json"),
     sourceJson("config/curriculum.json"),
+    sourceJson("content/starter-lessons.json"),
     sourceJson("content/daily/2026-08-08.json")
   ]);
   assert.deepEqual(validateCurriculum(curriculum, topics), []);
@@ -216,6 +244,21 @@ test("课程目录、每周覆盖和每日推进顺序均由程序强制", async
     assert.equal(track.stages.length, stages, `${id} 阶段数`);
     assert.equal(track.stages.flatMap((stage) => stage.units).length, units, `${id} 单元数`);
   });
+  assert.equal(starters.schemaVersion, 1);
+  assert.equal(starters.lessons.length, expectedTopics.length);
+  assert.equal(new Set(starters.lessons.map((lesson) => lesson.module)).size, expectedTopics.length);
+  for (const [index, starter] of starters.lessons.entries()) {
+    const track = curriculum.tracks.find((item) => item.module === starter.module);
+    const firstUnit = flattenTrack(track)[0];
+    assert.deepEqual(validateStandaloneLesson(starter, `starters[${index}]`, topics, {
+      module: starter.module,
+      unit: firstUnit,
+      cycle: 1
+    }), []);
+    assert.equal(starter.curriculum.unitId, firstUnit.id);
+    assert.ok(lessonVisibleCharacters(starter) >= 350);
+    assert.ok(lessonVisibleCharacters(starter) <= 750);
+  }
   for (let index = 0; index < 7; index += 1) {
     const date = new Date(Date.parse("2026-08-08T00:00:00Z") + (index * 86_400_000)).toISOString().slice(0, 10);
     assert.deepEqual(scheduleForDate(date, topics), expectedSchedule[index]);
@@ -243,9 +286,9 @@ test("课程目录、每周覆盖和每日推进顺序均由程序强制", async
     .some((message) => message.includes("恰好 3 个重点")));
 
   const legacyBody = structuredClone(entry);
-  legacyBody.lessons[0].body = ["旧版长正文不应重新进入 v3 内容"];
+  legacyBody.lessons[0].body = ["旧版长正文不应重新进入 v4 内容"];
   assert.ok(validateEntry(legacyBody, topics, legacyBody.date, curriculum, [])
-    .some((message) => message.includes("v3 不允许的字段：body")));
+    .some((message) => message.includes("当前版本不允许的字段：body")));
 
   const wrongScope = structuredClone(entry);
   wrongScope.lessons[0].curriculum.scope = "可以随意展开相邻单元";
@@ -269,7 +312,16 @@ test("课程目录、每周覆盖和每日推进顺序均由程序强制", async
   }
   const advertisingPlan = curriculumPlanForDate("2026-08-09", topics, curriculum, [entry])
     .find((item) => item.module === "advertising_frontier");
-  assert.equal(advertisingPlan.unit.sequence, 1, "雷达关联不能增加广告课程进度");
+  assert.equal(advertisingPlan.unit.sequence, 1, "独立雷达与常驻起步课都不能增加日期课程进度");
+
+  const unrelatedRadar = structuredClone(entry);
+  unrelatedRadar.radar[0].module = "personal_growth";
+  assert.deepEqual(validateEntry(unrelatedRadar, topics, unrelatedRadar.date, curriculum, []), []);
+
+  const forcedTopLevelTheme = structuredClone(entry);
+  forcedTopLevelTheme.theme = "牵强的共同主题";
+  assert.ok(validateEntry(forcedTopLevelTheme, topics, forcedTopLevelTheme.date, curriculum, [])
+    .some((message) => message.includes("当前版本不允许的字段：theme")));
 });
 
 test("全部课程至少 24 课且每个主题立即有实质学习框架", async () => {
@@ -287,6 +339,22 @@ test("全部课程至少 24 课且每个主题立即有实质学习框架", asyn
     return sum + count;
   }, 0);
   assert.equal(total, 344);
+});
+
+test("常驻起步课不冒充日期发布进度", async () => {
+  const [progress, advertising, consumer] = await Promise.all([
+    text("content/progress.json").then(JSON.parse),
+    text("curriculum/advertising_frontier/index.html"),
+    text("curriculum/consumer_psychology/index.html")
+  ]);
+  assert.equal(progress.tracks.reduce((total, track) => total + track.completedUnits, 0), 2);
+  const advertisingProgress = progress.tracks.find((track) => track.module === "advertising_frontier");
+  assert.equal(advertisingProgress.completedUnits, 0);
+  assert.match(advertising, /日期归档已发布 0 \/ 24 个单元/);
+  assert.match(advertising, /这是常驻主题课，不占用日期归档进度/);
+  assert.match(advertising, /起步课可读/);
+  assert.match(consumer, /日期归档已发布 1 \/ 32 个单元/);
+  assert.match(consumer, /已优先采用 2026-08-08 的正式日更版本/);
 });
 
 test("所有生成页面的本地链接在项目子路径结构中都能解析", async () => {

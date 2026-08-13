@@ -6,9 +6,22 @@ const DIST = path.join(ROOT, "dist");
 const SITE = path.join(ROOT, "site");
 const topics = await readTopics();
 const entries = await readDailyEntries();
+
+async function readStarterLessons() {
+  try {
+    const data = JSON.parse(await readFile(path.join(ROOT, "content", "starter-lessons.json"), "utf8"));
+    return Array.isArray(data?.lessons) ? data.lessons : [];
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+    return [];
+  }
+}
+
+const starterLessons = await readStarterLessons();
 const today = shanghaiDate();
 const latest = entries.find((entry) => entry.date <= today) ?? entries[0];
 const moduleMap = new Map(topics.modules.map((module) => [module.id, module]));
+const starterLessonMap = new Map(starterLessons.map((lesson) => [lesson.module, lesson]));
 const learningDomains = topics.learningDomains?.length
   ? topics.learningDomains
   : [{ id: "all", title: "全部主题", description: "完整学习体系", modules: topics.modules.map((module) => module.id) }];
@@ -149,14 +162,14 @@ function curriculumProgress(cutoff = latest?.date) {
 
   for (const track of orderedTracks) {
     const units = flattenTrack(track);
-    const learnedUnitIds = new Set();
+    const publishedUnitIds = new Set();
     const lessonHistory = [];
 
     for (const entry of relevantEntries) {
       for (const lesson of entryLessons(entry)) {
         if (lesson.module !== track.module) continue;
         const unitId = lesson.curriculum?.unitId;
-        if (unitId && units.some((unit) => unit.id === unitId)) learnedUnitIds.add(unitId);
+        if (unitId && units.some((unit) => unit.id === unitId)) publishedUnitIds.add(unitId);
         lessonHistory.push({
           date: entry.date,
           title: entry.title,
@@ -168,9 +181,9 @@ function curriculumProgress(cutoff = latest?.date) {
     }
 
     lessonHistory.sort((a, b) => a.date.localeCompare(b.date));
-    const completedUnits = learnedUnitIds.size;
+    const completedUnits = publishedUnitIds.size;
     const totalUnits = units.length;
-    const nextUnit = units.find((unit) => !learnedUnitIds.has(unit.id))
+    const nextUnit = units.find((unit) => !publishedUnitIds.has(unit.id))
       ?? (totalUnits ? units[lessonHistory.length % totalUnits] : null);
     const currentCycle = totalUnits ? Math.floor(lessonHistory.length / totalUnits) + 1 : 1;
     result.set(track.module, {
@@ -181,7 +194,7 @@ function curriculumProgress(cutoff = latest?.date) {
       percent: totalUnits ? Math.round((completedUnits / totalUnits) * 100) : 0,
       lessonCount: lessonHistory.length,
       currentCycle,
-      learnedUnitIds,
+      publishedUnitIds,
       nextUnit,
       lessonHistory
     });
@@ -206,7 +219,7 @@ function progressData() {
         percent: progress.percent,
         lessonCount: progress.lessonCount,
         currentCycle: progress.currentCycle,
-        learnedUnitIds: [...progress.learnedUnitIds],
+        publishedUnitIds: [...progress.publishedUnitIds],
         nextUnit: progress.nextUnit ? {
           id: progress.nextUnit.id,
           title: progress.nextUnit.title,
@@ -289,7 +302,7 @@ function siteFooter(depth, rootOverride) {
         <a href="${root}">今天</a>
         <a href="${root}curriculum/">学习地图</a>
         <a href="${root}archive/">全部往期</a>
-        <a href="${root}content/progress.json">学习进度</a>
+        <a href="${root}content/progress.json">发布进度</a>
       </div>
     </div>
   </footer>`;
@@ -305,6 +318,7 @@ function topicPills(entry, depth) {
 function hero(entry, isHome) {
   const { month, day } = compactDate(entry.date);
   const lessons = entryLessons(entry);
+  const moduleNames = entryModules(entry).map((module) => moduleTitle(module)).join(" · ");
   return `<section class="lesson-hero">
     <div class="hero-orbit" aria-hidden="true"><span>${month}</span><strong>${day}</strong></div>
     <div class="hero-copy">
@@ -318,8 +332,8 @@ function hero(entry, isHome) {
       </div>
     </div>
     <div class="hero-note">
-      <span>今日母题</span>
-      <strong>${escapeHtml(entry.theme)}</strong>
+      <span>当日独立更新</span>
+      <strong>${escapeHtml(moduleNames || `${lessons.length} 条课程`)}</strong>
       <a href="#today-plan">查看今日计划 <span aria-hidden="true">↓</span></a>
     </div>
   </section>`;
@@ -359,24 +373,28 @@ function learningSystemOverview(entry, depth) {
   const totalUnits = orderedTracks.reduce((sum, track) => sum + flattenTrack(track).length, 0);
   return `<section class="learning-system" aria-labelledby="learning-system-title">
     <div class="learning-system-head">
-      <div><span>FULL LEARNING SYSTEM</span><h2 id="learning-system-title">全部 ${topics.modules.length} 条主线，一个都没有少</h2></div>
-      <p>每天深入 1–2 条，7 天完成一轮；首页高亮今天，其余主题按课程树依次推进。</p>
-      <div class="learning-system-stats" aria-label="课程体系规模"><span><b>${topics.modules.length}</b> 条主线</span><span><b>${totalUnits}</b> 个单元</span><span><b>${topics.dailySchedule.length}</b> 天一轮</span></div>
+      <div><span>INDEPENDENT LEARNING LIBRARY</span><h2 id="learning-system-title">13 个独立主题，现在都能开始学</h2></div>
+      <p>每条主线都有自己的核心问题、知识框架和练习，不需要与当天其他主题强行关联。点击任意卡片，直接阅读完整起步课。</p>
+      <div class="learning-system-stats" aria-label="课程体系规模"><span><b>${topics.modules.length}</b> 条独立主线</span><span><b>${starterLessons.length}</b> 节起步课</span><span><b>${totalUnits}</b> 个规划单元</span></div>
     </div>
-    <details class="system-browser">
-      <summary><span>查看全部 ${topics.modules.length} 条学习主线</span><b>今日 ${todayModules.size} 条</b></summary>
+    <div class="system-browser">
       <div class="system-domains">${learningDomains.map((domain) => `<section class="system-domain">
         <header><div><span>${escapeHtml(domain.title)}</span><small>${escapeHtml(domain.description)}</small></div><b>${domain.modules.length}</b></header>
         <div>${domain.modules.map((module) => {
           const progress = currentProgress.get(module);
           const isToday = todayModules.has(module);
+          const starter = starterLessonMap.get(module);
+          const coreQuestion = starter?.coreQuestion || progress?.nextUnit?.title || moduleDescription(module);
+          const conclusion = starter?.conclusion || moduleDescription(module);
           return `<a class="system-topic${isToday ? " is-today" : ""}" href="${root}curriculum/${escapeHtml(module)}/">
-            <span>${escapeHtml(moduleTitle(module))}</span>
-            <small>${isToday ? "今天" : `第 ${scheduleDayByModule.get(module) ?? "—"} 天`} · ${progress?.totalUnits ?? 0} 课</small>
+            <div><span>${escapeHtml(moduleTitle(module))}</span><small>${isToday ? "今日有更新" : "起步课可读"}</small></div>
+            <h3>${escapeHtml(coreQuestion)}</h3>
+            <p>${escapeHtml(conclusion)}</p>
+            <b>进入主题并阅读起步课 <span aria-hidden="true">→</span></b>
           </a>`;
         }).join("")}</div>
       </section>`).join("")}</div>
-    </details>
+    </div>
     <a class="system-map-link" href="${root}curriculum/">打开完整学习地图 <span aria-hidden="true">→</span></a>
   </section>`;
 }
@@ -386,17 +404,15 @@ function tableOfContents(entry) {
   const radar = entryRadar(entry);
   const coreMinutes = lessons.reduce((sum, lesson) => sum + (Number(lesson.estimatedMinutes) || 0), 0);
   const radarMinutes = radar.reduce((sum, item) => sum + (Number(item.estimatedMinutes) || 0), 0);
-  const practiceMinutes = Number(entry.practice?.estimatedMinutes) || 0;
   return `<aside class="lesson-toc" aria-label="本期目录">
     <p class="toc-label">本期路径</p>
     <ol>
       ${lessons.map((lesson, index) => `<li><a href="#${escapeHtml(lesson.id)}"><span>${String(index + 1).padStart(2, "0")}</span>${escapeHtml(moduleTitle(lesson.module))}</a></li>`).join("")}
-      ${entry.practice ? `<li><a href="#practice"><span>→</span>今日练习</a></li>` : ""}
       ${radar.length ? `<li><a href="#radar"><span>R</span>行业雷达</a></li>` : ""}
     </ol>
     <div class="mix-card course-mix-card">
       <span>学习结构</span>
-      <p><b>${coreMinutes || "—"}</b> 分钟系统课程${practiceMinutes ? `<br><b>${practiceMinutes}</b> 分钟综合练习` : ""}<br>${radar.length ? `<b>${radarMinutes || "—"}</b> 分钟可选雷达` : "本期无独立雷达"}</p>
+      <p><b>${coreMinutes || "—"}</b> 分钟独立课程<br>${radar.length ? `<b>${radarMinutes || "—"}</b> 分钟可选雷达` : "本期无独立雷达"}</p>
     </div>
   </aside>`;
 }
@@ -464,29 +480,20 @@ function radarSection(items, depth) {
   const totalMinutes = items.reduce((sum, item) => sum + (Number(item.estimatedMinutes) || 0), 0);
   return `<details class="radar-section" id="radar" data-lesson-section>
     <summary class="radar-header">
-      <div><span>OPTIONAL · INDUSTRY RADAR</span><h2>补充阅读：今天的行业变化</h2></div>
-      <p>${totalMinutes || 5} 分钟 · 不影响核心课程顺序 <b aria-hidden="true">＋</b></p>
+      <div><span>OPTIONAL · INDEPENDENT RADAR</span><h2>独立行业雷达</h2></div>
+      <p>${totalMinutes || 5} 分钟 · 独立观察，不与课程强行关联 <b aria-hidden="true">＋</b></p>
     </summary>
-    <div class="radar-grid">${items.map((item) => `<article class="radar-card" id="${escapeHtml(item.id)}">
+    <div class="radar-grid">${items.map((item) => {
+      const radarModule = item.module;
+      return `<article class="radar-card" id="${escapeHtml(item.id)}">
       <div class="radar-card-meta"><span>近期变化</span>${item.estimatedMinutes ? `<b>${item.estimatedMinutes} min</b>` : ""}</div>
       <h3>${escapeHtml(item.title)}</h3>
-      <dl class="radar-points"><div><dt>发生了什么</dt><dd>${escapeHtml(item.whatChanged)}</dd></div><div><dt>为什么重要</dt><dd>${escapeHtml(item.whyItMatters)}</dd></div><div><dt>连接今天</dt><dd>${escapeHtml(item.courseConnection)}</dd></div></dl>
-      ${(item.relatedModules ?? []).length ? `<div class="radar-related"><span>关联课程</span>${item.relatedModules.map((module) => `<a href="${root}curriculum/${escapeHtml(module)}/">${escapeHtml(moduleTitle(module))}</a>`).join("")}</div>` : ""}
+      <dl class="radar-points"><div><dt>发生了什么</dt><dd>${escapeHtml(item.whatChanged)}</dd></div><div><dt>为什么重要</dt><dd>${escapeHtml(item.whyItMatters)}</dd></div><div><dt>接下来观察</dt><dd>${escapeHtml(item.watchNext)}</dd></div></dl>
+      ${radarModule ? `<div class="radar-related"><span>所属领域</span><a href="${root}curriculum/${escapeHtml(radarModule)}/">${escapeHtml(moduleTitle(radarModule))}</a></div>` : ""}
       ${renderSources(item.sources)}
-    </article>`).join("")}</div>
+    </article>`;
+    }).join("")}</div>
   </details>`;
-}
-
-function practiceBlock(practice) {
-  if (!practice) return "";
-  const steps = practice.steps ?? [];
-  return `<section class="practice-card" id="practice">
-    <div class="practice-topline"><span>PUT IT TO WORK</span><b>${escapeHtml(practice.estimatedMinutes)} MIN</b></div>
-    <h2>${escapeHtml(practice.title)}</h2>
-    <p class="practice-prompt">${escapeHtml(practice.prompt)}</p>
-    <ol>${steps.map((step, index) => `<li><span>${index + 1}</span><p>${escapeHtml(step)}</p></li>`).join("")}</ol>
-    <button class="copy-practice" type="button" data-copy="${escapeHtml([practice.title, practice.prompt, ...steps.map((step, index) => `${index + 1}. ${step}`)].filter(Boolean).join("\n"))}">复制练习</button>
-  </section>`;
 }
 
 function entryNavigation(index, depth) {
@@ -517,7 +524,6 @@ function renderEntryPage(entry, { depth, isHome, index }) {
         ${tableOfContents(entry)}
         <div class="lesson-flow">
           ${lessons.map((lesson, lessonIndex) => lessonSection(lesson, lessonIndex, depth)).join("")}
-          ${practiceBlock(entry.practice)}
           ${radarSection(radar, depth)}
           ${entryNavigation(index, depth)}
         </div>
@@ -540,12 +546,13 @@ function archiveCard(entry, depth) {
   const root = rootPrefix(depth);
   const { year, month, day } = compactDate(entry.date);
   const lessons = entryLessons(entry);
-  const searchable = [entry.title, entry.subtitle, entry.theme, ...lessons.map((lesson) => moduleTitle(lesson.module)), ...lessons.map((lesson) => lesson.coreQuestion ?? lesson.title)].join(" ");
+  const entryTopicLabel = entryModules(entry).map((module) => moduleTitle(module)).join(" · ") || "独立课程";
+  const searchable = [entry.title, entry.subtitle, ...lessons.map((lesson) => moduleTitle(lesson.module)), ...lessons.map((lesson) => lesson.coreQuestion ?? lesson.title)].join(" ");
   return `<article class="archive-card" data-archive-card data-search="${escapeHtml(searchable.toLowerCase())}">
     <a href="${root}${entry.date}/" aria-label="阅读 ${entry.date}：${escapeHtml(entry.title)}">
       <div class="archive-date"><strong>${day}</strong><span>${year}.${month}</span></div>
       <div class="archive-copy">
-        <p>${escapeHtml(entry.theme)} · ${entry.estimatedMinutes} 分钟</p>
+        <p>${escapeHtml(entryTopicLabel)} · ${entry.estimatedMinutes} 分钟</p>
         <h2>${escapeHtml(entry.title)}</h2>
         <span>${escapeHtml(entry.subtitle)}</span>
         <div>${entryModules(entry).slice(0, 4).map((module) => `<small>${escapeHtml(moduleTitle(module))}</small>`).join("")}</div>
@@ -599,7 +606,7 @@ function curriculumCard(track, index) {
     <h2>${escapeHtml(moduleTitle(track.module))}</h2>
     <p>${escapeHtml(track.goal || moduleDescription(track.module))}</p>
     <div class="curriculum-card-progress">
-      <div><span>已学 ${progress.completedUnits} / ${progress.totalUnits}</span><b>${progress.percent}%</b></div>
+      <div><span>已发布 ${progress.completedUnits} / ${progress.totalUnits}</span><b>${progress.percent}%</b></div>
       <div class="course-progress"><i style="width:${progress.percent}%"></i></div>
     </div>
     <div class="curriculum-next"><span>下一课</span><strong>${escapeHtml(progress.nextUnit?.title ?? "课程即将开始")}</strong></div>
@@ -618,7 +625,7 @@ function renderCurriculumPage() {
         </div>
         <div class="curriculum-hero-copy">
           <p>每个主题从基础概念、分析框架一路走向实际应用。每天只推进其中一小步，长期积累成完整的能力结构。</p>
-          <dl><div><dt>${orderedTracks.length}</dt><dd>条主题主线</dd></div><div><dt>${totalUnits}</dt><dd>个核心单元</dd></div><div><dt>${completedUnits}</dt><dd>个单元已学</dd></div></dl>
+          <dl><div><dt>${orderedTracks.length}</dt><dd>条主题主线</dd></div><div><dt>${totalUnits}</dt><dd>个核心单元</dd></div><div><dt>${completedUnits}</dt><dd>个单元已发布</dd></div></dl>
         </div>
       </section>
       <section class="curriculum-overview" aria-labelledby="curriculum-overview-title">
@@ -635,7 +642,7 @@ function renderCurriculumPage() {
   </main>`;
   return pageShell({
     title: "学习地图｜每日学习",
-    description: "13 个主题的系统课程地图：分阶段、按顺序学习，并自动记录已学内容与下一课。",
+    description: "13 个主题的独立系统课程地图：分阶段、按顺序学习，并记录已发布内容与下一课。",
     body,
     depth: 1,
     page: "curriculum",
@@ -651,10 +658,29 @@ function unitHistoryMap(progress) {
   return map;
 }
 
+function resolvedStarterLesson(moduleId) {
+  const starter = starterLessonMap.get(moduleId);
+  if (!starter) return null;
+  const unitId = starter.curriculum?.unitId;
+  const publishedEntry = entries.find((entry) => entryLessons(entry).some((lesson) => (
+    lesson.module === moduleId && lesson.curriculum?.unitId === unitId
+  )));
+  const publishedLesson = publishedEntry
+    ? entryLessons(publishedEntry).find((lesson) => lesson.module === moduleId && lesson.curriculum?.unitId === unitId)
+    : null;
+  return {
+    lesson: publishedLesson ?? starter,
+    publishedEntry: publishedLesson ? publishedEntry : null,
+    starter
+  };
+}
+
 function renderTrackPage(track) {
   const module = moduleMap.get(track.module) ?? { title: track.module, description: track.goal };
   const progress = currentProgress.get(track.module);
   const historyByUnit = unitHistoryMap(progress);
+  const starterDisplay = resolvedStarterLesson(track.module);
+  const starterUnitId = starterDisplay?.starter?.curriculum?.unitId;
   const relatedEntries = entries.filter((entry) => entryLessons(entry).some((lesson) => lesson.module === track.module));
   const body = `<main id="main">
     <div class="page-wrap track-page">
@@ -666,13 +692,17 @@ function renderTrackPage(track) {
           <p>${escapeHtml(track.goal || module.description)}</p>
         </div>
         <aside class="track-progress-panel">
-          <div><span>当前进度</span><strong>${progress.percent}<small>%</small></strong></div>
-          <div class="course-progress" role="progressbar" aria-label="${escapeHtml(module.title)}学习进度" aria-valuemin="0" aria-valuemax="${progress.totalUnits}" aria-valuenow="${progress.completedUnits}"><i style="width:${progress.percent}%"></i></div>
-          <p>已学 ${progress.completedUnits} / ${progress.totalUnits} 个单元 · 第 ${progress.currentCycle} 轮</p>
+          <div><span>日更发布进度</span><strong>${progress.percent}<small>%</small></strong></div>
+          <div class="course-progress" role="progressbar" aria-label="${escapeHtml(module.title)}日更发布进度" aria-valuemin="0" aria-valuemax="${progress.totalUnits}" aria-valuenow="${progress.completedUnits}"><i style="width:${progress.percent}%"></i></div>
+          <p>日期归档已发布 ${progress.completedUnits} / ${progress.totalUnits} 个单元 · 第 ${progress.currentCycle} 轮</p>
           <div class="track-next"><span>下一课</span><b>${escapeHtml(progress.nextUnit?.stageTitle ?? "课程")}</b><strong>${escapeHtml(progress.nextUnit?.title ?? "即将开始")}</strong></div>
         </aside>
       </section>
       ${(track.principles ?? []).length ? `<section class="track-principles"><div><span>LEARNING PRINCIPLES</span><h2>这条主线如何学习</h2></div><ol>${track.principles.map((principle, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span><p>${escapeHtml(principle)}</p></li>`).join("")}</ol></section>` : ""}
+      ${starterDisplay ? `<section class="track-starter" id="starter-lesson" aria-labelledby="starter-lesson-title">
+        <div class="section-title-row track-starter-heading"><div><span>START HERE · 完整起步课</span><h2 id="starter-lesson-title">先用这一课建立主题底座</h2></div><p>${starterDisplay.publishedEntry ? `已优先采用 ${escapeHtml(starterDisplay.publishedEntry.date)} 的正式日更版本。` : "这是常驻主题课，不占用日期归档进度。"}</p></div>
+        ${lessonSection(starterDisplay.lesson, 0, 2)}
+      </section>` : ""}
       <section class="knowledge-tree" aria-labelledby="knowledge-tree-title">
         <div class="section-title-row"><div><span>FULL ROADMAP</span><h2 id="knowledge-tree-title">完整分阶段知识树</h2></div><p>${track.stages?.length ?? 0} 个阶段 · ${progress.totalUnits} 个核心单元</p></div>
         <div class="stage-list">${(track.stages ?? []).map((stage, stageIndex) => {
@@ -683,11 +713,12 @@ function renderTrackPage(track) {
           <summary><span>${String(stageIndex + 1).padStart(2, "0")}</span><div><p>STAGE ${stageIndex + 1}</p><h3>${escapeHtml(stage.title)}</h3><small>${escapeHtml(stage.outcome)}</small></div><b>${stageCompleted} / ${stageUnits.length}<i aria-hidden="true">＋</i></b></summary>
           <ol>${stageUnits.map((unit, unitIndex) => {
             const history = historyByUnit.get(unit.id);
+            const hasStarter = !history && starterUnitId === unit.id;
             const isNext = progress.nextUnit?.id === unit.id;
-            const state = history ? "is-complete" : (isNext ? "is-next" : "is-upcoming");
-            const status = history ? "已学" : (isNext ? "下一课" : "待学习");
+            const state = history ? "is-complete" : (hasStarter ? "is-starter" : (isNext ? "is-next" : "is-upcoming"));
+            const status = history ? "已发布" : (hasStarter ? "起步课可读" : (isNext ? "下一课" : "待发布"));
             const content = `<span class="unit-index">${String(unitIndex + 1).padStart(2, "0")}</span><p>${escapeHtml(unit.title)}</p><b>${status}</b>${history ? `<small>${escapeHtml(history.date)}</small>` : ""}`;
-            return `<li class="${state}">${history ? `<a href="../../${history.date}/">${content}</a>` : `<div>${content}</div>`}</li>`;
+            return `<li class="${state}">${history ? `<a href="../../${history.date}/">${content}</a>` : (hasStarter ? `<a href="#starter-lesson">${content}</a>` : `<div>${content}</div>`)}</li>`;
           }).join("")}</ol>
         </details>`;
         }).join("")}</div>
@@ -697,7 +728,7 @@ function renderTrackPage(track) {
         ${relatedEntries.length ? `<div class="track-history-list">${relatedEntries.map((entry) => {
           const lesson = entryLessons(entry).find((item) => item.module === track.module);
           return `<a href="../../${entry.date}/"><time>${escapeHtml(entry.date)}</time><div><span>${escapeHtml(lesson.curriculum?.stageTitle ?? module.title)}</span><h3>${escapeHtml(lesson.coreQuestion ?? lesson.title)}</h3></div><b aria-hidden="true">↗</b></a>`;
-        }).join("")}</div>` : `<p class="track-empty">第一课尚未发布。知识树已经准备好，会按照固定顺序开始推进。</p>`}
+        }).join("")}</div>` : `<p class="track-empty">日期归档尚无这条主线的更新；上方完整起步课已经可以直接阅读。</p>`}
       </section>
     </div>
   </main>`;
@@ -722,7 +753,6 @@ function archiveData() {
     date: entry.date,
     title: entry.title,
     subtitle: entry.subtitle,
-    theme: entry.theme,
     estimatedMinutes: entry.estimatedMinutes,
     modules: entryModules(entry),
     lessons: entryLessons(entry).map((lesson) => ({

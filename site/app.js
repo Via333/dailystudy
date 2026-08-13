@@ -54,7 +54,7 @@
   });
 
   const tocLinks = [...document.querySelectorAll(".lesson-toc a[href^='#']")];
-  const sections = [...document.querySelectorAll("[data-lesson-section], #practice")];
+  const sections = [...document.querySelectorAll("[data-lesson-section]")];
   if ("IntersectionObserver" in window && sections.length) {
     const observer = new IntersectionObserver((observed) => {
       const visible = observed.filter((item) => item.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];

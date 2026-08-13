@@ -28,21 +28,17 @@ export const DAILY_SCHEMA = {
     "date",
     "title",
     "subtitle",
-    "theme",
     "estimatedMinutes",
     "introduction",
     "lessons",
-    "radar",
-    "practice",
-    "closing"
+    "radar"
   ],
   properties: {
-    schemaVersion: { type: "integer", enum: [3] },
+    schemaVersion: { type: "integer", enum: [4] },
     date: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
     title: { type: "string", minLength: 4, maxLength: 40 },
     subtitle: { type: "string", minLength: 8, maxLength: 100 },
-    theme: { type: "string", minLength: 2, maxLength: 24 },
-    estimatedMinutes: { type: "integer", minimum: 30, maximum: 45 },
+    estimatedMinutes: { type: "integer", minimum: 20, maximum: 40 },
     introduction: {
       type: "array",
       minItems: 1,
@@ -88,7 +84,7 @@ export const DAILY_SCHEMA = {
               cycle: { type: "integer", minimum: 1, maximum: 20 }
             }
           },
-          estimatedMinutes: { type: "integer", minimum: 12, maximum: 18 },
+          estimatedMinutes: { type: "integer", minimum: 14, maximum: 26 },
           coreQuestion: { type: "string", minLength: 12, maxLength: 48 },
           framework: {
             type: "object",
@@ -154,20 +150,15 @@ export const DAILY_SCHEMA = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["id", "title", "estimatedMinutes", "whatChanged", "whyItMatters", "courseConnection", "relatedModules", "sources"],
+        required: ["id", "module", "title", "estimatedMinutes", "whatChanged", "whyItMatters", "watchNext", "sources"],
         properties: {
           id: { type: "string", pattern: "^[a-z0-9-]+$", maxLength: 72 },
+          module: { type: "string", minLength: 2, maxLength: 48 },
           title: { type: "string", minLength: 8, maxLength: 48 },
           estimatedMinutes: { type: "integer", minimum: 3, maximum: 5 },
           whatChanged: { type: "string", minLength: 30, maxLength: 140 },
           whyItMatters: { type: "string", minLength: 20, maxLength: 80 },
-          courseConnection: { type: "string", minLength: 20, maxLength: 70 },
-          relatedModules: {
-            type: "array",
-            minItems: 1,
-            maxItems: 4,
-            items: { type: "string", minLength: 2, maxLength: 48 }
-          },
+          watchNext: { type: "string", minLength: 16, maxLength: 70 },
           sources: {
             type: "array",
             minItems: 1,
@@ -176,23 +167,6 @@ export const DAILY_SCHEMA = {
           }
         }
       }
-    },
-    practice: {
-      type: "object",
-      additionalProperties: false,
-      required: ["title", "prompt", "steps", "estimatedMinutes"],
-      properties: {
-        title: { type: "string", minLength: 4, maxLength: 40 },
-        prompt: { type: "string", minLength: 12, maxLength: 140 },
-        steps: {
-          type: "array",
-          minItems: 2,
-          maxItems: 3,
-          items: { type: "string", minLength: 8, maxLength: 80 }
-        },
-        estimatedMinutes: { type: "integer", minimum: 5, maximum: 10 }
-      }
-    },
-    closing: { type: "string", minLength: 8, maxLength: 100 }
+    }
   }
 };

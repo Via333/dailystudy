@@ -1,12 +1,11 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "date": "2026-08-08",
-  "title": "需求何时启动，市场边界如何划定",
-  "subtitle": "用两套可复用框架，理解消费者行动的起点，并为用户研究划清范围。",
-  "theme": "触发与边界",
-  "estimatedMinutes": 33,
+  "title": "今日课程｜消费者心理 · 品牌与用户研究",
+  "subtitle": "今天安排两门独立课程，各自沿对应知识树推进。",
+  "estimatedMinutes": 36,
   "introduction": [
-    "今天沿两条知识树各推进一课：先识别需求被唤醒的时刻，再用需求空间界定真正要研究的市场。"
+    "消费者心理学习「需求识别与触发情境」；品牌与用户研究学习「市场边界与需求空间」。两门课程可分别阅读。"
   ],
   "lessons": [
     {
@@ -23,7 +22,7 @@
         "totalUnits": 32,
         "cycle": 1
       },
-      "estimatedMinutes": 12,
+      "estimatedMinutes": 16,
       "coreQuestion": "为什么长期存在的需要，只有在特定情境下才会启动行动？",
       "framework": {
         "name": "情境—差距—行动链",
@@ -89,7 +88,7 @@
         "totalUnits": 28,
         "cycle": 1
       },
-      "estimatedMinutes": 12,
+      "estimatedMinutes": 16,
       "coreQuestion": "市场边界应该按产品品类，还是按用户要解决的问题来划？",
       "framework": {
         "name": "需求空间边界卡",
@@ -145,16 +144,12 @@
   "radar": [
     {
       "id": "platform-automation-goal-signals",
+      "module": "advertising_frontier",
       "title": "自动投放越强，目标定义越重要",
       "estimatedMinutes": 4,
       "whatChanged": "Google Ads 公布目标型出价调整，Amazon Ads 也让第一方受众信号更深入参与 Brand+ 与 Performance+ 的 AI 优化。",
       "whyItMatters": "系统会更快放大目标和信号的质量；代理指标选错，自动化只会更高效地跑偏。",
-      "courseConnection": "今天的触发情境与市场边界，正是判断哪些行为值得作为优化信号的上游依据。",
-      "relatedModules": [
-        "advertising_frontier",
-        "consumer_psychology",
-        "brand_product_research"
-      ],
+      "watchNext": "继续观察平台是否公开更多目标约束、信号使用方式与自动化效果诊断工具。",
       "sources": [
         {
           "title": "Frequently asked questions about changes to Target-based bid strategies",
@@ -170,16 +165,5 @@
         }
       ]
     }
-  ],
-  "practice": {
-    "title": "把触发与边界连起来",
-    "prompt": "选一笔真实购买，用消费者心理解释它为何启动，再用用户研究界定应当观察的市场范围。",
-    "steps": [
-      "写出触发变化、被察觉的差距与第一项行动证据。",
-      "列出产品品类之外的现实替代方式，并说明本次明确排除什么。",
-      "用一句话写明这份分析要支持的具体决定。"
-    ],
-    "estimatedMinutes": 5
-  },
-  "closing": "今天留下两张卡：一张寻找行动起点，一张划清研究范围。"
+  ]
 }

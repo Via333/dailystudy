@@ -571,22 +571,24 @@ a {
 
 .system-domain > div {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
+  grid-template-columns: 1fr;
+  gap: 9px;
   padding-top: 13px;
 }
 
 .system-topic {
   min-width: 0;
-  padding: 9px 10px;
-  border-left: 2px solid var(--line);
+  padding: 15px 16px 14px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-strong);
   background: var(--paper);
-  transition: border-color 150ms ease, background 150ms ease;
+  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
 }
 
 .system-topic:hover {
-  border-left-color: var(--accent);
+  border-color: var(--accent);
   background: var(--accent-soft);
+  transform: translateY(-2px);
 }
 
 .system-topic.is-today {
@@ -594,29 +596,55 @@ a {
   background: var(--accent-soft);
 }
 
-.system-topic > span,
-.system-topic > small {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.system-topic > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.system-topic > span {
+.system-topic > div > span {
   font-family: var(--serif);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 
-.system-topic > small {
-  margin-top: 3px;
+.system-topic > div > small {
+  flex: 0 0 auto;
   color: var(--ink-soft);
   font-size: 8px;
 }
 
-.system-topic.is-today > small {
+.system-topic.is-today > div > small {
   color: var(--accent);
   font-weight: 800;
+}
+
+.system-topic h3 {
+  margin: 12px 0 6px;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.system-topic > p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.system-topic > b {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--accent);
+  font-size: 9px;
 }
 
 .system-map-link {
@@ -646,7 +674,7 @@ a {
   line-height: 1.8;
 }
 
-.system-browser:not([open]) > .system-domains {
+details.system-browser:not([open]) > .system-domains {
   display: none;
 }
 
@@ -658,7 +686,7 @@ a {
 }
 
 @media (min-width: 721px) {
-  .system-browser:not([open]) > .system-domains {
+  details.system-browser:not([open]) > .system-domains {
     display: grid;
   }
 }
@@ -1372,126 +1400,6 @@ blockquote p {
 .sources a small {
   flex: 0 0 auto;
   color: var(--ink-soft);
-}
-
-.practice-card {
-  position: relative;
-  scroll-margin-top: 26px;
-  margin: 0 0 86px 84px;
-  padding: 52px 58px;
-  overflow: hidden;
-  color: var(--ink);
-  background: var(--highlight);
-  border: 1px solid var(--highlight-line);
-  border-top: 5px solid var(--gold);
-  box-shadow: var(--shadow);
-}
-
-.practice-card::after {
-  content: "练";
-  position: absolute;
-  right: -22px;
-  bottom: -86px;
-  color: color-mix(in srgb, var(--gold) 7%, transparent);
-  font-family: var(--serif);
-  font-size: 250px;
-  line-height: 1;
-}
-
-.practice-topline {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  color: var(--gold);
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: .15em;
-}
-
-.practice-card h2 {
-  position: relative;
-  z-index: 1;
-  margin: 22px 0 12px;
-  font-family: var(--serif);
-  font-size: 36px;
-  font-weight: 500;
-}
-
-.practice-prompt {
-  position: relative;
-  z-index: 1;
-  max-width: 620px;
-  margin: 0;
-  color: var(--ink-soft);
-  font-family: var(--serif);
-  font-size: 16px;
-}
-
-.practice-card ol {
-  position: relative;
-  z-index: 1;
-  margin: 26px 0 30px;
-  padding: 0;
-  list-style: none;
-}
-
-.practice-card li {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 12px;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--highlight-line);
-}
-
-.practice-card li span {
-  color: var(--gold);
-  font-family: var(--mono);
-  font-size: 10px;
-}
-
-.practice-card li p {
-  margin: 0;
-  font-size: 13px;
-}
-
-.copy-practice {
-  position: relative;
-  z-index: 1;
-  padding: 9px 18px;
-  border: 1px solid var(--accent);
-  color: var(--on-accent);
-  background: var(--accent);
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.copy-practice:hover {
-  background: var(--accent-deep);
-}
-
-.closing-note {
-  margin: 0 0 70px 84px;
-  padding: 35px 40px;
-  border: 1px solid var(--highlight-line);
-  border-left: 4px solid var(--gold);
-  background: var(--highlight);
-  text-align: center;
-}
-
-.closing-note span {
-  color: var(--gold);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: .15em;
-}
-
-.closing-note p {
-  max-width: 670px;
-  margin: 12px auto 0;
-  font-family: var(--serif);
-  font-size: 20px;
-  line-height: 1.8;
 }
 
 .entry-nav {
@@ -2668,6 +2576,25 @@ blockquote p {
   line-height: 1.7;
 }
 
+.track-starter {
+  padding: 84px 0 74px;
+  border-bottom: 1px solid var(--line);
+}
+
+.track-starter-heading {
+  margin-bottom: 46px;
+}
+
+.track-starter .lesson-section {
+  max-width: 980px;
+  margin: 0 auto;
+  padding-bottom: 0;
+}
+
+.track-starter .section-rail i {
+  background: linear-gradient(var(--accent-line), transparent);
+}
+
 .knowledge-tree {
   padding: 88px 0;
   border-bottom: 1px solid var(--line);
@@ -2825,6 +2752,16 @@ blockquote p {
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
+.stage-block li.is-starter > a {
+  border-left: 3px solid var(--gold);
+  background: var(--highlight);
+}
+
+.stage-block li.is-starter b {
+  color: var(--gold);
+  background: color-mix(in srgb, var(--highlight-line) 22%, transparent);
+}
+
 .stage-block li.is-upcoming {
   color: var(--ink-soft);
 }
@@ -2958,8 +2895,6 @@ blockquote p {
     gap: 38px;
   }
 
-  .practice-card,
-  .closing-note,
   .entry-nav {
     margin-left: 0;
   }
@@ -3163,7 +3098,11 @@ blockquote p {
   }
 
   .system-domain > div {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
+  }
+
+  .system-topic h3 {
+    font-size: 17px;
   }
 
   .system-map-link {
@@ -3375,10 +3314,6 @@ blockquote p {
     margin-top: 4px;
   }
 
-  .practice-card {
-    padding: 36px 24px;
-  }
-
   .radar-section {
     margin-bottom: 70px;
   }
@@ -3402,18 +3337,6 @@ blockquote p {
   .radar-points > div {
     grid-template-columns: 1fr;
     gap: 4px;
-  }
-
-  .practice-card h2 {
-    font-size: 29px;
-  }
-
-  .closing-note {
-    padding: 30px 15px;
-  }
-
-  .closing-note p {
-    font-size: 18px;
   }
 
   .entry-nav {
@@ -3594,6 +3517,14 @@ blockquote p {
     margin-top: 15px;
   }
 
+  .track-starter {
+    padding: 58px 0 54px;
+  }
+
+  .track-starter-heading {
+    margin-bottom: 34px;
+  }
+
   .knowledge-tree {
     padding: 62px 0;
   }
@@ -3678,7 +3609,6 @@ blockquote p {
   .lesson-toc,
   .theme-toggle,
   .reading-progress,
-  .copy-practice,
   .entry-nav {
     display: none !important;
   }

@@ -1,16 +1,21 @@
 import path from "node:path";
 import {
   DAILY_DIR,
+  flattenTrack,
+  isDateString,
   readCurriculum,
   readDailyEntries,
+  readStarterLessons,
   readTopics,
   validateCurriculum,
-  validateEntry
+  validateEntry,
+  validateStandaloneLesson
 } from "./lib.mjs";
 
-const [topics, curriculum, entriesDescending] = await Promise.all([
+const [topics, curriculum, starterBundle, entriesDescending] = await Promise.all([
   readTopics(),
   readCurriculum(),
+  readStarterLessons(),
   readDailyEntries()
 ]);
 
@@ -66,6 +71,60 @@ if (configFailures.length) {
   throw new Error(`课程配置校验失败：\n${configFailures.map((failure) => `- ${failure}`).join("\n")}`);
 }
 
+const starterFailures = [];
+const starterKeys = Object.keys(starterBundle ?? {});
+const allowedStarterKeys = new Set(["schemaVersion", "publishedAt", "lessons"]);
+const unexpectedStarterKeys = starterKeys.filter((key) => !allowedStarterKeys.has(key));
+if (unexpectedStarterKeys.length) {
+  starterFailures.push(`起步课数据包含不允许的字段：${unexpectedStarterKeys.join(", ")}`);
+}
+if (starterBundle?.schemaVersion !== 1) starterFailures.push("起步课 schemaVersion 必须为 1");
+if (!isDateString(starterBundle?.publishedAt)) starterFailures.push("起步课 publishedAt 必须是有效的 YYYY-MM-DD");
+
+const starterLessons = Array.isArray(starterBundle?.lessons) ? starterBundle.lessons : [];
+if (!Array.isArray(starterBundle?.lessons)) {
+  starterFailures.push("起步课 lessons 必须是数组");
+} else if (starterLessons.length !== topics.modules.length || starterLessons.length !== 13) {
+  starterFailures.push(`起步课必须恰好包含 13 节，并与 13 个主题一一对应；当前为 ${starterLessons.length} 节`);
+}
+
+const starterModuleCounts = new Map();
+for (const lesson of starterLessons) {
+  starterModuleCounts.set(lesson?.module, (starterModuleCounts.get(lesson?.module) ?? 0) + 1);
+}
+const missingStarterModules = topics.modules
+  .map((module) => module.id)
+  .filter((module) => !starterModuleCounts.has(module));
+const repeatedStarterModules = [...starterModuleCounts]
+  .filter(([, count]) => count > 1)
+  .map(([module]) => module);
+const unknownStarterModules = [...starterModuleCounts.keys()]
+  .filter((module) => !moduleIds.has(module));
+if (missingStarterModules.length) starterFailures.push(`以下主题缺少起步课：${missingStarterModules.join(", ")}`);
+if (repeatedStarterModules.length) starterFailures.push(`以下主题存在重复起步课：${repeatedStarterModules.join(", ")}`);
+if (unknownStarterModules.length) starterFailures.push(`起步课包含未知主题：${unknownStarterModules.join(", ")}`);
+
+const trackMap = new Map(curriculum.tracks.map((track) => [track.module, track]));
+starterLessons.forEach((lesson, index) => {
+  const label = `lessons[${index}]`;
+  const track = trackMap.get(lesson?.module);
+  if (!track) return;
+  const firstUnit = flattenTrack(track)[0];
+  if (!firstUnit) {
+    starterFailures.push(`${label} 对应课程没有第一单元`);
+    return;
+  }
+  starterFailures.push(...validateStandaloneLesson(lesson, label, topics, {
+    module: track.module,
+    unit: firstUnit,
+    cycle: 1
+  }));
+});
+
+if (starterFailures.length) {
+  throw new Error(`起步课校验失败：\n${starterFailures.map((failure) => `- ${failure}`).join("\n")}`);
+}
+
 if (entriesDescending.length === 0) {
   throw new Error(`${path.relative(process.cwd(), DAILY_DIR)} 中至少需要一期每日学习内容`);
 }
@@ -90,4 +149,4 @@ const totalUnits = curriculum.tracks.reduce(
   (total, track) => total + track.stages.reduce((stageTotal, stage) => stageTotal + stage.units.length, 0),
   0
 );
-console.log(`✓ 已校验 ${curriculum.tracks.length} 条课程路径、${totalUnits} 个单元与 ${entries.length} 期每日学习内容`);
+console.log(`✓ 已校验 ${curriculum.tracks.length} 条课程路径、${totalUnits} 个单元、${starterLessons.length} 节独立起步课与 ${entries.length} 期每日学习内容`);

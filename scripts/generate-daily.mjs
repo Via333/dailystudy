@@ -50,10 +50,9 @@ const moduleMap = new Map(topics.modules.map((module) => [module.id, module]));
 const recentLessons = entries
   .flatMap((entry) => (entry.lessons ?? []).map((lesson) => `${entry.date}｜${lesson.module}｜${lesson.coreQuestion ?? lesson.curriculum?.unitTitle ?? "课程"}`))
   .slice(0, 12);
-const lessonMinutes = plan.length === 1 ? 16 : 12;
+const lessonMinutes = plan.length === 1 ? 24 : 16;
 const radarMinutes = 4;
-const practiceMinutes = plan.length === 1 ? 10 : 5;
-const totalMinutes = (lessonMinutes * plan.length) + radarMinutes + practiceMinutes;
+const totalMinutes = (lessonMinutes * plan.length) + radarMinutes;
 
 const planText = plan.map((item, index) => {
   const module = moduleMap.get(item.module);
@@ -75,23 +74,25 @@ const prompt = `你是“每日学习”的课程主编。请为 ${targetDate}�
 ${planText}
 
 写作与结构要求：
-- 生成 ${plan.length} 节深度课程，每节 estimatedMinutes 固定为 ${lessonMinutes}；行业雷达恰好 1 条，estimatedMinutes 固定为 ${radarMinutes}；练习固定为 ${practiceMinutes} 分钟；全期 estimatedMinutes 固定为 ${totalMinutes}。
+- 生成 ${plan.length} 节彼此独立的深度课程，每节 estimatedMinutes 固定为 ${lessonMinutes}；行业雷达恰好 1 条，estimatedMinutes 固定为 ${radarMinutes}；全期 estimatedMinutes 固定为 ${totalMinutes}。
+- 今天的多节课程只是并列安排，各自沿自己的知识树推进。禁止为了制造“今日主题”而把两门课拼成一条逻辑链，禁止要求一门课引用、解释或服务于另一门课。
 - 每节课程必须严格依次使用这 6 个结构块：coreQuestion（核心问题）→ framework（框架）→ keyPoints（恰好 3 个重点）→ caseStudy（一个案例）→ exercise（一个小练习）→ conclusion（一句话结论）。不得增加长篇正文或重复摘要。
 - coreQuestion 只问一个问题并以问号结尾；framework 用 2–3 步解释一个可复用框架并写清边界；3 个 keyPoints 必须有短标题，彼此不重复。
 - caseStudy 只使用一个具体案例，并明确用本课框架分析；exercise 要求读者产出一个可检查的结果；conclusion 只能有一句话。
 - 每节课程上述 6 个结构块的可见文字合计必须为 350–750 个中文字符。curriculum 元数据和 sources 不计入。不要在多个字段反复表达同一句结论。
-- 行业新变化只放在 radar，绝不能替代核心课程。radar 必须基于截至 ${targetDate} 已公开、确实值得知道的变化，并说明它与哪些课程主题有关。
-- radar 只写 whatChanged、whyItMatters、courseConnection 三段短信息，连同标题合计不超过 280 个中文字符；至少关联今天一门课程，避免无关资讯抢占注意力。
+- 行业新变化只放在 radar，绝不能替代核心课程。radar 是独立栏目，可以属于 13 条主线中的任意一个 module，不要求与今天的课程相关，也不要虚构关联。
+- radar 只写 module、whatChanged、whyItMatters、watchNext 三段短信息，连同标题合计不超过 280 个中文字符。watchNext 只说明接下来值得观察的信号，不得写“连接今天的课程”。
 - 必须实际使用 web search 核验 radar，优先公司公告、官方产品文档、监管机构或原始研究。sources.url 逐字复制真实检索结果，不能猜网址；页面会把每个网址与检索记录核对。
 - 核心课的 sources 可以为空；若引用研究、数据或具体事实，也必须来自本次真实检索记录。
 - 区分事实、来源方自报与编辑判断。不确定的数字删掉，不编造。
-- introduction 只写一段；页面标题、导语和 closing 都要简短。最后的全日 practice 用于连接今天的课程，不得复制每节 exercise。
+- title、subtitle 和单段 introduction 只负责列出今天有哪些独立课程、各自推进到哪里；不要提炼共同主题，不要用“串联、共同、从 A 到 B、先 A 再 B”等话术制造关联。
+- 不生成顶层 theme、practice 或 closing；每节课已经有自己的 exercise，练习不跨课程合并。
 - 语气清晰、克制、具体，优先短句、标签和可执行判断，避免术语堆砌和空泛鸡汤。不要提到你是 AI。
 
 最近课程标题（避免重复表达，但不能改变课程节点）：
 ${recentLessons.length ? recentLessons.map((line) => `- ${line}`).join("\n") : "- 暂无"}
 
-只输出符合 JSON Schema 的内容。日期必须为 ${targetDate}，schemaVersion 必须为 3。`;
+只输出符合 JSON Schema 的内容。日期必须为 ${targetDate}，schemaVersion 必须为 4。`;
 
 const responseSchema = structuredClone(DAILY_SCHEMA);
 responseSchema.properties.lessons.minItems = plan.length;
@@ -101,7 +102,7 @@ responseSchema.properties.lessons.items.properties.curriculum.properties.stageId
 responseSchema.properties.lessons.items.properties.curriculum.properties.unitId.enum = plan.map((item) => item.unit.id);
 responseSchema.properties.radar.minItems = 1;
 responseSchema.properties.radar.maxItems = 1;
-responseSchema.properties.radar.items.properties.relatedModules.items.enum = topics.modules.map((module) => module.id);
+responseSchema.properties.radar.items.properties.module.enum = topics.modules.map((module) => module.id);
 
 const response = await fetch("https://api.openai.com/v1/responses", {
   method: "POST",
@@ -177,7 +178,7 @@ try {
 
 // Identity and pacing come from the curriculum engine, never from model choice.
 entry.date = targetDate;
-entry.schemaVersion = 3;
+entry.schemaVersion = 4;
 entry.estimatedMinutes = totalMinutes;
 if (!Array.isArray(entry.lessons) || entry.lessons.length !== plan.length) {
   throw new Error(`模型返回的课程数量与固定计划不一致：应为 ${plan.length}`);
@@ -208,7 +209,20 @@ entry.lessons.forEach((lesson, index) => {
   };
 });
 entry.radar[0].estimatedMinutes = radarMinutes;
-entry.practice.estimatedMinutes = practiceMinutes;
+
+// The page heading is a deterministic course list, never an invented common theme.
+const courseNames = plan.map((item) => moduleMap.get(item.module)?.title ?? item.module);
+const listedTitle = `今日课程｜${courseNames.join(" · ")}`;
+entry.title = [...listedTitle].length <= 40 ? listedTitle : `今日课程｜${plan.length} 门独立课程`;
+const listedSubtitle = `今天安排 ${plan.length} 门独立课程：${courseNames.join("、")}。`;
+entry.subtitle = [...listedSubtitle].length <= 100 ? listedSubtitle : `今天安排 ${plan.length} 门独立课程，每门课程沿各自知识树推进。`;
+const listedIntroduction = plan.map((item) => {
+  const name = moduleMap.get(item.module)?.title ?? item.module;
+  return `${name}推进「${item.unit.title}」`;
+}).join("；") + "。每门课程按各自知识树独立学习。";
+entry.introduction = [[...listedIntroduction].length <= 160
+  ? listedIntroduction
+  : `今天安排 ${plan.length} 门独立课程，分别推进各自知识树中的下一单元；课程之间无需建立共同主题。`];
 
 assertValidEntry(entry, topics, targetDate, curriculum, entries);
 
