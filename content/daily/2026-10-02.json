@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 4,
+  "date": "2026-10-02",
+  "title": "今日课程｜个人成长",
+  "subtitle": "今天安排 1 门独立课程：个人成长，推进「价值排序与重要之事」。",
+  "estimatedMinutes": 28,
+  "introduction": [
+    "个人成长推进「价值排序与重要之事」，位于「方向与价值」阶段，第 1/24 课。课程沿个人成长知识树独立学习。"
+  ],
+  "lessons": [
+    {
+      "id": "personal-values-evidence-order",
+      "module": "personal_growth",
+      "curriculum": {
+        "stageId": "personal_growth_direction",
+        "stageTitle": "方向与价值",
+        "unitId": "personal_growth_direction_values",
+        "unitTitle": "价值排序与重要之事",
+        "objective": "掌握「价值排序与重要之事」的核心概念、判断方法与适用边界，并能用于一个具体案例。",
+        "scope": "本课只展开「价值排序与重要之事」；「长期目标与阶段目标」、「角色组合与生活边界」、「机会成本与主动放弃」仅可作为背景提及，不得展开其框架、方法或练习。",
+        "sequence": 1,
+        "totalUnits": 24,
+        "cycle": 1
+      },
+      "estimatedMinutes": 24,
+      "coreQuestion": "面对几个都值得追求的方向，怎样排出当前真正重要的事情？",
+      "framework": {
+        "name": "释义—对照—排序",
+        "definition": "价值是你希望持续体现的做事原则，例如求知、诚实或关怀；排序则说明它们发生冲突时，当前优先遵循哪一项。",
+        "steps": [
+          {
+            "title": "写清含义",
+            "text": "选出三项在意的价值，把抽象名词改写成别人能够观察到的具体行为。"
+          },
+          {
+            "title": "核对经历",
+            "text": "各找一件近期满足或后悔的事，区分自己的重视、他人的期待与现实限制。"
+          },
+          {
+            "title": "限定情境",
+            "text": "在一个真实冲突中说明优先项和理由，再写出足以改变这个排序的条件。"
+          }
+        ],
+        "boundary": "这是帮助自己判断的工具，不是人格测验；资源受限时的行为也不能直接证明你不重视某件事。"
+      },
+      "keyPoints": [
+        {
+          "title": "名词需要释义",
+          "text": "两个人都说重视成长，一个指拓宽见识，另一个指获得认可，不能默认它们含义相同。"
+        },
+        {
+          "title": "证据需要解释",
+          "text": "日程能显示资源流向，却不能单独解释动机；应补问当时有哪些可选行动和必要约束。"
+        },
+        {
+          "title": "排序需要条件",
+          "text": "不要给所有生活情境硬套同一张榜单；写明适用条件，判断才不会变成僵化的自我要求。"
+        }
+      ],
+      "caseStudy": {
+        "title": "示例：阅读选择里的真实偏好",
+        "context": "小林说自己重视求知，却总读排行榜上的书。一次分享会上，他因为讲了冷门主题而感到满足。",
+        "analysis": "先释义：求知意味着追问自己真正好奇的问题。再对照：追榜单有时为了与同事聊天，并非毫无价值。最后排序：个人自由阅读时优先好奇，团队共读时则考虑交流需要。",
+        "lesson": "同一种行为背后可能有不同价值，应结合情境解释选择。"
+      },
+      "exercise": {
+        "prompt": "回想最近一次让你犹豫的日常选择，写出其中三项价值的具体含义。",
+        "steps": [
+          "为每项价值各补一个可观察行为，避免只写抽象名词。",
+          "记录一次支持与一次不支持它的经历，并补充当时的限制。",
+          "写明此情境的第一优先项，以及一项会改变排序的条件。"
+        ],
+        "deliverable": "一张含行为证据、当前排序与适用条件的价值卡。"
+      },
+      "conclusion": "把重视的方向写成有证据、有条件的选择标准，重要之事才会变得清楚。",
+      "sources": []
+    }
+  ],
+  "radar": [
+    {
+      "id": "google-demand-gen-one-click-september",
+      "module": "advertising_frontier",
+      "title": "Google 缩短 Shorts 与 Gmail 广告跳转路径",
+      "estimatedMinutes": 4,
+      "whatChanged": "Google 于 9 月 24 日宣布：Gmail 图片广告及采用 9:16 满版图片的 YouTube Shorts 广告，支持用户单击进入广告主落地页。",
+      "whyItMatters": "编辑判断：跳转步骤减少可能改变点击后的流量构成，评估时应同时看有效访问与转化质量。",
+      "watchNext": "观察账户中的实际可用性，以及点击增长是否伴随有效访问和成交增长，避免只追求点击率。",
+      "sources": [
+        {
+          "title": "Turn discovery into action with September’s Demand Gen Drop.",
+          "url": "https://blog.google/products/ads-commerce/demand-gen-drop-september-2026/",
+          "publisher": "Google Ads & Commerce Blog",
+          "publishedAt": "2026-09-24"
+        }
+      ]
+    }
+  ]
+}

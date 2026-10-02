@@ -1,6 +1,6 @@
 # 每日学习
 
-一个由 GitHub Pages 托管、GitHub Actions 每日更新的结构化中文学习网站。
+一个由助手编写每日课程、GitHub Actions 校验发布、GitHub Pages 托管的结构化中文学习网站。
 
 它不是每天随机推送几条知识点，而是维护 **13 条互不依附的课程路径、13 节可立即阅读的完整起步课，以及 344 个有顺序的课程单元**。每天更新其中 1–2 门课程，各讲各自的核心知识，不需要围绕同一个主题强行关联；行业变化则单独进入“前沿雷达”，不会挤掉长期课程。
 
@@ -50,9 +50,9 @@
 - `/curriculum/{module}/` 先展示可完整阅读的起步课，再展示该主题的全部阶段、单元和日更发布状态；当前阶段默认展开
 - `/archive/` 按日期浏览、搜索往期内容
 - `/YYYY-MM-DD/` 每一期拥有可直接访问的静态地址
-- 每天 08:00（Asia/Shanghai）自动选择下一课程、生成、校验、归档和发布
+- 每天 08:00（Asia/Shanghai）由独立助手任务选择下一课程、核验来源并提交；GitHub 随后校验、构建和发布
 
-GitHub Actions 会在北京时间 08:00 触发任务；内容生成与页面发布需要几分钟，平台高峰时也可能稍有延迟。
+08:00 是助手任务开始时间，不是网页保证上线时间。生成、校验与发布需要几分钟；实际调度状态以助手任务为准。本仓库不再运行定时 API 生成，只有内容提交或手动发布会触发 GitHub Actions。
 - 自动生成 RSS、sitemap、404、社交预览图与公开 JSON 数据
 - 纯静态 HTML/CSS/JavaScript，无数据库、无运行时服务器、无前端依赖
 - 支持手机、深色模式、键盘操作、无 JavaScript 阅读和打印
@@ -70,23 +70,22 @@ GitHub Actions 会在北京时间 08:00 触发任务；内容生成与页面发�
   → 构建全部静态页面并发布
 ```
 
-模型不能自行选择当天知识点，也不能为同一天的不同课程虚构共同主题。`curriculum` 元数据由程序在生成后再次写入，并由全局校验按日期逐课检查；重复、跳课、漏主题、把新闻当核心课，或起步课没有完整覆盖 13 个主题，都会使发布失败。每日归档采用 schema v4：顶层只负责日期与本期索引，每节 `lesson` 和每条 `radar` 都携带自己的独立内容与所属主题。
+助手不能自行选择当天知识点，也不能为同一天的不同课程虚构共同主题。`npm run plan` 输出确定的 `curriculum` 元数据，写入课程后由全局校验按日期逐课检查；重复、跳课、漏主题、把新闻当核心课，或起步课没有完整覆盖 13 个主题，都会使发布失败。每日归档采用 schema v4：顶层只负责日期与本期索引，每节 `lesson` 和每条 `radar` 都携带自己的独立内容与所属主题。
 
-## 一次性部署设置
+## 发布设置与每日操作
 
-本仓库已经连接 `Via333/dailystudy`。新环境只需确认：
+本仓库连接 `Via333/dailystudy`，默认分支为 `main`。仓库 **Settings → Pages → Build and deployment → Source** 使用 **GitHub Actions**。正常日更不需要 `OPENAI_API_KEY`，也不会调用独立计费的生成 API。
 
-1. 仓库 **Settings → Pages → Build and deployment → Source** 为 **GitHub Actions**。
-2. 仓库 **Settings → Secrets and variables → Actions → Secrets** 中存在 `OPENAI_API_KEY`。
-3. 在 **Actions → 每日生成并发布 → Run workflow** 手动运行一次。
+每日 08:00（Asia/Shanghai）的助手任务在仓库之外调度。每日流程：
 
-没有密钥时，定时生成任务会明确失败，避免“显示成功但仍在发布旧内容”。添加密钥后，在 **Actions → 每日生成并发布 → Run workflow** 手动运行一次即可立即验证。
+1. 读取最新 `main` 和 `content/daily/`，按上海日期执行 `npm run plan -- --date YYYY-MM-DD`。如果返回 `already_archived`，保留原稿并检查其发布状态，不重新生成。
+2. 根据计划中的固定模块、单元、边界、元数据和时长，编写彼此独立的 1–2 节中文课程。遵循 `scripts/content-schema.mjs` 与 `content/README.md`，课程的六个结构块共 350–750 个中文字符。
+3. 使用当前一手来源核验独立行业雷达。逐个打开引用链接，准确标注来源日期；无法核实时停止并报告，不伪造新闻、来源或过去日期的日更。
+4. 只新增 `content/daily/YYYY-MM-DD.json`，不覆盖已归档内容，不因为中断而跳过课程单元。空缺日期保留为空缺，不批量伪造补档。
+5. 执行 `npm ci`、`npm test`。检查课程顺序、13 条主线、历史归档、链接与构建产物全部通过，再将当天文件提交到最新 `main`。遇到并发提交时重新读取、重算课程计划和测试，不强推。
+6. `main` 的 push 会运行 **校验并发布学习内容**。跟踪该提交的构建和部署，确认线上 `content/latest.json` 和日期页包含当天内容，再报告成功。失败时保留错误并修复，不用重复内容提交伪装成功。
 
-生成器使用 OpenAI Responses API 的 Web Search 与 Structured Outputs；默认模型为 `gpt-5.6-luna`，可通过 Actions variable `OPENAI_MODEL` 修改。密钥只进入 GitHub Actions 的生成任务，不会进入网页或归档。
-
-相关官方文档：[Web search](https://developers.openai.com/api/docs/guides/tools-web-search)、[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)。
-
-> 生成 API 与联网搜索会产生费用。建议在 OpenAI 项目中设置预算和用量提醒；涉及重要判断时仍应打开页面列出的一手来源复核。
+GitHub Actions 仅运行现有归档的校验、构建与 Pages 发布。**Actions → 校验并发布学习内容 → Run workflow** 可重发当前提交，不会生成新一期。课程生成与提交需要独立助手任务正常运行；仅启用 Actions 不会产生内容。
 
 ## 本地使用
 
@@ -100,20 +99,18 @@ npm run dev
 
 本地预览地址为 <http://127.0.0.1:4173>。
 
-生成当天内容：
+查看当天固定课程计划（无网络调用，不写入内容）：
 
 ```bash
-export OPENAI_API_KEY="你的密钥"
-npm run generate
+npm run plan
+npm run plan -- --date 2026-10-03
 ```
 
-补生成尚未存在、且晚于当前最新归档的日期：
+写好当天 JSON 后运行 `npm test`。已有日期默认保持不变；不在现有归档之前插入新稿，以免打乱课程顺序。
 
-```bash
-npm run generate -- --date 2026-08-09
-```
+### 可选旧 API 生成器
 
-已有日期默认保持不变。只有明确修订时使用 `--force`；为保护课程顺序，不能直接在现有归档之前插入一篇新内容。
+`scripts/generate-daily.mjs` 仅作为显式选择的旧工具保留，命令为 `npm run generate:api`。它不参与每日助手任务、构建或发布，需要使用者自行配置 API 密钥且会产生 API/搜索费用。不要将密钥提交到 Git 或聊天中。
 
 ## 项目结构
 
@@ -122,12 +119,13 @@ config/topics.json            4 个能力域、13 个主题与每周课程安排
 config/curriculum.json        13 条知识树、阶段和 344 个单元
 content/starter-lessons.json  13 门独立课程的常驻完整起步课
 content/daily/                每日深度课程与雷达归档
-scripts/generate-daily.mjs    选择下一课、联网生成并写入归档
+scripts/plan-daily.mjs        无 API 的固定课程计划，供助手编写
+scripts/generate-daily.mjs    可选旧 API 生成器，不参与日常任务
 scripts/validate-content.mjs  检查课程完整性与逐日推进顺序
 scripts/build-site.mjs        构建首页、课程地图、日期页与索引
 site/                         样式、轻量交互和分享图
 tests/                        发布物与课程规则测试
-.github/workflows/publish.yml 定时生成与 GitHub Pages 发布
+.github/workflows/publish.yml 校验、构建与 GitHub Pages 发布
 dist/                         本地派生的静态发布物，不提交
 ```
 
@@ -135,11 +133,11 @@ dist/                         本地派生的静态发布物，不提交
 
 ## 发布与安全
 
-- 只有定时或手动生成任务获得 `contents: write`，用于提交新日期文件。
+- 助手仅按用户授权提交课程；Actions 不获得 `contents: write`，也不接触 API 密钥。
 - 构建和部署使用独立任务与最小权限；Pages 只上传 `dist/`。
-- Pull Request 代码不会在带写权限或 API 密钥的生成任务中执行。
-- 时效来源必须命中本次真实搜索记录，否则不写入归档。
-- `GITHUB_TOKEN` 创建的提交不会触发第二个 workflow，因此生成、提交、构建和部署在同一次运行中完成。
+- 每次发布绑定触发该次运行的提交 SHA，避免构建时漂移到其他版本。
+- 时效来源必须经过实际检索与人工核验；结构校验不能代替事实核验。
+- 保留 13 条课程主线、13 节起步课和全部日期归档；课程进度仅按实际归档计算。
 
 ## License
 

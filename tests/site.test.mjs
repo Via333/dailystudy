@@ -9,6 +9,7 @@ import {
   flattenTrack,
   lessonVisibleCharacters,
   normalizeSourceUrl,
+  readDailyEntries,
   scheduleForDate,
   validateCurriculum,
   validateEntry,
@@ -63,15 +64,17 @@ async function filesUnder(directory) {
 }
 
 test("首页先展示 13 门可直接阅读的独立课程，再进入今日更新", async () => {
-  const [html, topics, starters] = await Promise.all([
+  const [html, topics, starters, entries] = await Promise.all([
     text("index.html"),
     sourceJson("config/topics.json"),
-    sourceJson("content/starter-lessons.json")
+    sourceJson("content/starter-lessons.json"),
+    readDailyEntries()
   ]);
   assert.match(html, /<html lang="zh-CN">/);
-  assert.match(html, /每日学习｜今日课程｜消费者心理 · 品牌与用户研究/);
+  const latest = entries[0];
+  assert.ok(html.includes(`每日学习｜${latest.title}`));
   assert.match(html, /<b>13<\/b> 条完整主线/);
-  assert.match(html, /<b>2<\/b> 条今日推进/);
+  assert.ok(html.includes(`<b>${latest.lessons.length}</b> 条今日推进`));
   assert.match(html, /13 个独立主题，现在都能开始学/);
   assert.match(html, /<b>13<\/b> 条独立主线.*<b>13<\/b> 节起步课.*<b>344<\/b> 个规划单元/s);
   assert.equal((html.match(/class="system-topic(?: is-today)?"/g) ?? []).length, 13);
@@ -82,8 +85,8 @@ test("首页先展示 13 门可直接阅读的独立课程，再进入今日更�
     assert.match(html, new RegExp(starter.coreQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     assert.match(html, new RegExp(starter.conclusion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
-  assert.equal((html.match(/class="system-topic is-today"/g) ?? []).length, 2);
-  assert.match(html, /今天深入 2 条主线/);
+  assert.equal((html.match(/class="system-topic is-today"/g) ?? []).length, latest.lessons.length);
+  assert.ok(html.includes(`今天深入 ${latest.lessons.length} 条主线`));
   assert.match(html, /3 KEY POINTS · 三个重点/);
   assert.match(html, /FRAMEWORK · 核心框架/);
   assert.match(html, /CASE · 例子/);
@@ -123,16 +126,17 @@ test("默认采用柔和纸张底与白色卡片，并保留手动深色切换",
   assert.doesNotMatch(app, /prefers-color-scheme/);
 });
 
-test("每日更新固定在北京时间 08:00", async () => {
+test("每日助手更新与无 API 的 GitHub 发布分离", async () => {
   const [workflow, readme] = await Promise.all([
     readFile(new URL(".github/workflows/publish.yml", rootUrl), "utf8"),
     readFile(new URL("README.md", rootUrl), "utf8")
   ]);
-  assert.match(workflow, /cron:\s*["']0 8 \* \* \*["'][\s\S]*timezone:\s*["']Asia\/Shanghai["']/);
-  assert.match(workflow, /未配置 OPENAI_API_KEY[^\n]*\n\s*exit 1/);
+  assert.doesNotMatch(workflow, /OPENAI_API_KEY|npm run generate|schedule:|cron:|contents: write/);
+  assert.match(workflow, /push:\s*branches: \[main\]/);
+  assert.match(workflow, /workflow_dispatch:/);
+  assert.match(workflow, /ref: \$\{\{ github.sha \}\}/);
+  assert.match(workflow, /run: npm test/);
   assert.match(readme, /每天 08:00（Asia\/Shanghai）/);
-  assert.doesNotMatch(workflow, /cron:\s*["']7 8 \* \* \*["']/);
-  assert.doesNotMatch(workflow, /未配置 OPENAI_API_KEY[^\n]*\n\s*exit 0/);
 });
 
 test("学习地图为全部 13 个主题生成独立知识树与完整起步课", async () => {
@@ -147,17 +151,20 @@ test("学习地图为全部 13 个主题生成独立知识树与完整起步课"
   assert.match(overview, /4 DOMAINS · 13 TRACKS/);
   assert.match(overview, /344/);
   for (const domain of topics.learningDomains) assert.match(overview, new RegExp(domain.title));
+  const entries = await readDailyEntries();
   for (const module of topics.modules) {
     assert.match(overview, new RegExp(module.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     const page = await text(`curriculum/${module.id}/index.html`);
     const track = curriculum.tracks.find((item) => item.module === module.id);
     const starter = starters.lessons.find((item) => item.module === module.id);
+    const published = entries.flatMap((entry) => entry.lessons).find((lesson) => lesson.module === module.id && lesson.curriculum.unitId === starter.curriculum.unitId);
+    const displayed = published ?? starter;
     assert.match(page, /START HERE · 完整起步课/);
-    assert.match(page, new RegExp(starter.coreQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(page, new RegExp(starter.framework.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(page, new RegExp(starter.caseStudy.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(page, new RegExp(starter.exercise.prompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(page, new RegExp(starter.conclusion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(displayed.coreQuestion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(displayed.framework.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(displayed.caseStudy.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(displayed.exercise.prompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(page, new RegExp(displayed.conclusion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     assert.match(page, /完整分阶段知识树/);
     assert.match(page, /<details class="stage-block/);
     assert.match(page, /下一课/);
@@ -221,7 +228,9 @@ test("历史列表、日期直达页面和公开 JSON 都可独立访问", async
   assert.match(issue, /2026-08-08｜今日课程｜消费者心理 · 品牌与用户研究｜每日学习/);
   assert.match(issue, /href="\.\.\/assets\/styles\.css"/);
   assert.equal(latest.schemaVersion, 4);
-  assert.equal(latest.lessons.length, 2);
+  const [topics, entries] = await Promise.all([sourceJson("config/topics.json"), readDailyEntries()]);
+  assert.equal(latest.date, entries[0].date);
+  assert.deepEqual(latest.lessons.map((lesson) => lesson.module), scheduleForDate(latest.date, topics));
   assert.equal(progress.tracks.length, 13);
   assert.equal(publicCurriculum.tracks.length, 13);
 });
@@ -347,19 +356,24 @@ test("常驻起步课不冒充日期发布进度", async () => {
     text("curriculum/advertising_frontier/index.html"),
     text("curriculum/consumer_psychology/index.html")
   ]);
-  assert.equal(progress.tracks.reduce((total, track) => total + track.completedUnits, 0), 2);
-  const advertisingProgress = progress.tracks.find((track) => track.module === "advertising_frontier");
-  assert.equal(advertisingProgress.completedUnits, 0);
-  assert.match(advertising, /日期归档已发布 0 \/ 24 个单元/);
-  assert.match(advertising, /这是常驻主题课，不占用日期归档进度/);
+  const entries = await readDailyEntries();
+  const archivedLessons = entries.flatMap((entry) => entry.lessons);
+  assert.equal(progress.tracks.reduce((total, track) => total + track.completedUnits, 0), archivedLessons.length);
+  for (const track of progress.tracks) {
+    assert.equal(track.completedUnits, archivedLessons.filter((lesson) => lesson.module === track.module).length);
+  }
+  const advertisingCount = archivedLessons.filter((lesson) => lesson.module === "advertising_frontier").length;
+  assert.ok(advertising.includes(`日期归档已发布 ${advertisingCount} / 24 个单元`));
   assert.match(advertising, /起步课可读/);
-  assert.match(consumer, /日期归档已发布 1 \/ 32 个单元/);
+  if (!advertisingCount) assert.match(advertising, /这是常驻主题课，不占用日期归档进度/);
+  const consumerCount = archivedLessons.filter((lesson) => lesson.module === "consumer_psychology").length;
+  assert.ok(consumer.includes(`日期归档已发布 ${consumerCount} / 32 个单元`));
   assert.match(consumer, /已优先采用 2026-08-08 的正式日更版本/);
 });
 
 test("所有生成页面的本地链接在项目子路径结构中都能解析", async () => {
   const htmlFiles = (await filesUnder(distPath)).filter((file) => file.endsWith(".html"));
-  assert.equal(htmlFiles.length, 18);
+  assert.equal(htmlFiles.length, 17 + (await readDailyEntries()).length);
   for (const file of htmlFiles) {
     const html = await readFile(file, "utf8");
     for (const match of html.matchAll(/href="([^"]+)"/g)) {
@@ -408,4 +422,22 @@ test("时效性来源可与真实检索记录做规范化核对", () => {
   assert.ok(urls.has("https://example.com/news"));
   assert.ok(urls.has("https://docs.example.org/update?a=1&b=2"));
   assert.equal(normalizeSourceUrl("https://example.com/news?fbclid=tracking"), "https://example.com/news");
+});
+
+test("课程计划无需 API，按上海日期幂等且不写归档", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const before = (await readdir(path.join(rootPath, "content/daily"))).sort();
+  const entries = await readDailyEntries();
+  const env = { ...process.env, OPENAI_API_KEY: "" };
+  const archived = JSON.parse(execFileSync(process.execPath, ["scripts/plan-daily.mjs", "--date", entries[0].date], { cwd: rootPath, env, encoding: "utf8" }));
+  assert.equal(archived.status, "already_archived");
+  const nextDate = new Date(Date.parse(`${entries[0].date}T00:00:00Z`) + 86400000).toISOString().slice(0, 10);
+  const planned = JSON.parse(execFileSync(process.execPath, ["scripts/plan-daily.mjs", "--date", nextDate], { cwd: rootPath, env, encoding: "utf8" }));
+  const [topics, curriculum] = await Promise.all([sourceJson("config/topics.json"), sourceJson("config/curriculum.json")]);
+  const expected = curriculumPlanForDate(nextDate, topics, curriculum, entries);
+  assert.equal(planned.status, "ready");
+  assert.deepEqual(planned.lessons.map((lesson) => lesson.module), expected.map((lesson) => lesson.module));
+  assert.deepEqual(planned.lessons.map((lesson) => lesson.curriculum.unitId), expected.map((lesson) => lesson.unit.id));
+  assert.equal(planned.estimatedMinutes, (planned.lessons.length === 1 ? 24 : 32) + 4);
+  assert.deepEqual((await readdir(path.join(rootPath, "content/daily"))).sort(), before);
 });

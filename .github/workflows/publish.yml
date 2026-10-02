@@ -1,23 +1,11 @@
-name: 每日生成并发布
+name: 校验并发布学习内容
 
+# 内容由助手在每日北京时间 08:00 的独立任务中生成并提交。
+# Actions 只校验、构建和发布，不调用付费生成 API。
 on:
   push:
     branches: [main]
-  schedule:
-    # 北京时间每天 08:00 触发；GitHub Actions 高峰时可能稍有延迟。
-    - cron: "0 8 * * *"
-      timezone: "Asia/Shanghai"
   workflow_dispatch:
-    inputs:
-      date:
-        description: "可选：补档日期（YYYY-MM-DD），留空为上海当天"
-        required: false
-        type: string
-      force:
-        description: "覆盖已存在日期（只用于明确修订）"
-        required: false
-        default: false
-        type: boolean
 
 concurrency:
   group: pages
@@ -27,71 +15,8 @@ permissions:
   contents: read
 
 jobs:
-  generate:
-    name: 生成并归档当天内容
-    if: github.event_name != 'push'
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      contents: write
-    env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.6-luna' }}
-      REQUESTED_DATE: ${{ inputs.date }}
-      FORCE_REGENERATE: ${{ inputs.force }}
-      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-    steps:
-      - name: 读取默认分支
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.repository.default_branch }}
-
-      - name: 准备 Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: 安装项目
-        run: npm ci
-
-      - name: 生成当天内容
-        shell: bash
-        run: |
-          if [[ -z "$OPENAI_API_KEY" ]]; then
-            echo "::error::未配置 OPENAI_API_KEY，无法生成当天内容。请在仓库 Actions secrets 中添加后重试。"
-            exit 1
-          fi
-
-          args=()
-          if [[ -n "$REQUESTED_DATE" ]]; then
-            args+=(--date "$REQUESTED_DATE")
-          fi
-          if [[ "$FORCE_REGENERATE" == "true" ]]; then
-            args+=(--force)
-          fi
-          npm run generate -- "${args[@]}"
-
-      - name: 校验归档
-        run: npm run validate
-
-      - name: 保存新一期到 Git 历史
-        shell: bash
-        run: |
-          git add content/daily
-          if git diff --cached --quiet; then
-            echo "没有新的内容需要提交。"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "content: add daily learning issue"
-          git push origin "HEAD:${DEFAULT_BRANCH}"
-
   build:
     name: 构建静态网站
-    if: always() && (github.event_name == 'push' || needs.generate.result == 'success')
-    needs: generate
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -102,7 +27,7 @@ jobs:
       - name: 读取待发布版本
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.event_name == 'push' && github.sha || github.event.repository.default_branch }}
+          ref: ${{ github.sha }}
 
       - name: 准备 Node.js
         uses: actions/setup-node@v6
