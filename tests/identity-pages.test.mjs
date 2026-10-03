@@ -52,11 +52,11 @@ test('身份页面发布数只来自真实标签，不将旧档或起步课双�
   for (const entry of archive.filter(item => item.date < config.effectiveDate)) for (const lesson of entry.lessons) assert.equal(lesson.learningIdentity,null);
 });
 
-test('迁移保留三个旧日期归档、13节原起步课与344单元知识树的原始字节', async () => {
+test('保留已审定归档、13节原起步课与344单元知识树（10-03 为进阶修订）', async () => {
   const hashes = {
     'content/daily/2026-08-08.json':'a9a13d491dd2bf2ff77f20a6c8c70827afe7b8757908a6d83f8509d8a1ecd913',
     'content/daily/2026-10-02.json':'c08c421280fbec89853e847557211d19e626d383580a70b2d3a40e3ebe4a46d9',
-    'content/daily/2026-10-03.json':'cda4cf38d6d27c326519533ea8258d09f39c3502ac1f6702c677057f493af782',
+    'content/daily/2026-10-03.json':'7c73d3f77300a0a5ad9d07a65190015eb1e26f4705889edab08d78d472a65c6b',
     'content/starter-lessons.json':'23c8b660fbe5d80f0702aaa1e24bf531b5501a9a4688421f2383398dd8442439',
     'config/curriculum.json':'382ed34131fb619c5eb99bd7eb53fc06d31eefed4865cbe980682b509c515141'
   };

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 4,
   "date": "2026-10-03",
-  "title": "今日课程｜消费者心理 · 品牌与用户研究",
-  "subtitle": "消费者心理推进「消费者想完成的任务」；品牌与用户研究推进「用户任务与进步」。",
+  "title": "营销进阶｜任务动机与定位证据",
+  "subtitle": "消费者心理：广告承诺如何匹配真实任务；品牌研究：任务洞察怎样支撑定位取舍。",
   "estimatedMinutes": 36,
   "introduction": [
-    "消费者心理进入「消费者决策旅程」第 2/32 课；品牌与用户研究进入「市场与问题定义」第 2/28 课。两门课程分别学习，另附独立行业雷达。"
+    "本期按资深媒介广告负责人的经验深度修订。两课分别推进原有第 2 单元：一课讨论消费者任务与广告承诺，一课讨论任务证据与定位判断；另附 Google AI Brief 的近期变化。"
   ],
   "lessons": [
     {
@@ -23,62 +23,68 @@
         "cycle": 1
       },
       "estimatedMinutes": 16,
-      "coreQuestion": "消费者买下同一件商品时，想完成的事情为什么可能完全不同？",
+      "coreQuestion": "同一人群包里，为什么相反的广告承诺都可能赢？",
       "framework": {
-        "name": "事情—感受—关系",
-        "definition": "消费者任务是人在具体处境中希望取得的进步；产品只是帮助他完成事情、获得某种感受或处理社会关系的手段。",
+        "name": "任务、承诺与可信度",
+        "definition": "JTBD 将购买解释为特定情境中的进步；对媒介策略的推论是，属性相近的人也可能追求不同结果，承诺必须按任务检验。",
         "steps": [
           {
-            "title": "写出事情",
-            "text": "暂时删掉品牌和功能词，说明消费者希望哪件事做成，以及什么结果对他有用。"
+            "title": "先定位任务",
+            "text": "将功能、情绪和社会意义分别写成希望改善的结果；同一用户出差与度假时，不默认共享一种需求。"
           },
           {
-            "title": "辨认感受",
-            "text": "分开记录他想获得的内在感受，以及希望别人怎样看待自己，避免混成一句好体验。"
+            "title": "推导价值主张",
+            "text": "问广告究竟承诺哪种进步、凭什么可信；只增强感染力而无产品交付支撑，会放大预期落差。"
           },
           {
-            "title": "连接线索",
-            "text": "找出选择细节如何服务这些进步；只有推测而没有言行支持的解释，先标为假设。"
+            "title": "检查竞争解释",
+            "text": "素材胜出可能来自流量构成而非承诺更好；先核对任务情境、价格与投放分配，再解释表现。"
           }
         ],
-        "boundary": "三种维度用于理解动机，不要求每次购买都同等具备，也不能仅凭年龄、价格或包装断定心理。"
+        "boundary": "任务是待检验的动机解释，不是可直接投放的人群包；高点击也不能单独证明心理机制成立。"
       },
       "keyPoints": [
         {
-          "title": "任务不是功能",
-          "text": "保温是杯子的功能，长途乘车时随时喝到热水才描述了使用者希望实现的进步。"
+          "title": "人群是代理变量",
+          "text": "人口属性适合描述与触达，未必解释动机；同一情境可跨多个年龄或收入群体存在。"
         },
         {
-          "title": "情绪不等于社交",
-          "text": "觉得安心是自己的感受，让同事认为自己可靠是社会意义；两者可能同时存在。"
+          "title": "情绪要有交付物",
+          "text": "归属感不是一句情绪口号，应对应可体验的产品或服务；否则只能购买注意，难以兑现承诺。"
         },
         {
-          "title": "任务属于处境",
-          "text": "同一个人自用和送礼时，可能给同一商品赋予不同任务，不能把任务当作固定人格。"
+          "title": "别把胜出写成因果",
+          "text": "平台会选择性分发素材；比较结果前要辨别人群和情境差异，不能把算法筛选当理论证明。"
         }
       ],
       "caseStudy": {
-        "title": "教学示例：一盒点心的三层用处",
-        "context": "小林第一次到朋友家做客，选了可分食的点心，并说自己担心空手上门显得不够周到。",
-        "analysis": "可分食帮助大家一起享用，是功能进步；减少自己的局促，是情绪进步；表达重视，是社会进步。包装精美本身不能证明他爱炫耀，解释必须与这次拜访及他的表达相符。",
-        "lesson": "把选择放回具体处境，才能理解哪些属性对这个人真正有意义。"
+        "title": "Airbnb：Live There",
+        "context": "Airbnb 在 2016 年推出 Live There，同时提供街区匹配与房东指南；官方主张是让旅客像当地人生活。",
+        "analysis": "本课推断：它把住宿承诺延伸到融入当地的体验，并用产品功能提供可信支撑。这解释了动作如何一致，但公告没有对照实验，不能据此声称广告带来多少增量。",
+        "lesson": "可迁移的是任务、承诺与交付的对应关系；只复制情绪表达并不能复制策略。"
       },
       "exercise": {
-        "prompt": "选一件你自用和送人时都买过的商品，分别解释两次购买想完成什么。",
+        "prompt": "选一个正在投放的产品，重审两条面向同一人群的广告承诺。",
         "steps": [
-          "各写一句不含品牌和功能名称的任务描述。",
-          "分别列出事情、感受、关系，并允许某一栏暂时空缺。",
-          "为每项解释补一个言行线索，没有证据的地方注明假设。"
+          "分别写出任务情境、承诺和可验证的交付证据。",
+          "列出一个能解释素材差异的非动机因素。",
+          "写明什么结果会让你放弃当前任务假设。"
         ],
-        "deliverable": "两张情境不同、附有证据或假设标记的任务卡。"
+        "deliverable": "一页含任务、证据、竞争解释与改判条件的创意决策卡。"
       },
-      "conclusion": "理解购买要从消费者想取得的进步出发，而不是把商品属性直接当作动机。",
+      "conclusion": "媒介触达决定见到谁，任务假设帮助判断该承诺什么，但有效性仍需证据。",
       "sources": [
         {
-          "title": "What is Jobs to Be Done Theory?",
-          "url": "https://www.christenseninstitute.org/video/what-is-jobs-to-be-done-theory/",
-          "publisher": "Clayton Christensen Institute",
-          "publishedAt": "2025-09-24"
+          "title": "Airbnb Launches New Products to Inspire People to Live There",
+          "url": "https://news.airbnb.com/airbnb-launches-new-products-to-inspire-people-to-live-there",
+          "publisher": "Airbnb Newsroom",
+          "publishedAt": "2016-04-16"
+        },
+        {
+          "title": "Finding jobs your product is used for",
+          "url": "https://www.intercom.com/blog/videos/finding-jobs-your-product-is-used-for/",
+          "publisher": "Intercom",
+          "publishedAt": "2016-08-23"
         }
       ]
     },
@@ -97,57 +103,63 @@
         "cycle": 1
       },
       "estimatedMinutes": 16,
-      "coreQuestion": "怎样把用户提出的功能愿望，整理成能够被研究检验的任务陈述？",
+      "coreQuestion": "访谈里的任务洞察，凭什么可以影响定位和资源投入？",
       "framework": {
-        "name": "经历—进步—完成标准",
-        "definition": "研究中的任务陈述说明谁在什么工作情境下希望改善什么结果；它应能回溯到具体经历，并暂时保留多种实现方式。",
+        "name": "证据、机制与决策阈值",
+        "definition": "用户任务理论用于解释选择，不自动证明市场规模或策略回报；研究价值在于让某个资源选择变得更可检验。",
         "steps": [
           {
-            "title": "还原经历",
-            "text": "请亲历者讲最近一次处理这件事的过程，记录具体动作、卡点和参与者，少问泛泛偏好。"
+            "title": "把故事连到行为",
+            "text": "还原实际购买或放弃经历，区分用户原话、观察和研究者解释；拒绝把漂亮任务句当作验证结果。"
           },
           {
-            "title": "提炼进步",
-            "text": "把我要某功能改写为在某处境下，我希望完成某事，以便获得某结果，并核对原话。"
+            "title": "写出策略推论",
+            "text": "若任务成立，哪些承诺与交付必须改变；注明从证据到判断依赖的假设，不直接跨到销量预测。"
           },
           {
-            "title": "约定完成",
-            "text": "追问做到什么才算有进步，把答案写成可观察的标准，标注仍需补证的部分。"
+            "title": "设定改判阈值",
+            "text": "写出足以改变定位建议的反证与最低验证信号，让研究减少决策不确定性，而非只增加材料。"
           }
         ],
-        "boundary": "任务卡是待验证的研究结论；一位受访者的故事不能代表所有用户，也不能直接证明某功能值得开发。"
+        "boundary": "访谈能发现机制线索，不能估计群体发生率；同一时期的增长不能归因于单一研究方法。"
       },
       "keyPoints": [
         {
-          "title": "先找到亲历者",
-          "text": "购买者、使用者和决策者可能不同；先确认谁经历过问题，避免把转述当成一手证据。"
+          "title": "区分显著与普遍",
+          "text": "生动经历可能是真实的少数情境；立项前还要检查任务是否足够常见、重要且值得投入。"
         },
         {
-          "title": "区分材料与解释",
-          "text": "原话、观察记录与研究者推断分开保存；一句听起来合理的任务描述不等于已经被证实。"
+          "title": "叙述不等于行为",
+          "text": "用户会事后合理化；寻找具体时间、动作与付出代价的线索，并纳入放弃者的相反经历。"
         },
         {
-          "title": "保留反驳可能",
-          "text": "注明什么观察会让任务卡失效，例如用户真正受阻的是权限不足，而非信息查找困难。"
+          "title": "研究应改变选择",
+          "text": "先写清两种定位各需什么证据；若任何访谈结果都不影响方案，研究只是为既定观点背书。"
         }
       ],
       "caseStudy": {
-        "title": "教学示例：门店交接要群机器人吗",
-        "context": "店长提出做一个群机器人。研究者请接班员工重述昨天交接，并一起查看未完成订单记录。",
-        "analysis": "员工反复翻聊天找订单负责人。任务可暂写为：换班时快速确认待处理订单及责任人，以便接续服务。完成标准是接班者无需逐人追问便能说清待办；机器人只是候选实现，仍需观察其他班次核对。",
-        "lesson": "研究输出应连接具体证据与完成标准，不能只把功能愿望换一种说法。"
+        "title": "Intercom：按任务重组产品",
+        "context": "Intercom 自述以访谈梳理客户雇用产品的任务，随后重组四类产品及营销表达，并披露同期流量增长。",
+        "analysis": "本课推断：任务证据使定位、产品包装和落地页围绕可辨认的结果对齐；但团队扩张等同时发生，前后对比无法分离 JTBD 的贡献。迁移前须验证自己的任务是否稳定且可交付。",
+        "lesson": "可借鉴证据到定位的推理路径，不能把公司自述的同期增长当作可复制回报。"
       },
       "exercise": {
-        "prompt": "拿一条真实功能需求，设计一次十分钟访谈，只为形成一张可核验的任务卡。",
+        "prompt": "拿一个已经准备投入预算的定位方案，写一份是否继续的研究备忘。",
         "steps": [
-          "先写三问：最近一次怎么做、哪里卡住、怎样才算做完。",
-          "注明应访问的亲历者，并把已有事实与待问问题分开。",
-          "草拟任务和完成标准，再写一条可能推翻它的观察。"
+          "列出支持它的行为证据和仍缺失的关键证据。",
+          "写出最强反对解释，以及能区分两者的观察。",
+          "明确继续、缩小或停止投入各需要什么信号。"
         ],
-        "deliverable": "一张含证据出处、完成标准和反证条件的任务草卡。"
+        "deliverable": "一页定位建议，附证据缺口、替代解释和决策阈值。"
       },
-      "conclusion": "一份有用的任务陈述，必须让别人看得见证据、判断得了进步、找得到验证缺口。",
+      "conclusion": "值得付费的洞察会改变资源取舍，并明确还缺哪些证据才能承担更大承诺。",
       "sources": [
+        {
+          "title": "How to market the Job-to-be-Done",
+          "url": "https://www.intercom.com/blog/videos/marketing-the-job-to-be-done/",
+          "publisher": "Intercom",
+          "publishedAt": "2016-01-21"
+        },
         {
           "title": "Finding jobs your product is used for",
           "url": "https://www.intercom.com/blog/videos/finding-jobs-your-product-is-used-for/",
@@ -159,19 +171,19 @@
   ],
   "radar": [
     {
-      "id": "microsoft-fabric-iq-sharing-preview",
-      "module": "ai",
-      "title": "微软推出 Fabric 业务语境跨组织共享预览",
+      "id": "google-ai-brief-and-journey-reporting",
+      "module": "advertising_frontier",
+      "title": "AI Brief 扩展语言，搜索广告将提供完整路径视图",
       "estimatedMinutes": 4,
-      "whatChanged": "微软在 9 月 28 日公告中推出 Fabric IQ Sharing 预览，允许组织共享数据及其业务语境，并保留对底层资产的治理；目前从部分 Fabric IQ 资产与语境开始。",
-      "whyItMatters": "编辑判断：企业 AI 协作的难点包含指标含义与权限边界，传递数据文件本身未必能让合作方正确理解业务。",
-      "watchNext": "观察预览支持哪些资产、访问控制如何落实，以及共享后的业务定义能否保持一致；不要把预览当作全面可用。",
+      "whatChanged": "Google 9 月 23 日公告：AI Brief 封闭测试新增七种语言，可输入业务、人群与信息要求；另预告统一展示搜索词、素材和落地页的报告，具体开放细节将在年内补充。",
+      "whyItMatters": "本课推断：当系统自动组合触达与素材，负责人更需管理承诺和落地证据的一致性；路径透明并不等于已经证明广告增量。",
+      "watchNext": "先核实账号和语言开放范围；功能可用后检查承诺一致性、品牌词占比及新客贡献，避免将更完整的归因报告直接当作扩预算依据。",
       "sources": [
         {
-          "title": "New Microsoft data innovations unlock what only your business knows",
-          "url": "https://blogs.microsoft.com/blog/2026/09/28/new-microsoft-data-innovations-unlock-what-only-your-business-knows/",
-          "publisher": "Microsoft Official Blog",
-          "publishedAt": "2026-09-28"
+          "title": "New AI Max features: Build ad campaigns more efficiently",
+          "url": "https://blog.google/products/ads-commerce/ai-max-language-reporting-features/",
+          "publisher": "Google Ads & Commerce",
+          "publishedAt": "2026-09-23"
         }
       ]
     }

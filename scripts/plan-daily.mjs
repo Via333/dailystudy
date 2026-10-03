@@ -15,6 +15,7 @@ if (entries.some((entry) => entry.date === date)) {
   const lessonMinutes = plan.length === 1 ? (date >= identities.effectiveDate ? 26 : 24) : 16;
   console.log(JSON.stringify({
     date, status: "ready", estimatedMinutes: lessonMinutes * plan.length + 4,
+    editorialRequirements: "先读取每课 identityContext.learnerProfile；职场课按资深媒介广告负责人水平，用理论、策略、真实案例与可检验的第一性原理推理，不讲投放和运营入门。个人发展仍按其独立身份编写。",
     identityPlan: { effectiveDate: identities.effectiveDate, active: date >= identities.effectiveDate,
       sharedCurriculum: true, assignment: "calendar_rotation" },
     lessons: plan.map(({ module, track, unit, cycle, learningIdentity, identityContext }) => ({
@@ -24,6 +25,6 @@ if (entries.some((entry) => entry.date === date)) {
       curriculum: { stageId: unit.stageId, stageTitle: unit.stageTitle, unitId: unit.id, unitTitle: unit.title,
         objective: unit.objective, scope: unit.scope, sequence: unit.sequence, totalUnits: unit.totalUnits, cycle }
     })),
-    radar: { count: 1, estimatedMinutes: 4, requirement: "独立行业观察，需检索并核验一手来源；不得虚构新消息或日期。" }
+    radar: { count: 1, estimatedMinutes: 4, requirement: "独立行业观察，优先营销新玩法、媒介机制、创意或测量变化；需检索并核验一手来源，标明日期、开放地区与测试状态，解释机制变化、限制和验证信号；不得把老案例说成新消息。" }
   }, null, 2));
 }

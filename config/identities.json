@@ -157,8 +157,8 @@
       "id": "work",
       "path": "career",
       "title": "职场增长",
-      "description": "DTC 独立站销售增长、经营管理与媒介广告投放。",
-      "goal": "把销售、利润、获客、转化与留存连接成可复盘的经营动作，提升跨部门、向上沟通与团队协作。",
+      "description": "面向有多年经验的媒介广告负责人：营销理论、营销策略、案例拆解与新玩法。",
+      "goal": "从消费者选择、竞争与价值创造的底层机制出发，提高定位、增长组合、媒介预算和验证方案的判断质量。",
       "primaryModules": [
         "advertising_frontier",
         "marketing_case",
@@ -177,140 +177,164 @@
       ],
       "focusAreas": [
         {
-          "id": "dtc_operations",
-          "title": "销售、促销与经营复盘",
-          "description": "围绕 DTC 销售目标、促销节奏、毛利与贡献利润、库存、预测和经营复盘组织判断。",
+          "id": "marketing_theory",
+          "title": "营销理论与第一性原理",
+          "description": "比较需求、注意、记忆、信任与选择的机制；区分理论假设、经验规律与可检验推断。",
           "modules": [
-            "finance_macro",
-            "data_analysis",
-            "media_ecommerce",
-            "management_organization",
-            "marketing_case"
-          ],
-          "practice": "把一次促销或销售变化拆成驱动因素、利润影响、预测差异与下一步负责人。"
-        },
-        {
-          "id": "media_ads",
-          "title": "媒介预算与广告增长",
-          "description": "连接预算、素材、投放优化、归因、增量评估与代理商协作，区分平台指标和业务结果。",
-          "modules": [
-            "advertising_frontier",
-            "aesthetics_creative",
-            "data_analysis",
-            "marketing_case",
-            "management_organization",
-            "communication"
-          ],
-          "practice": "用一个广告假设说明预算或素材取舍、观察信号、护栏和复盘条件。"
-        },
-        {
-          "id": "conversion_retention",
-          "title": "CRO、CRM、邮件与留存",
-          "description": "理解独立站转化阻力、客户分层、邮件触达、复购与留存，避免只盯一次成交。",
-          "modules": [
-            "media_ecommerce",
             "consumer_psychology",
             "brand_product_research",
-            "data_analysis"
+            "cognitive_decision",
+            "aesthetics_creative"
           ],
-          "practice": "选择一段转化或留存流程，写明用户问题、分群、指标和一个验证动作。"
+          "practice": "为一个策略写出机制、竞争解释，以及足以推翻它的观察。"
         },
         {
-          "id": "collaboration",
-          "title": "跨部门、向上与团队协作",
-          "description": "把目标、证据、资源与责任讲清楚，改进跨部门接口、向上汇报、团队授权和反馈。",
+          "id": "marketing_strategy",
+          "title": "定位、品牌与增长策略",
+          "description": "研究需求创造与承接、渗透与复购、品牌与效果的协同，用约束和机会成本判断 DTC 资源配置。",
           "modules": [
+            "brand_product_research",
+            "media_ecommerce",
+            "finance_macro",
+            "advertising_frontier",
+            "management_organization"
+          ],
+          "practice": "比较两个可行方案，写明放弃什么、需要什么证据才能改选。"
+        },
+        {
+          "id": "case_transfer",
+          "title": "营销案例与迁移条件",
+          "description": "拆解真实品牌的商业问题、关键选择和证据；辨别策略贡献、渠道红利与幸存者偏差。",
+          "modules": [
+            "marketing_case",
+            "aesthetics_creative",
+            "consumer_psychology",
+            "communication"
+          ],
+          "practice": "写出一个可迁移机制和一个不可照搬的条件，再提出本业务的验证办法。"
+        },
+        {
+          "id": "frontier_experiments",
+          "title": "新玩法、媒介与增长实验",
+          "description": "追踪 AI 搜索、创作者合作、零售媒体和 CRM 等变化；把新机会转成可证伪的媒介或增长假设。",
+          "modules": [
+            "advertising_frontier",
+            "media_ecommerce",
+            "ai",
+            "data_analysis",
+            "marketing_case"
+          ],
+          "practice": "列出变化带来的新能力、准入限制、增量评估和扩量/停止阈值。"
+        },
+        {
+          "id": "decision_leadership",
+          "title": "测量、预算与决策协同",
+          "description": "处理归因与增量的差异、边际回报、模型不确定性，以及跨部门激励对战略执行的影响。",
+          "modules": [
+            "data_analysis",
+            "finance_macro",
             "management_organization",
             "communication",
             "cognitive_decision"
           ],
-          "practice": "输出一页决策建议或责任清单，包含待决事项、负责人和检查点。"
-        },
-        {
-          "id": "work_foundations",
-          "title": "研究、数据与 AI 基础",
-          "description": "让研究、消费者理解、创意和 AI 服务当前经营问题，保持证据和权限边界。",
-          "modules": [
-            "brand_product_research",
-            "consumer_psychology",
-            "aesthetics_creative",
-            "ai",
-            "data_analysis",
-            "cognitive_decision"
-          ],
-          "practice": "将当前单元方法应用到一个真实或明确标注假设的工作问题。"
+          "practice": "形成一页包含备选方案、证据、风险与更新条件的负责人决策建议。"
         }
       ],
       "caseGuidance": [
-        "案例站在 DTC 经营或媒介广告负责人的视角，讲清业务目标、指标口径、资源约束与责任。",
-        "优先选销售促销、毛利预测、预算素材、CRO、CRM、邮件留存或协作场景，具体选择服从当前单元。",
-        "平台 ROAS、归因收入与增量利润不能混写；业务数据若是假设必须注明。"
+        "以资深媒介广告负责人的战略问题切入，用营销理论解释案例，不把案例写成活动流水账或泛泛赞美。",
+        "还原目标、约束、关键选择、机制及结果证据；比较至少一种替代解释，指出哪些条件不能复制。",
+        "优先一手品牌公告、原始研究、官方案例和公开实验；平台自报、观察相关与因果增量分开写。"
       ],
       "practiceGuidance": [
-        "只保留一个工作角色练习，替换通用练习，不加第二份作业。",
-        "练习产出能进入经营复盘、投放判断或沟通协作的具体材料，但不扩展到当前单元之外。"
+        "默认已经掌握媒介与基础运营；一个练习只产出一项有取舍的策略判断，不复述定义或列基础步骤。",
+        "判断写明关键假设、证据缺口、适用边界，以及什么信号会触发加码、调整或停止。"
       ],
       "contexts": {
         "advertising_frontier": {
-          "caseContext": "DTC 品牌在业务目标、媒介预算、素材、投放稳定性与代理商执行之间作判断。",
-          "exercise": "把本课机制对应到一个投放决策，区分平台指标、归因结果与增量证据。",
-          "deliverable": "一张投放决策与护栏卡"
+          "caseContext": "从平台的激励、信息与交易机制分析广告自动化、AI 搜索和新媒介，判断品牌对预算、信号与创意的控制权变化。",
+          "exercise": "提出一条新平台/能力的增量假设，写清准入条件、混杂因素与退出标准。",
+          "deliverable": "一张新媒介机制与验证卡"
         },
         "marketing_case": {
-          "caseContext": "拆解独立站促销、新品或传播活动的商业目标、约束和效果证据。",
-          "exercise": "用当前单元方法审视一个活动，写清可迁移做法、前提与利润影响。",
-          "deliverable": "一张活动复盘或改进卡"
+          "caseContext": "拆解真实营销案例的理论依据、战略选择、预算约束和结果证据，检验成功能否迁移。",
+          "exercise": "将当前单元用于案例反事实：换市场、品牌基础或预算后，哪条机制仍成立？",
+          "deliverable": "一页案例迁移与反证备忘"
         },
         "media_ecommerce": {
-          "caseContext": "独立站经营中的商品、促销、库存履约、CRO、CRM 分层、邮件与复购。",
-          "exercise": "选择与本课最相关的一段交易或留存流程，提出一个可核验的改进动作。",
-          "deliverable": "一段流程、指标与负责人"
+          "caseContext": "研究平台权力、渠道协同、增长约束和单位经济；将 CRO、CRM、复购作为策略杠杆，跳过操作基础。",
+          "exercise": "比较两个增长方案的约束、边际收益与相互蚕食，写明取舍和验证条件。",
+          "deliverable": "一张增长组合决策表"
         },
         "brand_product_research": {
-          "caseContext": "研究独立站用户任务、购买阻力、商品价值与产品或页面验证。",
-          "exercise": "用当前单元方法检验一个产品或 CRO 假设，写清证据边界与决策用途。",
-          "deliverable": "一条研究问题与验证设计"
+          "caseContext": "用需求理论与证据决定定位、价值主张和增长空间，区分客户陈述、行为证据与战略推断。",
+          "exercise": "把研究结论转成一个可被反证的战略选择，写明需要补齐的关键证据。",
+          "deliverable": "一页定位假设与证据缺口"
         },
         "data_analysis": {
-          "caseContext": "从销售、促销、毛利、预测偏差、转化或留存数据中识别经营问题。",
-          "exercise": "围绕当前单元建立一个问题的指标口径，并给出证据到动作的判断。",
-          "deliverable": "一页指标与行动分析"
+          "caseContext": "讨论归因、选择偏差、因果识别、边际回报与测量不确定性如何改变媒介预算决策。",
+          "exercise": "说明数据能支持与不能支持的判断，为当前策略设计最低可行的验证。",
+          "deliverable": "一张因果判断与预算更新卡"
         },
         "management_organization": {
-          "caseContext": "DTC 团队与媒介代理商围绕销售目标、预算、排期与交付跨部门协作。",
-          "exercise": "把当前单元方法用于一个决策或协作接口，写明负责人、输入和检查点。",
-          "deliverable": "一张责任与协作清单"
+          "caseContext": "分析广告主、平台、代理商和跨部门团队的目标冲突与激励，解释策略为何在执行中变形。",
+          "exercise": "定位一个关键激励冲突，比较两种权责或评价机制并说明代价。",
+          "deliverable": "一页激励与决策权设计"
         },
         "consumer_psychology": {
-          "caseContext": "独立站顾客在页面、价格、促销和复购触达中的行为与阻力。",
-          "exercise": "把本课心理机制转成一条 CRO 或 CRM 假设，同时写出消费者信任护栏。",
-          "deliverable": "一条行为实验与护栏"
+          "caseContext": "从消费者任务、记忆、身份与风险机制推导广告承诺和策略边界，比较心理解释与可观察证据。",
+          "exercise": "用当前机制重审一个创意或定位假设，写明竞争解释、适用情境与反证。",
+          "deliverable": "一张机制到营销选择的假设卡"
         },
         "aesthetics_creative": {
-          "caseContext": "评估广告素材、商品图、邮件或落地页的信息层级与创意表达。",
-          "exercise": "根据当前单元改动一处素材或页面表达，写出预期影响与观察方法。",
-          "deliverable": "一个素材改稿与验证信号"
+          "caseContext": "分析创意的注意获取、品牌识别、记忆提取与情境匹配，解释表现力和商业结果何时脱节。",
+          "exercise": "对照两个创意的机制而非风格，提出一个可检验的品牌或行为假设。",
+          "deliverable": "一份有机制依据的创意判断"
         },
         "finance_macro": {
-          "caseContext": "DTC 经营中的毛利、贡献利润、促销费用、库存现金流与销售预测。",
-          "exercise": "用本课方法检查一个经营取舍，列出收入、成本、现金影响与关键假设。",
-          "deliverable": "一张经营财务判断卡"
+          "caseContext": "把媒介预算放进贡献利润、现金回收、风险和机会成本中，讨论扩量与增长质量的矛盾。",
+          "exercise": "比较两个资源投向的边际价值和风险，写出改变决定所需的条件。",
+          "deliverable": "一张预算取舍与敏感性判断"
         },
         "ai": {
-          "caseContext": "用 AI 支持经营周报、素材流程、用户研究或代理商沟通的低风险环节。",
-          "exercise": "用当前单元设计一个可审查的工作步骤，保留数据权限和人工决策边界。",
-          "deliverable": "一个有审核点的工作流"
+          "caseContext": "研究 AI 对消费者发现、内容供给、平台分发和组织能力的改变，区分效率改善与新的竞争优势。",
+          "exercise": "拆解一项 AI 营销玩法的机制、限制与验证信号，不写工具入门教程。",
+          "deliverable": "一份 AI 营销策略实验简报"
         },
         "cognitive_decision": {
-          "caseContext": "在销量波动、投放结果或团队意见不一致时处理证据、偏差与不确定性。",
-          "exercise": "将当前单元用于一个经营判断，记录反例、证据强度和更新阈值。",
-          "deliverable": "一张判断与复盘卡"
+          "caseContext": "在不确定的营销结果中处理基础率、因果解释、反事实和信息价值，降低经验带来的过度自信。",
+          "exercise": "为一个重要策略列出两种竞争解释，并预先写好改判条件。",
+          "deliverable": "一张策略判断与证据更新卡"
         },
         "communication": {
-          "caseContext": "向上汇报经营结果，与跨部门团队或代理商澄清目标、证据和资源请求。",
-          "exercise": "按当前单元写一段结论先行的工作信息，说明依据、待决问题与行动请求。",
-          "deliverable": "一段汇报或协作信息"
+          "caseContext": "将有争议的营销策略、预算与增量证据转成管理层可以比较和决策的论证。",
+          "exercise": "围绕一个资源取舍写出主张、证据边界、最强反对意见及回应。",
+          "deliverable": "一页营销策略决策备忘"
         }
+      },
+      "learnerProfile": {
+        "level": "资深从业者",
+        "background": "多年媒介广告负责人，熟悉广告投放与媒介协作，具备运营基础。",
+        "assumedKnowledge": [
+          "CPM、CPC、CTR、CVR、ROAS 等常用口径",
+          "账户搭建、投放流程、常见渠道和素材测试",
+          "漏斗、促销、CRO、CRM、留存等运营常识"
+        ],
+        "priorities": [
+          "营销理论：解释机制、理论假设、竞争解释与失效边界",
+          "营销策略：定位、需求创造与承接、品牌和效果协同、资源取舍",
+          "营销案例：还原约束、关键选择、证据强度与迁移条件",
+          "新玩法：核验平台、创意、商业模式或测量变化，设计小规模证伪"
+        ],
+        "editorialRules": [
+          "直接从负责人要做的决策或反直觉现象切入；不讲行业入门、指标释义、工具按钮或基础运营清单。",
+          "第一性原理要落实为可检验的因果链：谁在什么约束下追求什么收益，行动改变哪个机制，什么观察会推翻解释；不要把所有营销简化成一条万能定律。",
+          "每课明确理论或研究来源、关键假设、策略取舍和至少一个反例或边界；区分学术理论、作者经验与本课推断。",
+          "若固定单元标题含基础或概念，保留课程位置，但以进阶决策深度讲解；六块结构用于推理，不用于复述定义。",
+          "案例优先真实品牌或平台的一手资料，拆解目标、约束、动作、机制、结果证据及可复制前提；没有因果证据就明确不能归因，不编造 ROI。",
+          "案例可以经典，但新玩法须核验近期原始公告，标明日期、地区、灰度/测试状态；拆清它改变了什么机制和什么没有变。",
+          "练习只留一个负责人级产出：预算取舍、战略备忘、创意假设或验证方案，含判定标准与停止条件；避免抄概念或画通用漏斗。",
+          "保留每日总时长和六块结构，用更有判断含量的内容替换基础解释，不增加第二份作业。"
+        ]
       }
     }
   ],

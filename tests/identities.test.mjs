@@ -230,12 +230,12 @@ test("Schema 保持旧档可读，并为新日期严格要求 learningIdentity",
   assert.match(validateStandaloneLesson(starter, "starter", topics).join("\n"), /learningIdentity/);
 });
 
-test("全部旧归档仍通过校验，历史与课程原文逐字节保持不变", async () => {
+test("归档与知识树通过校验并保持已审定版本（含 10-03 明确修订）", async () => {
   const expected = {
     "config/curriculum.json": "382ed34131fb619c5eb99bd7eb53fc06d31eefed4865cbe980682b509c515141",
     "content/daily/2026-08-08.json": "a9a13d491dd2bf2ff77f20a6c8c70827afe7b8757908a6d83f8509d8a1ecd913",
     "content/daily/2026-10-02.json": "c08c421280fbec89853e847557211d19e626d383580a70b2d3a40e3ebe4a46d9",
-    "content/daily/2026-10-03.json": "cda4cf38d6d27c326519533ea8258d09f39c3502ac1f6702c677057f493af782",
+    "content/daily/2026-10-03.json": "7c73d3f77300a0a5ad9d07a65190015eb1e26f4705889edab08d78d472a65c6b",
     "content/starter-lessons.json": "23c8b660fbe5d80f0702aaa1e24bf531b5501a9a4688421f2383398dd8442439"
   };
   for (const [file, hash] of Object.entries(expected)) {
@@ -258,6 +258,12 @@ test("只读计划输出角色场景和 30/36 分钟，已有日期保持归档"
   assert.equal(next.identityPlan.effectiveDate, config.effectiveDate);
   assert.deepEqual(next.lessons.map((lesson) => lesson.learningIdentity), ["work", "personal"]);
   assert.ok(next.lessons.every((lesson) => lesson.identityContext.caseContext && lesson.identityContext.exercise));
+  const workLesson = next.lessons.find((lesson) => lesson.learningIdentity === "work");
+  const personalLesson = next.lessons.find((lesson) => lesson.learningIdentity === "personal");
+  assert.equal(workLesson.identityContext.learnerProfile.level, "资深从业者");
+  assert.ok(workLesson.identityContext.learnerProfile.priorities.some((priority) => priority.includes("营销理论")));
+  assert.ok(workLesson.identityContext.learnerProfile.editorialRules.some((rule) => rule.includes("第一性原理")));
+  assert.equal(personalLesson.identityContext.learnerProfile, undefined);
   const single = run("2026-10-09");
   assert.equal(single.estimatedMinutes, 30);
   assert.equal(single.lessons[0].estimatedMinutes, 26);

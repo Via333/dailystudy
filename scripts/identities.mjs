@@ -105,6 +105,7 @@ export function identityContext(identityId, module, config = DEFAULT_IDENTITIES)
     module, moduleKind: role.primaryModules.includes(module) ? "primary" : "foundation",
     focusAreas: role.focusAreas.filter((focus) => focus.modules.includes(module)),
     caseGuidance: role.caseGuidance, practiceGuidance: role.practiceGuidance,
+    ...(role.learnerProfile ? { learnerProfile: role.learnerProfile } : {}),
     ...role.contexts[module]
   };
 }
