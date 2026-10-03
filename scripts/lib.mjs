@@ -1,9 +1,47 @@
 import { readFile, readdir } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const DAILY_DIR = path.join(ROOT, "content", "daily");
+
+// A single default config also lets direct validator callers enforce role labels.
+// No historical archive is modified or assigned a retrospective identity.
+export const DEFAULT_IDENTITIES = JSON.parse(readFileSync(path.join(ROOT, "config", "identities.json"), "utf8"));
+
+export async function readIdentities() {
+  return readJson(path.join(ROOT, "config", "identities.json"));
+}
+
+export function identityForLesson(date, module, topics, config = DEFAULT_IDENTITIES) {
+  if (!isDateString(date) || !isDateString(config?.effectiveDate)) throw new Error("身份计划日期必须是有效的 YYYY-MM-DD");
+  if (date < config.effectiveDate) return null;
+  const assignment = config.moduleAssignments.find((item) => item.module === module);
+  if (!assignment) throw new Error(`身份配置缺少主题：${module}`);
+  if (!scheduleForDate(date, topics).includes(module)) throw new Error(`主题 ${module} 不在 ${date} 的固定课程计划中`);
+  if (assignment.mode === "fixed") {
+    if (!Array.isArray(assignment.identities) || assignment.identities.length !== 1 ||
+        assignment.identities[0] !== assignment.firstIdentity || !["personal", "work"].includes(assignment.firstIdentity)) {
+      throw new Error(`主题 ${module} 的固定身份配置无效`);
+    }
+    return assignment.firstIdentity;
+  }
+  if (assignment.mode !== "rotate" || !Array.isArray(assignment.identities) || assignment.identities.length !== 2 || new Set(assignment.identities).size !== 2 || assignment.identities.some((id) => !["personal", "work"].includes(id)) || !assignment.identities.includes(assignment.firstIdentity)) {
+    throw new Error(`主题 ${module} 的身份轮换配置无效`);
+  }
+  // Count calendar occurrences, not published lessons: skipping a publication or
+  // requesting the same date again cannot silently change that date's identity.
+  const period = topics.dailySchedule.length;
+  const effectiveScheduleIndex = ((dayOffset(config.effectiveDate, topics.curriculumStartDate) % period) + period) % period;
+  const moduleScheduleIndex = topics.dailySchedule.findIndex((items) => items.includes(module));
+  if (moduleScheduleIndex < 0) throw new Error(`主题 ${module} 不在固定课程安排中`);
+  const firstOffset = (moduleScheduleIndex - effectiveScheduleIndex + period) % period;
+  const occurrence = Math.floor((dayOffset(date, config.effectiveDate) - firstOffset) / period);
+  const start = assignment.identities.indexOf(assignment.firstIdentity);
+  return assignment.identities[(start + occurrence) % assignment.identities.length];
+}
+
 
 export function isDateString(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -220,12 +258,19 @@ export function validateStandaloneLesson(lesson, label, topics, expectedUnit) {
   }
 
   validateAllowedKeys(lesson, label, [
-    "id", "module", "curriculum", "estimatedMinutes", "coreQuestion", "framework",
+    "id", "module", "learningIdentity", "curriculum", "estimatedMinutes", "coreQuestion", "framework",
     "keyPoints", "caseStudy", "exercise", "conclusion", "sources"
   ], errors);
   if (!/^[a-z0-9-]+$/.test(lesson.id ?? "")) errors.push(`${label}.id 格式无效`);
   const knownModules = new Set((topics?.modules ?? []).map((module) => module.id));
   if (!knownModules.has(lesson.module)) errors.push(`${label}.module 未在主题配置中`);
+
+  if (lesson.learningIdentity !== undefined && !["personal", "work"].includes(lesson.learningIdentity)) {
+    errors.push(`${label}.learningIdentity 必须为 personal 或 work`);
+  }
+  if (expectedUnit?.learningIdentity && lesson.learningIdentity !== expectedUnit.learningIdentity) {
+    errors.push(`${label}.learningIdentity 必须为当天身份计划 ${expectedUnit.learningIdentity}`);
+  }
 
   const expectedModule = expectedUnit?.module;
   const unit = expectedUnit?.unit ?? expectedUnit;
@@ -421,7 +466,7 @@ export function validateCurriculum(curriculum, topics) {
   return errors;
 }
 
-export function validateEntry(entry, topics, expectedDate, curriculum, priorEntries = []) {
+export function validateEntry(entry, topics, expectedDate, curriculum, priorEntries = [], identityConfig = DEFAULT_IDENTITIES) {
   const errors = [];
   if (!entry || typeof entry !== "object" || Array.isArray(entry)) return ["内容必须是一个 JSON 对象"];
   validateAllowedKeys(entry, "entry", [
@@ -446,7 +491,10 @@ export function validateEntry(entry, topics, expectedDate, curriculum, priorEntr
   let plan = [];
   if (curriculum && isDateString(entry.date)) {
     try {
-      plan = curriculumPlanForDate(entry.date, topics, curriculum, priorEntries);
+      plan = curriculumPlanForDate(entry.date, topics, curriculum, priorEntries).map((item) => ({
+        ...item,
+        learningIdentity: identityForLesson(entry.date, item.module, topics, identityConfig)
+      }));
     } catch (error) {
       errors.push(error.message);
     }
@@ -506,6 +554,15 @@ export function validateEntry(entry, topics, expectedDate, curriculum, priorEntr
     if (Number.isInteger(entry.estimatedMinutes) && (entry.estimatedMinutes < expectedRange[0] || entry.estimatedMinutes > expectedRange[1])) {
       errors.push(`包含 ${entry.lessons.length} 节课程时，estimatedMinutes 必须为 ${expectedRange[0]}–${expectedRange[1]} 分钟`);
     }
+    if (isDateString(entry.date) && entry.date >= identityConfig.effectiveDate) {
+      const plannedLessonMinutes = entry.lessons.length === 1 ? 26 : 16;
+      const plannedTotal = entry.lessons.length === 1 ? 30 : 36;
+      if (entry.estimatedMinutes !== plannedTotal) errors.push(`身份课程全期 estimatedMinutes 必须为 ${plannedTotal}`);
+      entry.lessons.forEach((lesson, index) => {
+        if (lesson?.estimatedMinutes !== plannedLessonMinutes) errors.push(`lessons[${index}].estimatedMinutes 必须为 ${plannedLessonMinutes}`);
+      });
+      if (entry.radar[0]?.estimatedMinutes !== 4) errors.push("radar[0].estimatedMinutes 必须为 4");
+    }
     const calculatedMinutes = [...entry.lessons, ...entry.radar]
       .reduce((total, item) => total + (Number.isInteger(item?.estimatedMinutes) ? item.estimatedMinutes : 0), 0);
     if (calculatedMinutes !== entry.estimatedMinutes) {
@@ -554,7 +611,7 @@ export function collectGroundedSourceUrls(response) {
   return urls;
 }
 
-export function assertValidEntry(entry, topics, expectedDate, curriculum, priorEntries = []) {
-  const errors = validateEntry(entry, topics, expectedDate, curriculum, priorEntries);
+export function assertValidEntry(entry, topics, expectedDate, curriculum, priorEntries = [], identityConfig = DEFAULT_IDENTITIES) {
+  const errors = validateEntry(entry, topics, expectedDate, curriculum, priorEntries, identityConfig);
   if (errors.length) throw new Error(errors.map((error) => `- ${error}`).join("\n"));
 }

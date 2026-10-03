@@ -376,7 +376,10 @@ test("常驻起步课不冒充日期发布进度", async () => {
 
 test("所有生成页面的本地链接在项目子路径结构中都能解析", async () => {
   const htmlFiles = (await filesUnder(distPath)).filter((file) => file.endsWith(".html"));
-  assert.equal(htmlFiles.length, 17 + (await readDailyEntries()).length);
+  const identities = await sourceJson("config/identities.json");
+  const entries = await readDailyEntries();
+  const rolePages = identities.identities.reduce((sum,identity) => sum + 1 + new Set([...identity.primaryModules, ...identity.foundationModules]).size + entries.filter(entry => entry.lessons.some(lesson => lesson.learningIdentity === identity.id)).length,0);
+  assert.equal(htmlFiles.length, 4 + (await sourceJson("config/curriculum.json")).tracks.length + entries.length + rolePages);
   for (const file of htmlFiles) {
     const html = await readFile(file, "utf8");
     for (const match of html.matchAll(/href="([^"]+)"/g)) {
@@ -441,6 +444,6 @@ test("课程计划无需 API，按上海日期幂等且不写归档", async () =
   assert.equal(planned.status, "ready");
   assert.deepEqual(planned.lessons.map((lesson) => lesson.module), expected.map((lesson) => lesson.module));
   assert.deepEqual(planned.lessons.map((lesson) => lesson.curriculum.unitId), expected.map((lesson) => lesson.unit.id));
-  assert.equal(planned.estimatedMinutes, (planned.lessons.length === 1 ? 24 : 32) + 4);
+  assert.equal(planned.estimatedMinutes, (planned.lessons.length === 1 ? 26 : 32) + 4);
   assert.deepEqual((await readdir(path.join(rootPath, "content/daily"))).sort(), before);
 });

@@ -51,6 +51,9 @@ jobs:
         shell: bash
         run: |
           test -f dist/index.html
+          test -f dist/personal/index.html
+          test -f dist/career/index.html
+          test -f dist/content/identity-progress.json
           test -f dist/archive/index.html
           test -f dist/curriculum/index.html
           test -f dist/curriculum/consumer_psychology/index.html

@@ -1,3 +1,4 @@
+import { readIdentities, validateIdentities } from "./identities.mjs";
 import path from "node:path";
 import {
   DAILY_DIR,
@@ -12,11 +13,12 @@ import {
   validateStandaloneLesson
 } from "./lib.mjs";
 
-const [topics, curriculum, starterBundle, entriesDescending] = await Promise.all([
+const [topics, curriculum, starterBundle, entriesDescending, identities] = await Promise.all([
   readTopics(),
   readCurriculum(),
   readStarterLessons(),
-  readDailyEntries()
+  readDailyEntries(),
+  readIdentities()
 ]);
 
 const moduleIds = new Set(topics.modules.map((module) => module.id));
@@ -67,6 +69,7 @@ if (missing.length) configFailures.push(`以下主题没有进入每周课程：
 if (repeated.length) configFailures.push(`以下主题在每周课程中重复：${repeated.join(", ")}`);
 if (scheduledModules.length !== topics.modules.length) configFailures.push("每周计划必须让 13 个主题各推进一次");
 configFailures.push(...validateCurriculum(curriculum, topics));
+configFailures.push(...validateIdentities(identities, topics, curriculum));
 if (configFailures.length) {
   throw new Error(`课程配置校验失败：\n${configFailures.map((failure) => `- ${failure}`).join("\n")}`);
 }
@@ -136,7 +139,7 @@ const priorEntries = [];
 for (const entry of entries) {
   if (seen.has(entry.date)) failures.push(`${entry.date}: 日期重复`);
   seen.add(entry.date);
-  const errors = validateEntry(entry, topics, entry.__fileDate, curriculum, priorEntries);
+  const errors = validateEntry(entry, topics, entry.__fileDate, curriculum, priorEntries, identities);
   failures.push(...errors.map((error) => `${entry.date}: ${error}`));
   priorEntries.push(entry);
 }
@@ -149,4 +152,4 @@ const totalUnits = curriculum.tracks.reduce(
   (total, track) => total + track.stages.reduce((stageTotal, stage) => stageTotal + stage.units.length, 0),
   0
 );
-console.log(`✓ 已校验 ${curriculum.tracks.length} 条课程路径、${totalUnits} 个单元、${starterLessons.length} 节独立起步课与 ${entries.length} 期每日学习内容`);
+console.log(`✓ 已校验 ${curriculum.tracks.length} 条共享课程路径、${identities.identities.length} 种应用身份、${totalUnits} 个单元、${starterLessons.length} 节独立起步课与 ${entries.length} 期每日学习内容`);

@@ -1,3 +1,5 @@
+import { DEFAULT_IDENTITIES, isDateString } from "./lib.mjs";
+
 const SOURCE_SCHEMA = {
   type: "object",
   additionalProperties: false,
@@ -68,6 +70,7 @@ export const DAILY_SCHEMA = {
         properties: {
           id: { type: "string", pattern: "^[a-z0-9-]+$", maxLength: 72 },
           module: { type: "string", minLength: 2, maxLength: 48 },
+          learningIdentity: { type: "string", enum: ["personal", "work"] },
           curriculum: {
             type: "object",
             additionalProperties: false,
@@ -170,3 +173,14 @@ export const DAILY_SCHEMA = {
     }
   }
 };
+
+// The archive schema remains backwards-compatible. API structured output needs
+// every offered property to be required, so old-date generation omits this field.
+export function dailySchemaForDate(date, config = DEFAULT_IDENTITIES) {
+  if (!isDateString(date)) throw new Error("Schema 日期必须是有效的 YYYY-MM-DD");
+  const schema = structuredClone(DAILY_SCHEMA);
+  const lesson = schema.properties.lessons.items;
+  if (date >= config.effectiveDate) lesson.required.push("learningIdentity");
+  else delete lesson.properties.learningIdentity;
+  return schema;
+}

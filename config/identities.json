@@ -1,0 +1,433 @@
+{
+  "schemaVersion": 1,
+  "effectiveDate": "2026-10-04",
+  "description": "两种应用身份复用既有知识树；共享单元按全局顺序推进，案例与练习按身份区分。",
+  "identities": [
+    {
+      "id": "personal",
+      "path": "personal",
+      "title": "个人发展",
+      "description": "个人理财与投资，以及面向海外的小生意探索。",
+      "goal": "把资金、时间与试错预算放到可解释的选择上，逐步验证能获客、能交付、算得清账的小生意。",
+      "primaryModules": [
+        "finance_macro",
+        "brand_product_research",
+        "media_ecommerce",
+        "personal_growth"
+      ],
+      "foundationModules": [
+        "consumer_psychology",
+        "marketing_case",
+        "aesthetics_creative",
+        "data_analysis",
+        "ai",
+        "cognitive_decision",
+        "communication"
+      ],
+      "focusAreas": [
+        {
+          "id": "cash_allocation",
+          "title": "现金流与资金配置",
+          "description": "区分生活安全垫、长期投资和小生意试错资金，理解流动性与机会成本。",
+          "modules": [
+            "finance_macro",
+            "personal_growth",
+            "cognitive_decision"
+          ],
+          "practice": "用假设金额画一张现金用途表，并写出不能动用的安全垫。"
+        },
+        {
+          "id": "investment_judgment",
+          "title": "投资工具、估值与风险",
+          "description": "在现有财务、估值和风险单元内比较工具特征、费用、期限及损失情景，不提供个别证券买卖指令。",
+          "modules": [
+            "finance_macro",
+            "data_analysis",
+            "cognitive_decision"
+          ],
+          "practice": "比较两类投资工具的现金流、流动性与风险，列明估值假设和失效条件。"
+        },
+        {
+          "id": "business_validation",
+          "title": "机会、商业模式与验证",
+          "description": "从用户任务和竞争替代出发，检查需求、付费意愿与单位经济，不把兴趣当成需求证据。",
+          "modules": [
+            "brand_product_research",
+            "consumer_psychology",
+            "finance_macro",
+            "data_analysis"
+          ],
+          "practice": "为一个海外小生意写出客户、价值、成本和最低成本证伪试验。"
+        },
+        {
+          "id": "overseas_acquisition_delivery",
+          "title": "海外获客与交付",
+          "description": "用 Amazon、独立站或内容渠道，以及礼品包装等候选生意比较获客、费用、库存、履约和售后。",
+          "modules": [
+            "media_ecommerce",
+            "marketing_case",
+            "aesthetics_creative",
+            "brand_product_research",
+            "communication"
+          ],
+          "practice": "选择一个真实候选场景，写出获客假设、履约清单与单单贡献利润。"
+        },
+        {
+          "id": "personal_execution",
+          "title": "判断与个人执行",
+          "description": "用 AI、数据、表达和复盘支持投资研究与低成本生意试验，保护工作生活边界。",
+          "modules": [
+            "ai",
+            "personal_growth",
+            "cognitive_decision",
+            "communication",
+            "data_analysis"
+          ],
+          "practice": "完成一个可核验的小产出，并记录下一步与停止条件。"
+        }
+      ],
+      "caseGuidance": [
+        "案例站在个人资金配置者或小生意探索者的视角，明确预算、时间、风险与证据边界。",
+        "Amazon 与礼品包装是可选情境，只有适合当前单元时使用；不得硬塞进每课或承诺新增完整课程。",
+        "资金、收益、客户和订单若是假设，必须明确标为教学假设；不编造用户真实财务数据。"
+      ],
+      "practiceGuidance": [
+        "只保留本课一个角色化练习，替换通用练习，不额外增加阅读或练习量。",
+        "练习围绕当前单元目标，产出一张表、一条判断或一个小试验；不得跳到未教的单元。"
+      ],
+      "contexts": {
+        "finance_macro": {
+          "caseContext": "以个人现金配置、投资判断或小生意现金流为情境，区分生活资金、投资资金与试错资金。",
+          "exercise": "把本课方法用于一项假设的资金选择，写明金额、期限、风险和一个关键假设。",
+          "deliverable": "一张资金判断卡与失效条件"
+        },
+        "brand_product_research": {
+          "caseContext": "比较海外礼品包装或其他候选生意的用户任务、替代方案和需求证据。",
+          "exercise": "只检验本课对应的一条用户或产品假设，设计不依赖先囤货的低成本验证。",
+          "deliverable": "一条假设与一项证伪试验"
+        },
+        "media_ecommerce": {
+          "caseContext": "比较 Amazon、独立站或内容渠道的获客路径、渠道成本与包装礼品交付约束。",
+          "exercise": "围绕当前单元画出候选小生意的一段获客或交付流程，并标出待核实费用。",
+          "deliverable": "一段渠道流程与成本清单"
+        },
+        "personal_growth": {
+          "caseContext": "个人在本职工作之外分配投资学习和海外小生意试验的时间与精力。",
+          "exercise": "用当前单元的方法安排一个能完成的小行动，并明确暂停或放弃条件。",
+          "deliverable": "一周行动与边界卡"
+        },
+        "consumer_psychology": {
+          "caseContext": "观察海外买家在购买礼品或包装服务时的真实动机、考虑集和决策阻力。",
+          "exercise": "把本课心理机制对应到一条可观察的购买行为，避免用自己的偏好替代证据。",
+          "deliverable": "一条行为假设与观察信号"
+        },
+        "marketing_case": {
+          "caseContext": "从适合小预算海外生意的营销案例中辨别客户、约束、渠道和有效证据。",
+          "exercise": "只迁移与本课有关的一条案例方法，写清试验成本、适用前提和停止条件。",
+          "deliverable": "一张小预算试验卡"
+        },
+        "aesthetics_creative": {
+          "caseContext": "用礼品包装、商品图或小生意页面分析视觉表达与用户理解。",
+          "exercise": "按当前单元原则改一处包装或商品呈现，写明改动前后的判断依据。",
+          "deliverable": "一个局部改稿与理由"
+        },
+        "data_analysis": {
+          "caseContext": "分析个人投资研究或小生意验证中的小样本数据与成本收益。",
+          "exercise": "先写一个当前单元能回答的问题，再确定口径与最低限度证据。",
+          "deliverable": "一张问题、口径、证据表"
+        },
+        "ai": {
+          "caseContext": "用 AI 辅助公开投资资料整理、海外市场研究或小生意流程准备。",
+          "exercise": "把当前单元方法用于一个低风险任务，保留来源、人工复核点与失败处理。",
+          "deliverable": "一个带核验步骤的工作流"
+        },
+        "cognitive_decision": {
+          "caseContext": "面对投资观点、市场机会或有限试错预算，练习独立判断与不确定性表达。",
+          "exercise": "将当前单元方法用于一个待定选择，记录证据、反例和更新条件。",
+          "deliverable": "一张可复盘的决策卡"
+        },
+        "communication": {
+          "caseContext": "向潜在买家、供应商或合作对象说明需求、价值和交付边界。",
+          "exercise": "用当前单元方法写一段用于需求核实或供应商沟通的简短信息。",
+          "deliverable": "一段信息与明确行动请求"
+        }
+      }
+    },
+    {
+      "id": "work",
+      "path": "career",
+      "title": "职场增长",
+      "description": "DTC 独立站销售增长、经营管理与媒介广告投放。",
+      "goal": "把销售、利润、获客、转化与留存连接成可复盘的经营动作，提升跨部门、向上沟通与团队协作。",
+      "primaryModules": [
+        "advertising_frontier",
+        "marketing_case",
+        "media_ecommerce",
+        "brand_product_research",
+        "data_analysis",
+        "management_organization"
+      ],
+      "foundationModules": [
+        "consumer_psychology",
+        "aesthetics_creative",
+        "finance_macro",
+        "ai",
+        "cognitive_decision",
+        "communication"
+      ],
+      "focusAreas": [
+        {
+          "id": "dtc_operations",
+          "title": "销售、促销与经营复盘",
+          "description": "围绕 DTC 销售目标、促销节奏、毛利与贡献利润、库存、预测和经营复盘组织判断。",
+          "modules": [
+            "finance_macro",
+            "data_analysis",
+            "media_ecommerce",
+            "management_organization",
+            "marketing_case"
+          ],
+          "practice": "把一次促销或销售变化拆成驱动因素、利润影响、预测差异与下一步负责人。"
+        },
+        {
+          "id": "media_ads",
+          "title": "媒介预算与广告增长",
+          "description": "连接预算、素材、投放优化、归因、增量评估与代理商协作，区分平台指标和业务结果。",
+          "modules": [
+            "advertising_frontier",
+            "aesthetics_creative",
+            "data_analysis",
+            "marketing_case",
+            "management_organization",
+            "communication"
+          ],
+          "practice": "用一个广告假设说明预算或素材取舍、观察信号、护栏和复盘条件。"
+        },
+        {
+          "id": "conversion_retention",
+          "title": "CRO、CRM、邮件与留存",
+          "description": "理解独立站转化阻力、客户分层、邮件触达、复购与留存，避免只盯一次成交。",
+          "modules": [
+            "media_ecommerce",
+            "consumer_psychology",
+            "brand_product_research",
+            "data_analysis"
+          ],
+          "practice": "选择一段转化或留存流程，写明用户问题、分群、指标和一个验证动作。"
+        },
+        {
+          "id": "collaboration",
+          "title": "跨部门、向上与团队协作",
+          "description": "把目标、证据、资源与责任讲清楚，改进跨部门接口、向上汇报、团队授权和反馈。",
+          "modules": [
+            "management_organization",
+            "communication",
+            "cognitive_decision"
+          ],
+          "practice": "输出一页决策建议或责任清单，包含待决事项、负责人和检查点。"
+        },
+        {
+          "id": "work_foundations",
+          "title": "研究、数据与 AI 基础",
+          "description": "让研究、消费者理解、创意和 AI 服务当前经营问题，保持证据和权限边界。",
+          "modules": [
+            "brand_product_research",
+            "consumer_psychology",
+            "aesthetics_creative",
+            "ai",
+            "data_analysis",
+            "cognitive_decision"
+          ],
+          "practice": "将当前单元方法应用到一个真实或明确标注假设的工作问题。"
+        }
+      ],
+      "caseGuidance": [
+        "案例站在 DTC 经营或媒介广告负责人的视角，讲清业务目标、指标口径、资源约束与责任。",
+        "优先选销售促销、毛利预测、预算素材、CRO、CRM、邮件留存或协作场景，具体选择服从当前单元。",
+        "平台 ROAS、归因收入与增量利润不能混写；业务数据若是假设必须注明。"
+      ],
+      "practiceGuidance": [
+        "只保留一个工作角色练习，替换通用练习，不加第二份作业。",
+        "练习产出能进入经营复盘、投放判断或沟通协作的具体材料，但不扩展到当前单元之外。"
+      ],
+      "contexts": {
+        "advertising_frontier": {
+          "caseContext": "DTC 品牌在业务目标、媒介预算、素材、投放稳定性与代理商执行之间作判断。",
+          "exercise": "把本课机制对应到一个投放决策，区分平台指标、归因结果与增量证据。",
+          "deliverable": "一张投放决策与护栏卡"
+        },
+        "marketing_case": {
+          "caseContext": "拆解独立站促销、新品或传播活动的商业目标、约束和效果证据。",
+          "exercise": "用当前单元方法审视一个活动，写清可迁移做法、前提与利润影响。",
+          "deliverable": "一张活动复盘或改进卡"
+        },
+        "media_ecommerce": {
+          "caseContext": "独立站经营中的商品、促销、库存履约、CRO、CRM 分层、邮件与复购。",
+          "exercise": "选择与本课最相关的一段交易或留存流程，提出一个可核验的改进动作。",
+          "deliverable": "一段流程、指标与负责人"
+        },
+        "brand_product_research": {
+          "caseContext": "研究独立站用户任务、购买阻力、商品价值与产品或页面验证。",
+          "exercise": "用当前单元方法检验一个产品或 CRO 假设，写清证据边界与决策用途。",
+          "deliverable": "一条研究问题与验证设计"
+        },
+        "data_analysis": {
+          "caseContext": "从销售、促销、毛利、预测偏差、转化或留存数据中识别经营问题。",
+          "exercise": "围绕当前单元建立一个问题的指标口径，并给出证据到动作的判断。",
+          "deliverable": "一页指标与行动分析"
+        },
+        "management_organization": {
+          "caseContext": "DTC 团队与媒介代理商围绕销售目标、预算、排期与交付跨部门协作。",
+          "exercise": "把当前单元方法用于一个决策或协作接口，写明负责人、输入和检查点。",
+          "deliverable": "一张责任与协作清单"
+        },
+        "consumer_psychology": {
+          "caseContext": "独立站顾客在页面、价格、促销和复购触达中的行为与阻力。",
+          "exercise": "把本课心理机制转成一条 CRO 或 CRM 假设，同时写出消费者信任护栏。",
+          "deliverable": "一条行为实验与护栏"
+        },
+        "aesthetics_creative": {
+          "caseContext": "评估广告素材、商品图、邮件或落地页的信息层级与创意表达。",
+          "exercise": "根据当前单元改动一处素材或页面表达，写出预期影响与观察方法。",
+          "deliverable": "一个素材改稿与验证信号"
+        },
+        "finance_macro": {
+          "caseContext": "DTC 经营中的毛利、贡献利润、促销费用、库存现金流与销售预测。",
+          "exercise": "用本课方法检查一个经营取舍，列出收入、成本、现金影响与关键假设。",
+          "deliverable": "一张经营财务判断卡"
+        },
+        "ai": {
+          "caseContext": "用 AI 支持经营周报、素材流程、用户研究或代理商沟通的低风险环节。",
+          "exercise": "用当前单元设计一个可审查的工作步骤，保留数据权限和人工决策边界。",
+          "deliverable": "一个有审核点的工作流"
+        },
+        "cognitive_decision": {
+          "caseContext": "在销量波动、投放结果或团队意见不一致时处理证据、偏差与不确定性。",
+          "exercise": "将当前单元用于一个经营判断，记录反例、证据强度和更新阈值。",
+          "deliverable": "一张判断与复盘卡"
+        },
+        "communication": {
+          "caseContext": "向上汇报经营结果，与跨部门团队或代理商澄清目标、证据和资源请求。",
+          "exercise": "按当前单元写一段结论先行的工作信息，说明依据、待决问题与行动请求。",
+          "deliverable": "一段汇报或协作信息"
+        }
+      }
+    }
+  ],
+  "moduleAssignments": [
+    {
+      "module": "advertising_frontier",
+      "mode": "fixed",
+      "identities": [
+        "work"
+      ],
+      "firstIdentity": "work"
+    },
+    {
+      "module": "marketing_case",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "work"
+    },
+    {
+      "module": "aesthetics_creative",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "personal"
+    },
+    {
+      "module": "consumer_psychology",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "personal"
+    },
+    {
+      "module": "brand_product_research",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "work"
+    },
+    {
+      "module": "ai",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "personal"
+    },
+    {
+      "module": "data_analysis",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "personal"
+    },
+    {
+      "module": "management_organization",
+      "mode": "fixed",
+      "identities": [
+        "work"
+      ],
+      "firstIdentity": "work"
+    },
+    {
+      "module": "finance_macro",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "personal"
+    },
+    {
+      "module": "cognitive_decision",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "work"
+    },
+    {
+      "module": "communication",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "personal"
+    },
+    {
+      "module": "personal_growth",
+      "mode": "fixed",
+      "identities": [
+        "personal"
+      ],
+      "firstIdentity": "personal"
+    },
+    {
+      "module": "media_ecommerce",
+      "mode": "rotate",
+      "identities": [
+        "personal",
+        "work"
+      ],
+      "firstIdentity": "work"
+    }
+  ]
+}

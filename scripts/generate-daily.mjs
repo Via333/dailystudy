@@ -1,11 +1,10 @@
 import { access, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { DAILY_SCHEMA } from "./content-schema.mjs";
+import { dailySchemaForDate } from "./content-schema.mjs";
 import {
   DAILY_DIR,
   assertValidEntry,
   collectGroundedSourceUrls,
-  curriculumPlanForDate,
   normalizeSourceUrl,
   parseArguments,
   readCurriculum,
@@ -13,6 +12,8 @@ import {
   readTopics,
   shanghaiDate
 } from "./lib.mjs";
+
+import { identityPlanForDate } from "./identities.mjs";
 
 const args = parseArguments(process.argv.slice(2));
 const targetDate = args.date ?? shanghaiDate();
@@ -45,18 +46,20 @@ if (!targetExists && entries.some((entry) => entry.date > targetDate)) {
   throw new Error("不能直接在现有归档之前插入新日期，否则会打乱课程顺序。请从该日期起重建后续归档。");
 }
 
-const plan = curriculumPlanForDate(targetDate, topics, curriculum, entries);
+const plan = identityPlanForDate(targetDate, topics, curriculum, entries);
 const moduleMap = new Map(topics.modules.map((module) => [module.id, module]));
 const recentLessons = entries
   .flatMap((entry) => (entry.lessons ?? []).map((lesson) => `${entry.date}｜${lesson.module}｜${lesson.coreQuestion ?? lesson.curriculum?.unitTitle ?? "课程"}`))
   .slice(0, 12);
-const lessonMinutes = plan.length === 1 ? 24 : 16;
+const lessonMinutes = plan.length === 1 ? 26 : 16;
 const radarMinutes = 4;
 const totalMinutes = (lessonMinutes * plan.length) + radarMinutes;
 
 const planText = plan.map((item, index) => {
   const module = moduleMap.get(item.module);
   return `${index + 1}. ${module.title}（${item.module}）
+   - 应用身份：${item.learningIdentity ?? "旧版未分身份"}
+   - 身份案例与练习指导：${JSON.stringify(item.identityContext ?? {})}
    - 课程目标：${item.track.goal}
    - 当前阶段：${item.unit.stageTitle}
    - 阶段成果：${item.unit.stageOutcome}
@@ -78,6 +81,7 @@ ${planText}
 - 今天的多节课程只是并列安排，各自沿自己的知识树推进。禁止为了制造“今日主题”而把两门课拼成一条逻辑链，禁止要求一门课引用、解释或服务于另一门课。
 - 每节课程必须严格依次使用这 6 个结构块：coreQuestion（核心问题）→ framework（框架）→ keyPoints（恰好 3 个重点）→ caseStudy（一个案例）→ exercise（一个小练习）→ conclusion（一句话结论）。不得增加长篇正文或重复摘要。
 - coreQuestion 只问一个问题并以问号结尾；framework 用 2–3 步解释一个可复用框架并写清边界；3 个 keyPoints 必须有短标题，彼此不重复。
+- learningIdentity 严格遵循计划；案例与练习只服务本课指定身份，保持一个练习，不为另一身份追加第二份。
 - caseStudy 只使用一个具体案例，并明确用本课框架分析；exercise 要求读者产出一个可检查的结果；conclusion 只能有一句话。
 - 每节课程上述 6 个结构块的可见文字合计必须为 350–750 个中文字符。curriculum 元数据和 sources 不计入。不要在多个字段反复表达同一句结论。
 - 行业新变化只放在 radar，绝不能替代核心课程。radar 是独立栏目，可以属于 13 条主线中的任意一个 module，不要求与今天的课程相关，也不要虚构关联。
@@ -94,7 +98,7 @@ ${recentLessons.length ? recentLessons.map((line) => `- ${line}`).join("\n") : "
 
 只输出符合 JSON Schema 的内容。日期必须为 ${targetDate}，schemaVersion 必须为 4。`;
 
-const responseSchema = structuredClone(DAILY_SCHEMA);
+const responseSchema = dailySchemaForDate(targetDate);
 responseSchema.properties.lessons.minItems = plan.length;
 responseSchema.properties.lessons.maxItems = plan.length;
 responseSchema.properties.lessons.items.properties.module.enum = plan.map((item) => item.module);
@@ -185,8 +189,9 @@ if (!Array.isArray(entry.lessons) || entry.lessons.length !== plan.length) {
 }
 entry.lessons.forEach((lesson, index) => {
   const expected = plan[index];
-  if (lesson.module !== expected.module || lesson.curriculum?.unitId !== expected.unit.id) {
-    throw new Error(`模型偏离固定课程节点：第 ${index + 1} 节应为 ${expected.module} / ${expected.unit.id}`);
+  if (lesson.module !== expected.module || lesson.curriculum?.unitId !== expected.unit.id ||
+      (expected.learningIdentity && lesson.learningIdentity !== expected.learningIdentity)) {
+    throw new Error(`模型偏离固定课程节点：第 ${index + 1} 节应为 ${expected.module} / ${expected.unit.id} / ${expected.learningIdentity ?? "legacy"}`);
   }
 });
 if (!Array.isArray(entry.radar) || entry.radar.length !== 1) {
@@ -195,6 +200,8 @@ if (!Array.isArray(entry.radar) || entry.radar.length !== 1) {
 entry.lessons.forEach((lesson, index) => {
   const expected = plan[index];
   lesson.module = expected.module;
+  if (expected.learningIdentity) lesson.learningIdentity = expected.learningIdentity;
+  else delete lesson.learningIdentity;
   lesson.estimatedMinutes = lessonMinutes;
   lesson.curriculum = {
     stageId: expected.unit.stageId,
