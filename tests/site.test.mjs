@@ -194,7 +194,10 @@ test("消费者心理完整知识树、独立起步课与 schema v4 日期课均
       assert.match(page, new RegExp(unit.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     }
   }
-  assert.match(page, /日期归档已发布 1 \/ 32 个单元/);
+  const consumerCount = (await readDailyEntries())
+    .flatMap((entry) => entry.lessons)
+    .filter((lesson) => lesson.module === "consumer_psychology").length;
+  assert.ok(page.includes(`日期归档已发布 ${consumerCount} / 32 个单元`));
   assert.match(page, /START HERE · 完整起步课/);
   assert.match(page, /<details class="stage-block" open>/);
   assert.match(issue, /为什么长期存在的需要，只有在特定情境下才会启动行动？/);

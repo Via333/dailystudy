@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 4,
+  "date": "2026-10-03",
+  "title": "今日课程｜消费者心理 · 品牌与用户研究",
+  "subtitle": "消费者心理推进「消费者想完成的任务」；品牌与用户研究推进「用户任务与进步」。",
+  "estimatedMinutes": 36,
+  "introduction": [
+    "消费者心理进入「消费者决策旅程」第 2/32 课；品牌与用户研究进入「市场与问题定义」第 2/28 课。两门课程分别学习，另附独立行业雷达。"
+  ],
+  "lessons": [
+    {
+      "id": "consumer-jobs-functional-emotional-social",
+      "module": "consumer_psychology",
+      "curriculum": {
+        "stageId": "consumer_psychology_journey",
+        "stageTitle": "消费者决策旅程",
+        "unitId": "consumer_psychology_journey_jobs",
+        "unitTitle": "消费者想完成的任务",
+        "objective": "掌握「消费者想完成的任务」的核心概念、判断方法与适用边界，并能用于一个具体案例。",
+        "scope": "本课只展开「消费者想完成的任务」；「需求识别与触发情境」、「考虑集与替代方案」、「购买后评价、满意与忠诚」仅可作为背景提及，不得展开其框架、方法或练习。",
+        "sequence": 2,
+        "totalUnits": 32,
+        "cycle": 1
+      },
+      "estimatedMinutes": 16,
+      "coreQuestion": "消费者买下同一件商品时，想完成的事情为什么可能完全不同？",
+      "framework": {
+        "name": "事情—感受—关系",
+        "definition": "消费者任务是人在具体处境中希望取得的进步；产品只是帮助他完成事情、获得某种感受或处理社会关系的手段。",
+        "steps": [
+          {
+            "title": "写出事情",
+            "text": "暂时删掉品牌和功能词，说明消费者希望哪件事做成，以及什么结果对他有用。"
+          },
+          {
+            "title": "辨认感受",
+            "text": "分开记录他想获得的内在感受，以及希望别人怎样看待自己，避免混成一句好体验。"
+          },
+          {
+            "title": "连接线索",
+            "text": "找出选择细节如何服务这些进步；只有推测而没有言行支持的解释，先标为假设。"
+          }
+        ],
+        "boundary": "三种维度用于理解动机，不要求每次购买都同等具备，也不能仅凭年龄、价格或包装断定心理。"
+      },
+      "keyPoints": [
+        {
+          "title": "任务不是功能",
+          "text": "保温是杯子的功能，长途乘车时随时喝到热水才描述了使用者希望实现的进步。"
+        },
+        {
+          "title": "情绪不等于社交",
+          "text": "觉得安心是自己的感受，让同事认为自己可靠是社会意义；两者可能同时存在。"
+        },
+        {
+          "title": "任务属于处境",
+          "text": "同一个人自用和送礼时，可能给同一商品赋予不同任务，不能把任务当作固定人格。"
+        }
+      ],
+      "caseStudy": {
+        "title": "教学示例：一盒点心的三层用处",
+        "context": "小林第一次到朋友家做客，选了可分食的点心，并说自己担心空手上门显得不够周到。",
+        "analysis": "可分食帮助大家一起享用，是功能进步；减少自己的局促，是情绪进步；表达重视，是社会进步。包装精美本身不能证明他爱炫耀，解释必须与这次拜访及他的表达相符。",
+        "lesson": "把选择放回具体处境，才能理解哪些属性对这个人真正有意义。"
+      },
+      "exercise": {
+        "prompt": "选一件你自用和送人时都买过的商品，分别解释两次购买想完成什么。",
+        "steps": [
+          "各写一句不含品牌和功能名称的任务描述。",
+          "分别列出事情、感受、关系，并允许某一栏暂时空缺。",
+          "为每项解释补一个言行线索，没有证据的地方注明假设。"
+        ],
+        "deliverable": "两张情境不同、附有证据或假设标记的任务卡。"
+      },
+      "conclusion": "理解购买要从消费者想取得的进步出发，而不是把商品属性直接当作动机。",
+      "sources": [
+        {
+          "title": "What is Jobs to Be Done Theory?",
+          "url": "https://www.christenseninstitute.org/video/what-is-jobs-to-be-done-theory/",
+          "publisher": "Clayton Christensen Institute",
+          "publishedAt": "2025-09-24"
+        }
+      ]
+    },
+    {
+      "id": "research-jobs-evidence-success-criteria",
+      "module": "brand_product_research",
+      "curriculum": {
+        "stageId": "brand_product_research_problem",
+        "stageTitle": "市场与问题定义",
+        "unitId": "brand_product_research_problem_jobs",
+        "unitTitle": "用户任务与进步",
+        "objective": "掌握「用户任务与进步」的核心概念、判断方法与适用边界，并能用于一个具体案例。",
+        "scope": "本课只展开「用户任务与进步」；「市场边界与需求空间」、「竞争对象与替代方案」、「问题价值与研究优先级」仅可作为背景提及，不得展开其框架、方法或练习。",
+        "sequence": 2,
+        "totalUnits": 28,
+        "cycle": 1
+      },
+      "estimatedMinutes": 16,
+      "coreQuestion": "怎样把用户提出的功能愿望，整理成能够被研究检验的任务陈述？",
+      "framework": {
+        "name": "经历—进步—完成标准",
+        "definition": "研究中的任务陈述说明谁在什么工作情境下希望改善什么结果；它应能回溯到具体经历，并暂时保留多种实现方式。",
+        "steps": [
+          {
+            "title": "还原经历",
+            "text": "请亲历者讲最近一次处理这件事的过程，记录具体动作、卡点和参与者，少问泛泛偏好。"
+          },
+          {
+            "title": "提炼进步",
+            "text": "把我要某功能改写为在某处境下，我希望完成某事，以便获得某结果，并核对原话。"
+          },
+          {
+            "title": "约定完成",
+            "text": "追问做到什么才算有进步，把答案写成可观察的标准，标注仍需补证的部分。"
+          }
+        ],
+        "boundary": "任务卡是待验证的研究结论；一位受访者的故事不能代表所有用户，也不能直接证明某功能值得开发。"
+      },
+      "keyPoints": [
+        {
+          "title": "先找到亲历者",
+          "text": "购买者、使用者和决策者可能不同；先确认谁经历过问题，避免把转述当成一手证据。"
+        },
+        {
+          "title": "区分材料与解释",
+          "text": "原话、观察记录与研究者推断分开保存；一句听起来合理的任务描述不等于已经被证实。"
+        },
+        {
+          "title": "保留反驳可能",
+          "text": "注明什么观察会让任务卡失效，例如用户真正受阻的是权限不足，而非信息查找困难。"
+        }
+      ],
+      "caseStudy": {
+        "title": "教学示例：门店交接要群机器人吗",
+        "context": "店长提出做一个群机器人。研究者请接班员工重述昨天交接，并一起查看未完成订单记录。",
+        "analysis": "员工反复翻聊天找订单负责人。任务可暂写为：换班时快速确认待处理订单及责任人，以便接续服务。完成标准是接班者无需逐人追问便能说清待办；机器人只是候选实现，仍需观察其他班次核对。",
+        "lesson": "研究输出应连接具体证据与完成标准，不能只把功能愿望换一种说法。"
+      },
+      "exercise": {
+        "prompt": "拿一条真实功能需求，设计一次十分钟访谈，只为形成一张可核验的任务卡。",
+        "steps": [
+          "先写三问：最近一次怎么做、哪里卡住、怎样才算做完。",
+          "注明应访问的亲历者，并把已有事实与待问问题分开。",
+          "草拟任务和完成标准，再写一条可能推翻它的观察。"
+        ],
+        "deliverable": "一张含证据出处、完成标准和反证条件的任务草卡。"
+      },
+      "conclusion": "一份有用的任务陈述，必须让别人看得见证据、判断得了进步、找得到验证缺口。",
+      "sources": [
+        {
+          "title": "Finding jobs your product is used for",
+          "url": "https://www.intercom.com/blog/videos/finding-jobs-your-product-is-used-for/",
+          "publisher": "Intercom",
+          "publishedAt": "2016-08-23"
+        }
+      ]
+    }
+  ],
+  "radar": [
+    {
+      "id": "microsoft-fabric-iq-sharing-preview",
+      "module": "ai",
+      "title": "微软推出 Fabric 业务语境跨组织共享预览",
+      "estimatedMinutes": 4,
+      "whatChanged": "微软在 9 月 28 日公告中推出 Fabric IQ Sharing 预览，允许组织共享数据及其业务语境，并保留对底层资产的治理；目前从部分 Fabric IQ 资产与语境开始。",
+      "whyItMatters": "编辑判断：企业 AI 协作的难点包含指标含义与权限边界，传递数据文件本身未必能让合作方正确理解业务。",
+      "watchNext": "观察预览支持哪些资产、访问控制如何落实，以及共享后的业务定义能否保持一致；不要把预览当作全面可用。",
+      "sources": [
+        {
+          "title": "New Microsoft data innovations unlock what only your business knows",
+          "url": "https://blogs.microsoft.com/blog/2026/09/28/new-microsoft-data-innovations-unlock-what-only-your-business-knows/",
+          "publisher": "Microsoft Official Blog",
+          "publishedAt": "2026-09-28"
+        }
+      ]
+    }
+  ]
+}
